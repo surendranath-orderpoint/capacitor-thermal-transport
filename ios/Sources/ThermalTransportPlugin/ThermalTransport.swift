@@ -142,7 +142,7 @@ enum ThermalTransportError: LocalizedError {
         case .connectionFailed:
             return "Could not connect to printer"
         case .timeout:
-            return "Connection timed out. Check printer IP and Wi‑Fi, then enable Local Network for Merchant in Settings → Privacy & Security → Local Network."
+            return "Connection timed out. Check printer IP and Wi‑Fi."
         }
     }
 }
