@@ -47,6 +47,7 @@ Add to the merchant app `Info.plist`:
 
 <docgen-index>
 
+* [`requestLocalNetworkAccess()`](#requestlocalnetworkaccess)
 * [`sendRaw(...)`](#sendraw)
 * [`ping(...)`](#ping)
 * [Interfaces](#interfaces)
@@ -55,6 +56,17 @@ Add to the merchant app `Info.plist`:
 
 <docgen-api>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
+
+### requestLocalNetworkAccess()
+
+```typescript
+requestLocalNetworkAccess() => Promise<void>
+```
+
+iOS only: trigger the local network permission prompt before printing.
+
+--------------------
+
 
 ### sendRaw(...)
 

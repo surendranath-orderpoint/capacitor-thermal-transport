@@ -25,6 +25,11 @@ export interface ExecuteOptions {
 
 export interface ThermalTransportPlugin {
   /**
+   * iOS only: trigger the local network permission prompt before printing.
+   */
+  requestLocalNetworkAccess(): Promise<void>;
+
+  /**
    * Send raw ESC/POS bytes to a network printer over TCP.
    */
   sendRaw(options: SendRawOptions): Promise<void>;

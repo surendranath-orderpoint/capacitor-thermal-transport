@@ -12,6 +12,11 @@ class ThermalTransportPlugin : Plugin() {
     private val implementation = ThermalTransport()
 
     @PluginMethod
+    fun requestLocalNetworkAccess(call: PluginCall) {
+        call.resolve()
+    }
+
+    @PluginMethod
     fun sendRaw(call: PluginCall) {
         val host = call.getString("host")
         if (host.isNullOrBlank()) {

@@ -6,6 +6,16 @@
     "tags": [],
     "methods": [
       {
+        "name": "requestLocalNetworkAccess",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "iOS only: trigger the local network permission prompt before printing.",
+        "complexTypes": [],
+        "slug": "requestlocalnetworkaccess"
+      },
+      {
         "name": "sendRaw",
         "signature": "(options: SendRawOptions) => Promise<void>",
         "parameters": [

@@ -6,11 +6,23 @@ public class ThermalTransportPlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "ThermalTransportPlugin"
     public let jsName = "ThermalTransport"
     public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "requestLocalNetworkAccess", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "sendRaw", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "ping", returnType: CAPPluginReturnPromise)
     ]
 
     private let implementation = ThermalTransport()
+
+    @objc func requestLocalNetworkAccess(_ call: CAPPluginCall) {
+        implementation.requestLocalNetworkAccess { error in
+            if let error = error {
+                call.reject(error.localizedDescription, nil, error)
+                return
+            }
+
+            call.resolve()
+        }
+    }
 
     @objc func sendRaw(_ call: CAPPluginCall) {
         guard let host = call.getString("host"), !host.isEmpty else {

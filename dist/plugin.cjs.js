@@ -47,6 +47,9 @@ function uint8ArrayToBase64(bytes) {
 }
 
 class ThermalTransportWeb extends core.WebPlugin {
+    async requestLocalNetworkAccess() {
+        return;
+    }
     async sendRaw(_options) {
         throw this.unavailable('Thermal printing requires the native iOS or Android app');
     }

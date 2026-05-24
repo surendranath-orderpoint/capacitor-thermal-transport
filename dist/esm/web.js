@@ -1,5 +1,8 @@
 import { WebPlugin } from '@capacitor/core';
 export class ThermalTransportWeb extends WebPlugin {
+    async requestLocalNetworkAccess() {
+        return;
+    }
     async sendRaw(_options) {
         throw this.unavailable('Thermal printing requires the native iOS or Android app');
     }
