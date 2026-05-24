@@ -1,23 +1,59 @@
 import Foundation
 import Capacitor
 
-/**
- * Please read the Capacitor iOS Plugin Development Guide
- * here: https://capacitorjs.com/docs/plugins/ios
- */
 @objc(ThermalTransportPlugin)
 public class ThermalTransportPlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "ThermalTransportPlugin"
     public let jsName = "ThermalTransport"
     public let pluginMethods: [CAPPluginMethod] = [
-        CAPPluginMethod(name: "echo", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "sendRaw", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "ping", returnType: CAPPluginReturnPromise)
     ]
+
     private let implementation = ThermalTransport()
 
-    @objc func echo(_ call: CAPPluginCall) {
-        let value = call.getString("value") ?? ""
-        call.resolve([
-            "value": implementation.echo(value)
-        ])
+    @objc func sendRaw(_ call: CAPPluginCall) {
+        guard let host = call.getString("host"), !host.isEmpty else {
+            call.reject("host is required")
+            return
+        }
+
+        guard let dataBase64 = call.getString("data"), !dataBase64.isEmpty else {
+            call.reject("data is required")
+            return
+        }
+
+        guard let data = Data(base64Encoded: dataBase64) else {
+            call.reject("data must be valid base64")
+            return
+        }
+
+        let port = UInt16(call.getInt("port") ?? 9100)
+        let timeout = call.getInt("timeout") ?? 5000
+
+        implementation.sendRaw(host: host, port: port, data: data, timeoutMs: timeout) { error in
+            if let error = error {
+                call.reject(error.localizedDescription, nil, error)
+                return
+            }
+
+            call.resolve()
+        }
+    }
+
+    @objc func ping(_ call: CAPPluginCall) {
+        guard let host = call.getString("host"), !host.isEmpty else {
+            call.reject("host is required")
+            return
+        }
+
+        let port = UInt16(call.getInt("port") ?? 9100)
+        let timeout = call.getInt("timeout") ?? 5000
+
+        implementation.ping(host: host, port: port, timeoutMs: timeout) { connected in
+            call.resolve([
+                "connected": connected
+            ])
+        }
     }
 }

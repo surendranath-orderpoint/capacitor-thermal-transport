@@ -2,14 +2,15 @@ import XCTest
 @testable import ThermalTransportPlugin
 
 class ThermalTransportTests: XCTestCase {
-    func testEcho() {
-        // This is an example of a functional test case for a plugin.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-
+    func testPingToInvalidHostReturnsFalse() {
         let implementation = ThermalTransport()
-        let value = "Hello, World!"
-        let result = implementation.echo(value)
+        let expectation = expectation(description: "ping completes")
 
-        XCTAssertEqual(value, result)
+        implementation.ping(host: "203.0.113.1", port: 9100, timeoutMs: 500) { connected in
+            XCTAssertFalse(connected)
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 5)
     }
 }

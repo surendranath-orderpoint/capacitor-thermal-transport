@@ -1,10 +1,13 @@
 import { WebPlugin } from '@capacitor/core';
 
-import type { ThermalTransportPlugin } from './definitions';
+import type { PingOptions, PingResult, SendRawOptions, ThermalTransportPlugin } from './definitions';
 
 export class ThermalTransportWeb extends WebPlugin implements ThermalTransportPlugin {
-  async echo(options: { value: string }): Promise<{ value: string }> {
-    console.log('ECHO', options);
-    return options;
+  async sendRaw(_options: SendRawOptions): Promise<void> {
+    throw this.unavailable('Thermal printing requires the native iOS or Android app');
+  }
+
+  async ping(_options: PingOptions): Promise<PingResult> {
+    throw this.unavailable('Thermal printing requires the native iOS or Android app');
   }
 }
