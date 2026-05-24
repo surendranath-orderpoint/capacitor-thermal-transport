@@ -58,7 +58,7 @@ function resolveThermalPrinterClass(module) {
 }
 function loadThermalPrinterClass() {
     if (!thermalPrinterClassPromise) {
-        thermalPrinterClassPromise = Promise.resolve().then(function () { return encoder$1; }).then(resolveThermalPrinterClass);
+        thermalPrinterClassPromise = Promise.resolve().then(function () { return encoder; }).then(resolveThermalPrinterClass);
     }
     return thermalPrinterClassPromise;
 }
@@ -98,14 +98,1988 @@ var web = /*#__PURE__*/Object.freeze({
     ThermalTransportWeb: ThermalTransportWeb
 });
 
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+
+// node_modules/base64-js/index.js
+var require_base64_js = __commonJS({
+  "node_modules/base64-js/index.js"(exports) {
+    init_globals();
+    exports.byteLength = byteLength;
+    exports.toByteArray = toByteArray;
+    exports.fromByteArray = fromByteArray;
+    var lookup = [];
+    var revLookup = [];
+    var Arr = typeof Uint8Array !== "undefined" ? Uint8Array : Array;
+    var code = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    for (i = 0, len = code.length; i < len; ++i) {
+      lookup[i] = code[i];
+      revLookup[code.charCodeAt(i)] = i;
+    }
+    var i;
+    var len;
+    revLookup["-".charCodeAt(0)] = 62;
+    revLookup["_".charCodeAt(0)] = 63;
+    function getLens(b64) {
+      var len2 = b64.length;
+      if (len2 % 4 > 0) {
+        throw new Error("Invalid string. Length must be a multiple of 4");
+      }
+      var validLen = b64.indexOf("=");
+      if (validLen === -1) validLen = len2;
+      var placeHoldersLen = validLen === len2 ? 0 : 4 - validLen % 4;
+      return [validLen, placeHoldersLen];
+    }
+    function byteLength(b64) {
+      var lens = getLens(b64);
+      var validLen = lens[0];
+      var placeHoldersLen = lens[1];
+      return (validLen + placeHoldersLen) * 3 / 4 - placeHoldersLen;
+    }
+    function _byteLength(b64, validLen, placeHoldersLen) {
+      return (validLen + placeHoldersLen) * 3 / 4 - placeHoldersLen;
+    }
+    function toByteArray(b64) {
+      var tmp;
+      var lens = getLens(b64);
+      var validLen = lens[0];
+      var placeHoldersLen = lens[1];
+      var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen));
+      var curByte = 0;
+      var len2 = placeHoldersLen > 0 ? validLen - 4 : validLen;
+      var i2;
+      for (i2 = 0; i2 < len2; i2 += 4) {
+        tmp = revLookup[b64.charCodeAt(i2)] << 18 | revLookup[b64.charCodeAt(i2 + 1)] << 12 | revLookup[b64.charCodeAt(i2 + 2)] << 6 | revLookup[b64.charCodeAt(i2 + 3)];
+        arr[curByte++] = tmp >> 16 & 255;
+        arr[curByte++] = tmp >> 8 & 255;
+        arr[curByte++] = tmp & 255;
+      }
+      if (placeHoldersLen === 2) {
+        tmp = revLookup[b64.charCodeAt(i2)] << 2 | revLookup[b64.charCodeAt(i2 + 1)] >> 4;
+        arr[curByte++] = tmp & 255;
+      }
+      if (placeHoldersLen === 1) {
+        tmp = revLookup[b64.charCodeAt(i2)] << 10 | revLookup[b64.charCodeAt(i2 + 1)] << 4 | revLookup[b64.charCodeAt(i2 + 2)] >> 2;
+        arr[curByte++] = tmp >> 8 & 255;
+        arr[curByte++] = tmp & 255;
+      }
+      return arr;
+    }
+    function tripletToBase64(num) {
+      return lookup[num >> 18 & 63] + lookup[num >> 12 & 63] + lookup[num >> 6 & 63] + lookup[num & 63];
+    }
+    function encodeChunk(uint8, start, end) {
+      var tmp;
+      var output = [];
+      for (var i2 = start; i2 < end; i2 += 3) {
+        tmp = (uint8[i2] << 16 & 16711680) + (uint8[i2 + 1] << 8 & 65280) + (uint8[i2 + 2] & 255);
+        output.push(tripletToBase64(tmp));
+      }
+      return output.join("");
+    }
+    function fromByteArray(uint8) {
+      var tmp;
+      var len2 = uint8.length;
+      var extraBytes = len2 % 3;
+      var parts = [];
+      var maxChunkLength = 16383;
+      for (var i2 = 0, len22 = len2 - extraBytes; i2 < len22; i2 += maxChunkLength) {
+        parts.push(encodeChunk(uint8, i2, i2 + maxChunkLength > len22 ? len22 : i2 + maxChunkLength));
+      }
+      if (extraBytes === 1) {
+        tmp = uint8[len2 - 1];
+        parts.push(
+          lookup[tmp >> 2] + lookup[tmp << 4 & 63] + "=="
+        );
+      } else if (extraBytes === 2) {
+        tmp = (uint8[len2 - 2] << 8) + uint8[len2 - 1];
+        parts.push(
+          lookup[tmp >> 10] + lookup[tmp >> 4 & 63] + lookup[tmp << 2 & 63] + "="
+        );
+      }
+      return parts.join("");
+    }
+  }
+});
+
+// node_modules/ieee754/index.js
+var require_ieee754 = __commonJS({
+  "node_modules/ieee754/index.js"(exports) {
+    init_globals();
+    exports.read = function(buffer, offset, isLE, mLen, nBytes) {
+      var e, m;
+      var eLen = nBytes * 8 - mLen - 1;
+      var eMax = (1 << eLen) - 1;
+      var eBias = eMax >> 1;
+      var nBits = -7;
+      var i = isLE ? nBytes - 1 : 0;
+      var d = isLE ? -1 : 1;
+      var s = buffer[offset + i];
+      i += d;
+      e = s & (1 << -nBits) - 1;
+      s >>= -nBits;
+      nBits += eLen;
+      for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {
+      }
+      m = e & (1 << -nBits) - 1;
+      e >>= -nBits;
+      nBits += mLen;
+      for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {
+      }
+      if (e === 0) {
+        e = 1 - eBias;
+      } else if (e === eMax) {
+        return m ? NaN : (s ? -1 : 1) * Infinity;
+      } else {
+        m = m + Math.pow(2, mLen);
+        e = e - eBias;
+      }
+      return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
+    };
+    exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
+      var e, m, c;
+      var eLen = nBytes * 8 - mLen - 1;
+      var eMax = (1 << eLen) - 1;
+      var eBias = eMax >> 1;
+      var rt = mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0;
+      var i = isLE ? 0 : nBytes - 1;
+      var d = isLE ? 1 : -1;
+      var s = value < 0 || value === 0 && 1 / value < 0 ? 1 : 0;
+      value = Math.abs(value);
+      if (isNaN(value) || value === Infinity) {
+        m = isNaN(value) ? 1 : 0;
+        e = eMax;
+      } else {
+        e = Math.floor(Math.log(value) / Math.LN2);
+        if (value * (c = Math.pow(2, -e)) < 1) {
+          e--;
+          c *= 2;
+        }
+        if (e + eBias >= 1) {
+          value += rt / c;
+        } else {
+          value += rt * Math.pow(2, 1 - eBias);
+        }
+        if (value * c >= 2) {
+          e++;
+          c /= 2;
+        }
+        if (e + eBias >= eMax) {
+          m = 0;
+          e = eMax;
+        } else if (e + eBias >= 1) {
+          m = (value * c - 1) * Math.pow(2, mLen);
+          e = e + eBias;
+        } else {
+          m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
+          e = 0;
+        }
+      }
+      for (; mLen >= 8; buffer[offset + i] = m & 255, i += d, m /= 256, mLen -= 8) {
+      }
+      e = e << mLen | m;
+      eLen += mLen;
+      for (; eLen > 0; buffer[offset + i] = e & 255, i += d, e /= 256, eLen -= 8) {
+      }
+      buffer[offset + i - d] |= s * 128;
+    };
+  }
+});
+
+// node_modules/buffer/index.js
+var require_buffer = __commonJS({
+  "node_modules/buffer/index.js"(exports) {
+    init_globals();
+    var base64 = require_base64_js();
+    var ieee754 = require_ieee754();
+    var customInspectSymbol = typeof Symbol === "function" && typeof Symbol["for"] === "function" ? Symbol["for"]("nodejs.util.inspect.custom") : null;
+    exports.Buffer = Buffer4;
+    exports.SlowBuffer = SlowBuffer;
+    exports.INSPECT_MAX_BYTES = 50;
+    var K_MAX_LENGTH = 2147483647;
+    exports.kMaxLength = K_MAX_LENGTH;
+    Buffer4.TYPED_ARRAY_SUPPORT = typedArraySupport();
+    if (!Buffer4.TYPED_ARRAY_SUPPORT && typeof console !== "undefined" && typeof console.error === "function") {
+      console.error(
+        "This browser lacks typed array (Uint8Array) support which is required by `buffer` v5.x. Use `buffer` v4.x if you require old browser support."
+      );
+    }
+    function typedArraySupport() {
+      try {
+        const arr = new Uint8Array(1);
+        const proto = { foo: function() {
+          return 42;
+        } };
+        Object.setPrototypeOf(proto, Uint8Array.prototype);
+        Object.setPrototypeOf(arr, proto);
+        return arr.foo() === 42;
+      } catch (e) {
+        return false;
+      }
+    }
+    Object.defineProperty(Buffer4.prototype, "parent", {
+      enumerable: true,
+      get: function() {
+        if (!Buffer4.isBuffer(this)) return void 0;
+        return this.buffer;
+      }
+    });
+    Object.defineProperty(Buffer4.prototype, "offset", {
+      enumerable: true,
+      get: function() {
+        if (!Buffer4.isBuffer(this)) return void 0;
+        return this.byteOffset;
+      }
+    });
+    function createBuffer(length) {
+      if (length > K_MAX_LENGTH) {
+        throw new RangeError('The value "' + length + '" is invalid for option "size"');
+      }
+      const buf = new Uint8Array(length);
+      Object.setPrototypeOf(buf, Buffer4.prototype);
+      return buf;
+    }
+    function Buffer4(arg, encodingOrOffset, length) {
+      if (typeof arg === "number") {
+        if (typeof encodingOrOffset === "string") {
+          throw new TypeError(
+            'The "string" argument must be of type string. Received type number'
+          );
+        }
+        return allocUnsafe(arg);
+      }
+      return from(arg, encodingOrOffset, length);
+    }
+    Buffer4.poolSize = 8192;
+    function from(value, encodingOrOffset, length) {
+      if (typeof value === "string") {
+        return fromString(value, encodingOrOffset);
+      }
+      if (ArrayBuffer.isView(value)) {
+        return fromArrayView(value);
+      }
+      if (value == null) {
+        throw new TypeError(
+          "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received type " + typeof value
+        );
+      }
+      if (isInstance(value, ArrayBuffer) || value && isInstance(value.buffer, ArrayBuffer)) {
+        return fromArrayBuffer(value, encodingOrOffset, length);
+      }
+      if (typeof SharedArrayBuffer !== "undefined" && (isInstance(value, SharedArrayBuffer) || value && isInstance(value.buffer, SharedArrayBuffer))) {
+        return fromArrayBuffer(value, encodingOrOffset, length);
+      }
+      if (typeof value === "number") {
+        throw new TypeError(
+          'The "value" argument must not be of type number. Received type number'
+        );
+      }
+      const valueOf = value.valueOf && value.valueOf();
+      if (valueOf != null && valueOf !== value) {
+        return Buffer4.from(valueOf, encodingOrOffset, length);
+      }
+      const b = fromObject(value);
+      if (b) return b;
+      if (typeof Symbol !== "undefined" && Symbol.toPrimitive != null && typeof value[Symbol.toPrimitive] === "function") {
+        return Buffer4.from(value[Symbol.toPrimitive]("string"), encodingOrOffset, length);
+      }
+      throw new TypeError(
+        "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received type " + typeof value
+      );
+    }
+    Buffer4.from = function(value, encodingOrOffset, length) {
+      return from(value, encodingOrOffset, length);
+    };
+    Object.setPrototypeOf(Buffer4.prototype, Uint8Array.prototype);
+    Object.setPrototypeOf(Buffer4, Uint8Array);
+    function assertSize(size) {
+      if (typeof size !== "number") {
+        throw new TypeError('"size" argument must be of type number');
+      } else if (size < 0) {
+        throw new RangeError('The value "' + size + '" is invalid for option "size"');
+      }
+    }
+    function alloc(size, fill, encoding) {
+      assertSize(size);
+      if (size <= 0) {
+        return createBuffer(size);
+      }
+      if (fill !== void 0) {
+        return typeof encoding === "string" ? createBuffer(size).fill(fill, encoding) : createBuffer(size).fill(fill);
+      }
+      return createBuffer(size);
+    }
+    Buffer4.alloc = function(size, fill, encoding) {
+      return alloc(size, fill, encoding);
+    };
+    function allocUnsafe(size) {
+      assertSize(size);
+      return createBuffer(size < 0 ? 0 : checked(size) | 0);
+    }
+    Buffer4.allocUnsafe = function(size) {
+      return allocUnsafe(size);
+    };
+    Buffer4.allocUnsafeSlow = function(size) {
+      return allocUnsafe(size);
+    };
+    function fromString(string, encoding) {
+      if (typeof encoding !== "string" || encoding === "") {
+        encoding = "utf8";
+      }
+      if (!Buffer4.isEncoding(encoding)) {
+        throw new TypeError("Unknown encoding: " + encoding);
+      }
+      const length = byteLength(string, encoding) | 0;
+      let buf = createBuffer(length);
+      const actual = buf.write(string, encoding);
+      if (actual !== length) {
+        buf = buf.slice(0, actual);
+      }
+      return buf;
+    }
+    function fromArrayLike(array) {
+      const length = array.length < 0 ? 0 : checked(array.length) | 0;
+      const buf = createBuffer(length);
+      for (let i = 0; i < length; i += 1) {
+        buf[i] = array[i] & 255;
+      }
+      return buf;
+    }
+    function fromArrayView(arrayView) {
+      if (isInstance(arrayView, Uint8Array)) {
+        const copy = new Uint8Array(arrayView);
+        return fromArrayBuffer(copy.buffer, copy.byteOffset, copy.byteLength);
+      }
+      return fromArrayLike(arrayView);
+    }
+    function fromArrayBuffer(array, byteOffset, length) {
+      if (byteOffset < 0 || array.byteLength < byteOffset) {
+        throw new RangeError('"offset" is outside of buffer bounds');
+      }
+      if (array.byteLength < byteOffset + (length || 0)) {
+        throw new RangeError('"length" is outside of buffer bounds');
+      }
+      let buf;
+      if (byteOffset === void 0 && length === void 0) {
+        buf = new Uint8Array(array);
+      } else if (length === void 0) {
+        buf = new Uint8Array(array, byteOffset);
+      } else {
+        buf = new Uint8Array(array, byteOffset, length);
+      }
+      Object.setPrototypeOf(buf, Buffer4.prototype);
+      return buf;
+    }
+    function fromObject(obj) {
+      if (Buffer4.isBuffer(obj)) {
+        const len = checked(obj.length) | 0;
+        const buf = createBuffer(len);
+        if (buf.length === 0) {
+          return buf;
+        }
+        obj.copy(buf, 0, 0, len);
+        return buf;
+      }
+      if (obj.length !== void 0) {
+        if (typeof obj.length !== "number" || numberIsNaN(obj.length)) {
+          return createBuffer(0);
+        }
+        return fromArrayLike(obj);
+      }
+      if (obj.type === "Buffer" && Array.isArray(obj.data)) {
+        return fromArrayLike(obj.data);
+      }
+    }
+    function checked(length) {
+      if (length >= K_MAX_LENGTH) {
+        throw new RangeError("Attempt to allocate Buffer larger than maximum size: 0x" + K_MAX_LENGTH.toString(16) + " bytes");
+      }
+      return length | 0;
+    }
+    function SlowBuffer(length) {
+      if (+length != length) {
+        length = 0;
+      }
+      return Buffer4.alloc(+length);
+    }
+    Buffer4.isBuffer = function isBuffer(b) {
+      return b != null && b._isBuffer === true && b !== Buffer4.prototype;
+    };
+    Buffer4.compare = function compare(a, b) {
+      if (isInstance(a, Uint8Array)) a = Buffer4.from(a, a.offset, a.byteLength);
+      if (isInstance(b, Uint8Array)) b = Buffer4.from(b, b.offset, b.byteLength);
+      if (!Buffer4.isBuffer(a) || !Buffer4.isBuffer(b)) {
+        throw new TypeError(
+          'The "buf1", "buf2" arguments must be one of type Buffer or Uint8Array'
+        );
+      }
+      if (a === b) return 0;
+      let x = a.length;
+      let y = b.length;
+      for (let i = 0, len = Math.min(x, y); i < len; ++i) {
+        if (a[i] !== b[i]) {
+          x = a[i];
+          y = b[i];
+          break;
+        }
+      }
+      if (x < y) return -1;
+      if (y < x) return 1;
+      return 0;
+    };
+    Buffer4.isEncoding = function isEncoding(encoding) {
+      switch (String(encoding).toLowerCase()) {
+        case "hex":
+        case "utf8":
+        case "utf-8":
+        case "ascii":
+        case "latin1":
+        case "binary":
+        case "base64":
+        case "ucs2":
+        case "ucs-2":
+        case "utf16le":
+        case "utf-16le":
+          return true;
+        default:
+          return false;
+      }
+    };
+    Buffer4.concat = function concat(list, length) {
+      if (!Array.isArray(list)) {
+        throw new TypeError('"list" argument must be an Array of Buffers');
+      }
+      if (list.length === 0) {
+        return Buffer4.alloc(0);
+      }
+      let i;
+      if (length === void 0) {
+        length = 0;
+        for (i = 0; i < list.length; ++i) {
+          length += list[i].length;
+        }
+      }
+      const buffer = Buffer4.allocUnsafe(length);
+      let pos = 0;
+      for (i = 0; i < list.length; ++i) {
+        let buf = list[i];
+        if (isInstance(buf, Uint8Array)) {
+          if (pos + buf.length > buffer.length) {
+            if (!Buffer4.isBuffer(buf)) buf = Buffer4.from(buf);
+            buf.copy(buffer, pos);
+          } else {
+            Uint8Array.prototype.set.call(
+              buffer,
+              buf,
+              pos
+            );
+          }
+        } else if (!Buffer4.isBuffer(buf)) {
+          throw new TypeError('"list" argument must be an Array of Buffers');
+        } else {
+          buf.copy(buffer, pos);
+        }
+        pos += buf.length;
+      }
+      return buffer;
+    };
+    function byteLength(string, encoding) {
+      if (Buffer4.isBuffer(string)) {
+        return string.length;
+      }
+      if (ArrayBuffer.isView(string) || isInstance(string, ArrayBuffer)) {
+        return string.byteLength;
+      }
+      if (typeof string !== "string") {
+        throw new TypeError(
+          'The "string" argument must be one of type string, Buffer, or ArrayBuffer. Received type ' + typeof string
+        );
+      }
+      const len = string.length;
+      const mustMatch = arguments.length > 2 && arguments[2] === true;
+      if (!mustMatch && len === 0) return 0;
+      let loweredCase = false;
+      for (; ; ) {
+        switch (encoding) {
+          case "ascii":
+          case "latin1":
+          case "binary":
+            return len;
+          case "utf8":
+          case "utf-8":
+            return utf8ToBytes(string).length;
+          case "ucs2":
+          case "ucs-2":
+          case "utf16le":
+          case "utf-16le":
+            return len * 2;
+          case "hex":
+            return len >>> 1;
+          case "base64":
+            return base64ToBytes(string).length;
+          default:
+            if (loweredCase) {
+              return mustMatch ? -1 : utf8ToBytes(string).length;
+            }
+            encoding = ("" + encoding).toLowerCase();
+            loweredCase = true;
+        }
+      }
+    }
+    Buffer4.byteLength = byteLength;
+    function slowToString(encoding, start, end) {
+      let loweredCase = false;
+      if (start === void 0 || start < 0) {
+        start = 0;
+      }
+      if (start > this.length) {
+        return "";
+      }
+      if (end === void 0 || end > this.length) {
+        end = this.length;
+      }
+      if (end <= 0) {
+        return "";
+      }
+      end >>>= 0;
+      start >>>= 0;
+      if (end <= start) {
+        return "";
+      }
+      if (!encoding) encoding = "utf8";
+      while (true) {
+        switch (encoding) {
+          case "hex":
+            return hexSlice(this, start, end);
+          case "utf8":
+          case "utf-8":
+            return utf8Slice(this, start, end);
+          case "ascii":
+            return asciiSlice(this, start, end);
+          case "latin1":
+          case "binary":
+            return latin1Slice(this, start, end);
+          case "base64":
+            return base64Slice(this, start, end);
+          case "ucs2":
+          case "ucs-2":
+          case "utf16le":
+          case "utf-16le":
+            return utf16leSlice(this, start, end);
+          default:
+            if (loweredCase) throw new TypeError("Unknown encoding: " + encoding);
+            encoding = (encoding + "").toLowerCase();
+            loweredCase = true;
+        }
+      }
+    }
+    Buffer4.prototype._isBuffer = true;
+    function swap(b, n, m) {
+      const i = b[n];
+      b[n] = b[m];
+      b[m] = i;
+    }
+    Buffer4.prototype.swap16 = function swap16() {
+      const len = this.length;
+      if (len % 2 !== 0) {
+        throw new RangeError("Buffer size must be a multiple of 16-bits");
+      }
+      for (let i = 0; i < len; i += 2) {
+        swap(this, i, i + 1);
+      }
+      return this;
+    };
+    Buffer4.prototype.swap32 = function swap32() {
+      const len = this.length;
+      if (len % 4 !== 0) {
+        throw new RangeError("Buffer size must be a multiple of 32-bits");
+      }
+      for (let i = 0; i < len; i += 4) {
+        swap(this, i, i + 3);
+        swap(this, i + 1, i + 2);
+      }
+      return this;
+    };
+    Buffer4.prototype.swap64 = function swap64() {
+      const len = this.length;
+      if (len % 8 !== 0) {
+        throw new RangeError("Buffer size must be a multiple of 64-bits");
+      }
+      for (let i = 0; i < len; i += 8) {
+        swap(this, i, i + 7);
+        swap(this, i + 1, i + 6);
+        swap(this, i + 2, i + 5);
+        swap(this, i + 3, i + 4);
+      }
+      return this;
+    };
+    Buffer4.prototype.toString = function toString() {
+      const length = this.length;
+      if (length === 0) return "";
+      if (arguments.length === 0) return utf8Slice(this, 0, length);
+      return slowToString.apply(this, arguments);
+    };
+    Buffer4.prototype.toLocaleString = Buffer4.prototype.toString;
+    Buffer4.prototype.equals = function equals(b) {
+      if (!Buffer4.isBuffer(b)) throw new TypeError("Argument must be a Buffer");
+      if (this === b) return true;
+      return Buffer4.compare(this, b) === 0;
+    };
+    Buffer4.prototype.inspect = function inspect() {
+      let str = "";
+      const max = exports.INSPECT_MAX_BYTES;
+      str = this.toString("hex", 0, max).replace(/(.{2})/g, "$1 ").trim();
+      if (this.length > max) str += " ... ";
+      return "<Buffer " + str + ">";
+    };
+    if (customInspectSymbol) {
+      Buffer4.prototype[customInspectSymbol] = Buffer4.prototype.inspect;
+    }
+    Buffer4.prototype.compare = function compare(target, start, end, thisStart, thisEnd) {
+      if (isInstance(target, Uint8Array)) {
+        target = Buffer4.from(target, target.offset, target.byteLength);
+      }
+      if (!Buffer4.isBuffer(target)) {
+        throw new TypeError(
+          'The "target" argument must be one of type Buffer or Uint8Array. Received type ' + typeof target
+        );
+      }
+      if (start === void 0) {
+        start = 0;
+      }
+      if (end === void 0) {
+        end = target ? target.length : 0;
+      }
+      if (thisStart === void 0) {
+        thisStart = 0;
+      }
+      if (thisEnd === void 0) {
+        thisEnd = this.length;
+      }
+      if (start < 0 || end > target.length || thisStart < 0 || thisEnd > this.length) {
+        throw new RangeError("out of range index");
+      }
+      if (thisStart >= thisEnd && start >= end) {
+        return 0;
+      }
+      if (thisStart >= thisEnd) {
+        return -1;
+      }
+      if (start >= end) {
+        return 1;
+      }
+      start >>>= 0;
+      end >>>= 0;
+      thisStart >>>= 0;
+      thisEnd >>>= 0;
+      if (this === target) return 0;
+      let x = thisEnd - thisStart;
+      let y = end - start;
+      const len = Math.min(x, y);
+      const thisCopy = this.slice(thisStart, thisEnd);
+      const targetCopy = target.slice(start, end);
+      for (let i = 0; i < len; ++i) {
+        if (thisCopy[i] !== targetCopy[i]) {
+          x = thisCopy[i];
+          y = targetCopy[i];
+          break;
+        }
+      }
+      if (x < y) return -1;
+      if (y < x) return 1;
+      return 0;
+    };
+    function bidirectionalIndexOf(buffer, val, byteOffset, encoding, dir) {
+      if (buffer.length === 0) return -1;
+      if (typeof byteOffset === "string") {
+        encoding = byteOffset;
+        byteOffset = 0;
+      } else if (byteOffset > 2147483647) {
+        byteOffset = 2147483647;
+      } else if (byteOffset < -2147483648) {
+        byteOffset = -2147483648;
+      }
+      byteOffset = +byteOffset;
+      if (numberIsNaN(byteOffset)) {
+        byteOffset = dir ? 0 : buffer.length - 1;
+      }
+      if (byteOffset < 0) byteOffset = buffer.length + byteOffset;
+      if (byteOffset >= buffer.length) {
+        if (dir) return -1;
+        else byteOffset = buffer.length - 1;
+      } else if (byteOffset < 0) {
+        if (dir) byteOffset = 0;
+        else return -1;
+      }
+      if (typeof val === "string") {
+        val = Buffer4.from(val, encoding);
+      }
+      if (Buffer4.isBuffer(val)) {
+        if (val.length === 0) {
+          return -1;
+        }
+        return arrayIndexOf(buffer, val, byteOffset, encoding, dir);
+      } else if (typeof val === "number") {
+        val = val & 255;
+        if (typeof Uint8Array.prototype.indexOf === "function") {
+          if (dir) {
+            return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset);
+          } else {
+            return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset);
+          }
+        }
+        return arrayIndexOf(buffer, [val], byteOffset, encoding, dir);
+      }
+      throw new TypeError("val must be string, number or Buffer");
+    }
+    function arrayIndexOf(arr, val, byteOffset, encoding, dir) {
+      let indexSize = 1;
+      let arrLength = arr.length;
+      let valLength = val.length;
+      if (encoding !== void 0) {
+        encoding = String(encoding).toLowerCase();
+        if (encoding === "ucs2" || encoding === "ucs-2" || encoding === "utf16le" || encoding === "utf-16le") {
+          if (arr.length < 2 || val.length < 2) {
+            return -1;
+          }
+          indexSize = 2;
+          arrLength /= 2;
+          valLength /= 2;
+          byteOffset /= 2;
+        }
+      }
+      function read(buf, i2) {
+        if (indexSize === 1) {
+          return buf[i2];
+        } else {
+          return buf.readUInt16BE(i2 * indexSize);
+        }
+      }
+      let i;
+      if (dir) {
+        let foundIndex = -1;
+        for (i = byteOffset; i < arrLength; i++) {
+          if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
+            if (foundIndex === -1) foundIndex = i;
+            if (i - foundIndex + 1 === valLength) return foundIndex * indexSize;
+          } else {
+            if (foundIndex !== -1) i -= i - foundIndex;
+            foundIndex = -1;
+          }
+        }
+      } else {
+        if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength;
+        for (i = byteOffset; i >= 0; i--) {
+          let found = true;
+          for (let j = 0; j < valLength; j++) {
+            if (read(arr, i + j) !== read(val, j)) {
+              found = false;
+              break;
+            }
+          }
+          if (found) return i;
+        }
+      }
+      return -1;
+    }
+    Buffer4.prototype.includes = function includes(val, byteOffset, encoding) {
+      return this.indexOf(val, byteOffset, encoding) !== -1;
+    };
+    Buffer4.prototype.indexOf = function indexOf(val, byteOffset, encoding) {
+      return bidirectionalIndexOf(this, val, byteOffset, encoding, true);
+    };
+    Buffer4.prototype.lastIndexOf = function lastIndexOf(val, byteOffset, encoding) {
+      return bidirectionalIndexOf(this, val, byteOffset, encoding, false);
+    };
+    function hexWrite(buf, string, offset, length) {
+      offset = Number(offset) || 0;
+      const remaining = buf.length - offset;
+      if (!length) {
+        length = remaining;
+      } else {
+        length = Number(length);
+        if (length > remaining) {
+          length = remaining;
+        }
+      }
+      const strLen = string.length;
+      if (length > strLen / 2) {
+        length = strLen / 2;
+      }
+      let i;
+      for (i = 0; i < length; ++i) {
+        const parsed = parseInt(string.substr(i * 2, 2), 16);
+        if (numberIsNaN(parsed)) return i;
+        buf[offset + i] = parsed;
+      }
+      return i;
+    }
+    function utf8Write(buf, string, offset, length) {
+      return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length);
+    }
+    function asciiWrite(buf, string, offset, length) {
+      return blitBuffer(asciiToBytes(string), buf, offset, length);
+    }
+    function base64Write(buf, string, offset, length) {
+      return blitBuffer(base64ToBytes(string), buf, offset, length);
+    }
+    function ucs2Write(buf, string, offset, length) {
+      return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length);
+    }
+    Buffer4.prototype.write = function write(string, offset, length, encoding) {
+      if (offset === void 0) {
+        encoding = "utf8";
+        length = this.length;
+        offset = 0;
+      } else if (length === void 0 && typeof offset === "string") {
+        encoding = offset;
+        length = this.length;
+        offset = 0;
+      } else if (isFinite(offset)) {
+        offset = offset >>> 0;
+        if (isFinite(length)) {
+          length = length >>> 0;
+          if (encoding === void 0) encoding = "utf8";
+        } else {
+          encoding = length;
+          length = void 0;
+        }
+      } else {
+        throw new Error(
+          "Buffer.write(string, encoding, offset[, length]) is no longer supported"
+        );
+      }
+      const remaining = this.length - offset;
+      if (length === void 0 || length > remaining) length = remaining;
+      if (string.length > 0 && (length < 0 || offset < 0) || offset > this.length) {
+        throw new RangeError("Attempt to write outside buffer bounds");
+      }
+      if (!encoding) encoding = "utf8";
+      let loweredCase = false;
+      for (; ; ) {
+        switch (encoding) {
+          case "hex":
+            return hexWrite(this, string, offset, length);
+          case "utf8":
+          case "utf-8":
+            return utf8Write(this, string, offset, length);
+          case "ascii":
+          case "latin1":
+          case "binary":
+            return asciiWrite(this, string, offset, length);
+          case "base64":
+            return base64Write(this, string, offset, length);
+          case "ucs2":
+          case "ucs-2":
+          case "utf16le":
+          case "utf-16le":
+            return ucs2Write(this, string, offset, length);
+          default:
+            if (loweredCase) throw new TypeError("Unknown encoding: " + encoding);
+            encoding = ("" + encoding).toLowerCase();
+            loweredCase = true;
+        }
+      }
+    };
+    Buffer4.prototype.toJSON = function toJSON() {
+      return {
+        type: "Buffer",
+        data: Array.prototype.slice.call(this._arr || this, 0)
+      };
+    };
+    function base64Slice(buf, start, end) {
+      if (start === 0 && end === buf.length) {
+        return base64.fromByteArray(buf);
+      } else {
+        return base64.fromByteArray(buf.slice(start, end));
+      }
+    }
+    function utf8Slice(buf, start, end) {
+      end = Math.min(buf.length, end);
+      const res = [];
+      let i = start;
+      while (i < end) {
+        const firstByte = buf[i];
+        let codePoint = null;
+        let bytesPerSequence = firstByte > 239 ? 4 : firstByte > 223 ? 3 : firstByte > 191 ? 2 : 1;
+        if (i + bytesPerSequence <= end) {
+          let secondByte, thirdByte, fourthByte, tempCodePoint;
+          switch (bytesPerSequence) {
+            case 1:
+              if (firstByte < 128) {
+                codePoint = firstByte;
+              }
+              break;
+            case 2:
+              secondByte = buf[i + 1];
+              if ((secondByte & 192) === 128) {
+                tempCodePoint = (firstByte & 31) << 6 | secondByte & 63;
+                if (tempCodePoint > 127) {
+                  codePoint = tempCodePoint;
+                }
+              }
+              break;
+            case 3:
+              secondByte = buf[i + 1];
+              thirdByte = buf[i + 2];
+              if ((secondByte & 192) === 128 && (thirdByte & 192) === 128) {
+                tempCodePoint = (firstByte & 15) << 12 | (secondByte & 63) << 6 | thirdByte & 63;
+                if (tempCodePoint > 2047 && (tempCodePoint < 55296 || tempCodePoint > 57343)) {
+                  codePoint = tempCodePoint;
+                }
+              }
+              break;
+            case 4:
+              secondByte = buf[i + 1];
+              thirdByte = buf[i + 2];
+              fourthByte = buf[i + 3];
+              if ((secondByte & 192) === 128 && (thirdByte & 192) === 128 && (fourthByte & 192) === 128) {
+                tempCodePoint = (firstByte & 15) << 18 | (secondByte & 63) << 12 | (thirdByte & 63) << 6 | fourthByte & 63;
+                if (tempCodePoint > 65535 && tempCodePoint < 1114112) {
+                  codePoint = tempCodePoint;
+                }
+              }
+          }
+        }
+        if (codePoint === null) {
+          codePoint = 65533;
+          bytesPerSequence = 1;
+        } else if (codePoint > 65535) {
+          codePoint -= 65536;
+          res.push(codePoint >>> 10 & 1023 | 55296);
+          codePoint = 56320 | codePoint & 1023;
+        }
+        res.push(codePoint);
+        i += bytesPerSequence;
+      }
+      return decodeCodePointsArray(res);
+    }
+    var MAX_ARGUMENTS_LENGTH = 4096;
+    function decodeCodePointsArray(codePoints) {
+      const len = codePoints.length;
+      if (len <= MAX_ARGUMENTS_LENGTH) {
+        return String.fromCharCode.apply(String, codePoints);
+      }
+      let res = "";
+      let i = 0;
+      while (i < len) {
+        res += String.fromCharCode.apply(
+          String,
+          codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH)
+        );
+      }
+      return res;
+    }
+    function asciiSlice(buf, start, end) {
+      let ret = "";
+      end = Math.min(buf.length, end);
+      for (let i = start; i < end; ++i) {
+        ret += String.fromCharCode(buf[i] & 127);
+      }
+      return ret;
+    }
+    function latin1Slice(buf, start, end) {
+      let ret = "";
+      end = Math.min(buf.length, end);
+      for (let i = start; i < end; ++i) {
+        ret += String.fromCharCode(buf[i]);
+      }
+      return ret;
+    }
+    function hexSlice(buf, start, end) {
+      const len = buf.length;
+      if (!start || start < 0) start = 0;
+      if (!end || end < 0 || end > len) end = len;
+      let out = "";
+      for (let i = start; i < end; ++i) {
+        out += hexSliceLookupTable[buf[i]];
+      }
+      return out;
+    }
+    function utf16leSlice(buf, start, end) {
+      const bytes = buf.slice(start, end);
+      let res = "";
+      for (let i = 0; i < bytes.length - 1; i += 2) {
+        res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256);
+      }
+      return res;
+    }
+    Buffer4.prototype.slice = function slice(start, end) {
+      const len = this.length;
+      start = ~~start;
+      end = end === void 0 ? len : ~~end;
+      if (start < 0) {
+        start += len;
+        if (start < 0) start = 0;
+      } else if (start > len) {
+        start = len;
+      }
+      if (end < 0) {
+        end += len;
+        if (end < 0) end = 0;
+      } else if (end > len) {
+        end = len;
+      }
+      if (end < start) end = start;
+      const newBuf = this.subarray(start, end);
+      Object.setPrototypeOf(newBuf, Buffer4.prototype);
+      return newBuf;
+    };
+    function checkOffset(offset, ext, length) {
+      if (offset % 1 !== 0 || offset < 0) throw new RangeError("offset is not uint");
+      if (offset + ext > length) throw new RangeError("Trying to access beyond buffer length");
+    }
+    Buffer4.prototype.readUintLE = Buffer4.prototype.readUIntLE = function readUIntLE(offset, byteLength2, noAssert) {
+      offset = offset >>> 0;
+      byteLength2 = byteLength2 >>> 0;
+      if (!noAssert) checkOffset(offset, byteLength2, this.length);
+      let val = this[offset];
+      let mul = 1;
+      let i = 0;
+      while (++i < byteLength2 && (mul *= 256)) {
+        val += this[offset + i] * mul;
+      }
+      return val;
+    };
+    Buffer4.prototype.readUintBE = Buffer4.prototype.readUIntBE = function readUIntBE(offset, byteLength2, noAssert) {
+      offset = offset >>> 0;
+      byteLength2 = byteLength2 >>> 0;
+      if (!noAssert) {
+        checkOffset(offset, byteLength2, this.length);
+      }
+      let val = this[offset + --byteLength2];
+      let mul = 1;
+      while (byteLength2 > 0 && (mul *= 256)) {
+        val += this[offset + --byteLength2] * mul;
+      }
+      return val;
+    };
+    Buffer4.prototype.readUint8 = Buffer4.prototype.readUInt8 = function readUInt8(offset, noAssert) {
+      offset = offset >>> 0;
+      if (!noAssert) checkOffset(offset, 1, this.length);
+      return this[offset];
+    };
+    Buffer4.prototype.readUint16LE = Buffer4.prototype.readUInt16LE = function readUInt16LE(offset, noAssert) {
+      offset = offset >>> 0;
+      if (!noAssert) checkOffset(offset, 2, this.length);
+      return this[offset] | this[offset + 1] << 8;
+    };
+    Buffer4.prototype.readUint16BE = Buffer4.prototype.readUInt16BE = function readUInt16BE(offset, noAssert) {
+      offset = offset >>> 0;
+      if (!noAssert) checkOffset(offset, 2, this.length);
+      return this[offset] << 8 | this[offset + 1];
+    };
+    Buffer4.prototype.readUint32LE = Buffer4.prototype.readUInt32LE = function readUInt32LE(offset, noAssert) {
+      offset = offset >>> 0;
+      if (!noAssert) checkOffset(offset, 4, this.length);
+      return (this[offset] | this[offset + 1] << 8 | this[offset + 2] << 16) + this[offset + 3] * 16777216;
+    };
+    Buffer4.prototype.readUint32BE = Buffer4.prototype.readUInt32BE = function readUInt32BE(offset, noAssert) {
+      offset = offset >>> 0;
+      if (!noAssert) checkOffset(offset, 4, this.length);
+      return this[offset] * 16777216 + (this[offset + 1] << 16 | this[offset + 2] << 8 | this[offset + 3]);
+    };
+    Buffer4.prototype.readBigUInt64LE = defineBigIntMethod(function readBigUInt64LE(offset) {
+      offset = offset >>> 0;
+      validateNumber(offset, "offset");
+      const first = this[offset];
+      const last = this[offset + 7];
+      if (first === void 0 || last === void 0) {
+        boundsError(offset, this.length - 8);
+      }
+      const lo = first + this[++offset] * 2 ** 8 + this[++offset] * 2 ** 16 + this[++offset] * 2 ** 24;
+      const hi = this[++offset] + this[++offset] * 2 ** 8 + this[++offset] * 2 ** 16 + last * 2 ** 24;
+      return BigInt(lo) + (BigInt(hi) << BigInt(32));
+    });
+    Buffer4.prototype.readBigUInt64BE = defineBigIntMethod(function readBigUInt64BE(offset) {
+      offset = offset >>> 0;
+      validateNumber(offset, "offset");
+      const first = this[offset];
+      const last = this[offset + 7];
+      if (first === void 0 || last === void 0) {
+        boundsError(offset, this.length - 8);
+      }
+      const hi = first * 2 ** 24 + this[++offset] * 2 ** 16 + this[++offset] * 2 ** 8 + this[++offset];
+      const lo = this[++offset] * 2 ** 24 + this[++offset] * 2 ** 16 + this[++offset] * 2 ** 8 + last;
+      return (BigInt(hi) << BigInt(32)) + BigInt(lo);
+    });
+    Buffer4.prototype.readIntLE = function readIntLE(offset, byteLength2, noAssert) {
+      offset = offset >>> 0;
+      byteLength2 = byteLength2 >>> 0;
+      if (!noAssert) checkOffset(offset, byteLength2, this.length);
+      let val = this[offset];
+      let mul = 1;
+      let i = 0;
+      while (++i < byteLength2 && (mul *= 256)) {
+        val += this[offset + i] * mul;
+      }
+      mul *= 128;
+      if (val >= mul) val -= Math.pow(2, 8 * byteLength2);
+      return val;
+    };
+    Buffer4.prototype.readIntBE = function readIntBE(offset, byteLength2, noAssert) {
+      offset = offset >>> 0;
+      byteLength2 = byteLength2 >>> 0;
+      if (!noAssert) checkOffset(offset, byteLength2, this.length);
+      let i = byteLength2;
+      let mul = 1;
+      let val = this[offset + --i];
+      while (i > 0 && (mul *= 256)) {
+        val += this[offset + --i] * mul;
+      }
+      mul *= 128;
+      if (val >= mul) val -= Math.pow(2, 8 * byteLength2);
+      return val;
+    };
+    Buffer4.prototype.readInt8 = function readInt8(offset, noAssert) {
+      offset = offset >>> 0;
+      if (!noAssert) checkOffset(offset, 1, this.length);
+      if (!(this[offset] & 128)) return this[offset];
+      return (255 - this[offset] + 1) * -1;
+    };
+    Buffer4.prototype.readInt16LE = function readInt16LE(offset, noAssert) {
+      offset = offset >>> 0;
+      if (!noAssert) checkOffset(offset, 2, this.length);
+      const val = this[offset] | this[offset + 1] << 8;
+      return val & 32768 ? val | 4294901760 : val;
+    };
+    Buffer4.prototype.readInt16BE = function readInt16BE(offset, noAssert) {
+      offset = offset >>> 0;
+      if (!noAssert) checkOffset(offset, 2, this.length);
+      const val = this[offset + 1] | this[offset] << 8;
+      return val & 32768 ? val | 4294901760 : val;
+    };
+    Buffer4.prototype.readInt32LE = function readInt32LE(offset, noAssert) {
+      offset = offset >>> 0;
+      if (!noAssert) checkOffset(offset, 4, this.length);
+      return this[offset] | this[offset + 1] << 8 | this[offset + 2] << 16 | this[offset + 3] << 24;
+    };
+    Buffer4.prototype.readInt32BE = function readInt32BE(offset, noAssert) {
+      offset = offset >>> 0;
+      if (!noAssert) checkOffset(offset, 4, this.length);
+      return this[offset] << 24 | this[offset + 1] << 16 | this[offset + 2] << 8 | this[offset + 3];
+    };
+    Buffer4.prototype.readBigInt64LE = defineBigIntMethod(function readBigInt64LE(offset) {
+      offset = offset >>> 0;
+      validateNumber(offset, "offset");
+      const first = this[offset];
+      const last = this[offset + 7];
+      if (first === void 0 || last === void 0) {
+        boundsError(offset, this.length - 8);
+      }
+      const val = this[offset + 4] + this[offset + 5] * 2 ** 8 + this[offset + 6] * 2 ** 16 + (last << 24);
+      return (BigInt(val) << BigInt(32)) + BigInt(first + this[++offset] * 2 ** 8 + this[++offset] * 2 ** 16 + this[++offset] * 2 ** 24);
+    });
+    Buffer4.prototype.readBigInt64BE = defineBigIntMethod(function readBigInt64BE(offset) {
+      offset = offset >>> 0;
+      validateNumber(offset, "offset");
+      const first = this[offset];
+      const last = this[offset + 7];
+      if (first === void 0 || last === void 0) {
+        boundsError(offset, this.length - 8);
+      }
+      const val = (first << 24) + // Overflow
+      this[++offset] * 2 ** 16 + this[++offset] * 2 ** 8 + this[++offset];
+      return (BigInt(val) << BigInt(32)) + BigInt(this[++offset] * 2 ** 24 + this[++offset] * 2 ** 16 + this[++offset] * 2 ** 8 + last);
+    });
+    Buffer4.prototype.readFloatLE = function readFloatLE(offset, noAssert) {
+      offset = offset >>> 0;
+      if (!noAssert) checkOffset(offset, 4, this.length);
+      return ieee754.read(this, offset, true, 23, 4);
+    };
+    Buffer4.prototype.readFloatBE = function readFloatBE(offset, noAssert) {
+      offset = offset >>> 0;
+      if (!noAssert) checkOffset(offset, 4, this.length);
+      return ieee754.read(this, offset, false, 23, 4);
+    };
+    Buffer4.prototype.readDoubleLE = function readDoubleLE(offset, noAssert) {
+      offset = offset >>> 0;
+      if (!noAssert) checkOffset(offset, 8, this.length);
+      return ieee754.read(this, offset, true, 52, 8);
+    };
+    Buffer4.prototype.readDoubleBE = function readDoubleBE(offset, noAssert) {
+      offset = offset >>> 0;
+      if (!noAssert) checkOffset(offset, 8, this.length);
+      return ieee754.read(this, offset, false, 52, 8);
+    };
+    function checkInt(buf, value, offset, ext, max, min) {
+      if (!Buffer4.isBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance');
+      if (value > max || value < min) throw new RangeError('"value" argument is out of bounds');
+      if (offset + ext > buf.length) throw new RangeError("Index out of range");
+    }
+    Buffer4.prototype.writeUintLE = Buffer4.prototype.writeUIntLE = function writeUIntLE(value, offset, byteLength2, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      byteLength2 = byteLength2 >>> 0;
+      if (!noAssert) {
+        const maxBytes = Math.pow(2, 8 * byteLength2) - 1;
+        checkInt(this, value, offset, byteLength2, maxBytes, 0);
+      }
+      let mul = 1;
+      let i = 0;
+      this[offset] = value & 255;
+      while (++i < byteLength2 && (mul *= 256)) {
+        this[offset + i] = value / mul & 255;
+      }
+      return offset + byteLength2;
+    };
+    Buffer4.prototype.writeUintBE = Buffer4.prototype.writeUIntBE = function writeUIntBE(value, offset, byteLength2, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      byteLength2 = byteLength2 >>> 0;
+      if (!noAssert) {
+        const maxBytes = Math.pow(2, 8 * byteLength2) - 1;
+        checkInt(this, value, offset, byteLength2, maxBytes, 0);
+      }
+      let i = byteLength2 - 1;
+      let mul = 1;
+      this[offset + i] = value & 255;
+      while (--i >= 0 && (mul *= 256)) {
+        this[offset + i] = value / mul & 255;
+      }
+      return offset + byteLength2;
+    };
+    Buffer4.prototype.writeUint8 = Buffer4.prototype.writeUInt8 = function writeUInt8(value, offset, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      if (!noAssert) checkInt(this, value, offset, 1, 255, 0);
+      this[offset] = value & 255;
+      return offset + 1;
+    };
+    Buffer4.prototype.writeUint16LE = Buffer4.prototype.writeUInt16LE = function writeUInt16LE(value, offset, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      if (!noAssert) checkInt(this, value, offset, 2, 65535, 0);
+      this[offset] = value & 255;
+      this[offset + 1] = value >>> 8;
+      return offset + 2;
+    };
+    Buffer4.prototype.writeUint16BE = Buffer4.prototype.writeUInt16BE = function writeUInt16BE(value, offset, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      if (!noAssert) checkInt(this, value, offset, 2, 65535, 0);
+      this[offset] = value >>> 8;
+      this[offset + 1] = value & 255;
+      return offset + 2;
+    };
+    Buffer4.prototype.writeUint32LE = Buffer4.prototype.writeUInt32LE = function writeUInt32LE(value, offset, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      if (!noAssert) checkInt(this, value, offset, 4, 4294967295, 0);
+      this[offset + 3] = value >>> 24;
+      this[offset + 2] = value >>> 16;
+      this[offset + 1] = value >>> 8;
+      this[offset] = value & 255;
+      return offset + 4;
+    };
+    Buffer4.prototype.writeUint32BE = Buffer4.prototype.writeUInt32BE = function writeUInt32BE(value, offset, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      if (!noAssert) checkInt(this, value, offset, 4, 4294967295, 0);
+      this[offset] = value >>> 24;
+      this[offset + 1] = value >>> 16;
+      this[offset + 2] = value >>> 8;
+      this[offset + 3] = value & 255;
+      return offset + 4;
+    };
+    function wrtBigUInt64LE(buf, value, offset, min, max) {
+      checkIntBI(value, min, max, buf, offset, 7);
+      let lo = Number(value & BigInt(4294967295));
+      buf[offset++] = lo;
+      lo = lo >> 8;
+      buf[offset++] = lo;
+      lo = lo >> 8;
+      buf[offset++] = lo;
+      lo = lo >> 8;
+      buf[offset++] = lo;
+      let hi = Number(value >> BigInt(32) & BigInt(4294967295));
+      buf[offset++] = hi;
+      hi = hi >> 8;
+      buf[offset++] = hi;
+      hi = hi >> 8;
+      buf[offset++] = hi;
+      hi = hi >> 8;
+      buf[offset++] = hi;
+      return offset;
+    }
+    function wrtBigUInt64BE(buf, value, offset, min, max) {
+      checkIntBI(value, min, max, buf, offset, 7);
+      let lo = Number(value & BigInt(4294967295));
+      buf[offset + 7] = lo;
+      lo = lo >> 8;
+      buf[offset + 6] = lo;
+      lo = lo >> 8;
+      buf[offset + 5] = lo;
+      lo = lo >> 8;
+      buf[offset + 4] = lo;
+      let hi = Number(value >> BigInt(32) & BigInt(4294967295));
+      buf[offset + 3] = hi;
+      hi = hi >> 8;
+      buf[offset + 2] = hi;
+      hi = hi >> 8;
+      buf[offset + 1] = hi;
+      hi = hi >> 8;
+      buf[offset] = hi;
+      return offset + 8;
+    }
+    Buffer4.prototype.writeBigUInt64LE = defineBigIntMethod(function writeBigUInt64LE(value, offset = 0) {
+      return wrtBigUInt64LE(this, value, offset, BigInt(0), BigInt("0xffffffffffffffff"));
+    });
+    Buffer4.prototype.writeBigUInt64BE = defineBigIntMethod(function writeBigUInt64BE(value, offset = 0) {
+      return wrtBigUInt64BE(this, value, offset, BigInt(0), BigInt("0xffffffffffffffff"));
+    });
+    Buffer4.prototype.writeIntLE = function writeIntLE(value, offset, byteLength2, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      if (!noAssert) {
+        const limit = Math.pow(2, 8 * byteLength2 - 1);
+        checkInt(this, value, offset, byteLength2, limit - 1, -limit);
+      }
+      let i = 0;
+      let mul = 1;
+      let sub = 0;
+      this[offset] = value & 255;
+      while (++i < byteLength2 && (mul *= 256)) {
+        if (value < 0 && sub === 0 && this[offset + i - 1] !== 0) {
+          sub = 1;
+        }
+        this[offset + i] = (value / mul >> 0) - sub & 255;
+      }
+      return offset + byteLength2;
+    };
+    Buffer4.prototype.writeIntBE = function writeIntBE(value, offset, byteLength2, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      if (!noAssert) {
+        const limit = Math.pow(2, 8 * byteLength2 - 1);
+        checkInt(this, value, offset, byteLength2, limit - 1, -limit);
+      }
+      let i = byteLength2 - 1;
+      let mul = 1;
+      let sub = 0;
+      this[offset + i] = value & 255;
+      while (--i >= 0 && (mul *= 256)) {
+        if (value < 0 && sub === 0 && this[offset + i + 1] !== 0) {
+          sub = 1;
+        }
+        this[offset + i] = (value / mul >> 0) - sub & 255;
+      }
+      return offset + byteLength2;
+    };
+    Buffer4.prototype.writeInt8 = function writeInt8(value, offset, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      if (!noAssert) checkInt(this, value, offset, 1, 127, -128);
+      if (value < 0) value = 255 + value + 1;
+      this[offset] = value & 255;
+      return offset + 1;
+    };
+    Buffer4.prototype.writeInt16LE = function writeInt16LE(value, offset, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      if (!noAssert) checkInt(this, value, offset, 2, 32767, -32768);
+      this[offset] = value & 255;
+      this[offset + 1] = value >>> 8;
+      return offset + 2;
+    };
+    Buffer4.prototype.writeInt16BE = function writeInt16BE(value, offset, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      if (!noAssert) checkInt(this, value, offset, 2, 32767, -32768);
+      this[offset] = value >>> 8;
+      this[offset + 1] = value & 255;
+      return offset + 2;
+    };
+    Buffer4.prototype.writeInt32LE = function writeInt32LE(value, offset, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      if (!noAssert) checkInt(this, value, offset, 4, 2147483647, -2147483648);
+      this[offset] = value & 255;
+      this[offset + 1] = value >>> 8;
+      this[offset + 2] = value >>> 16;
+      this[offset + 3] = value >>> 24;
+      return offset + 4;
+    };
+    Buffer4.prototype.writeInt32BE = function writeInt32BE(value, offset, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      if (!noAssert) checkInt(this, value, offset, 4, 2147483647, -2147483648);
+      if (value < 0) value = 4294967295 + value + 1;
+      this[offset] = value >>> 24;
+      this[offset + 1] = value >>> 16;
+      this[offset + 2] = value >>> 8;
+      this[offset + 3] = value & 255;
+      return offset + 4;
+    };
+    Buffer4.prototype.writeBigInt64LE = defineBigIntMethod(function writeBigInt64LE(value, offset = 0) {
+      return wrtBigUInt64LE(this, value, offset, -BigInt("0x8000000000000000"), BigInt("0x7fffffffffffffff"));
+    });
+    Buffer4.prototype.writeBigInt64BE = defineBigIntMethod(function writeBigInt64BE(value, offset = 0) {
+      return wrtBigUInt64BE(this, value, offset, -BigInt("0x8000000000000000"), BigInt("0x7fffffffffffffff"));
+    });
+    function checkIEEE754(buf, value, offset, ext, max, min) {
+      if (offset + ext > buf.length) throw new RangeError("Index out of range");
+      if (offset < 0) throw new RangeError("Index out of range");
+    }
+    function writeFloat(buf, value, offset, littleEndian, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      if (!noAssert) {
+        checkIEEE754(buf, value, offset, 4);
+      }
+      ieee754.write(buf, value, offset, littleEndian, 23, 4);
+      return offset + 4;
+    }
+    Buffer4.prototype.writeFloatLE = function writeFloatLE(value, offset, noAssert) {
+      return writeFloat(this, value, offset, true, noAssert);
+    };
+    Buffer4.prototype.writeFloatBE = function writeFloatBE(value, offset, noAssert) {
+      return writeFloat(this, value, offset, false, noAssert);
+    };
+    function writeDouble(buf, value, offset, littleEndian, noAssert) {
+      value = +value;
+      offset = offset >>> 0;
+      if (!noAssert) {
+        checkIEEE754(buf, value, offset, 8);
+      }
+      ieee754.write(buf, value, offset, littleEndian, 52, 8);
+      return offset + 8;
+    }
+    Buffer4.prototype.writeDoubleLE = function writeDoubleLE(value, offset, noAssert) {
+      return writeDouble(this, value, offset, true, noAssert);
+    };
+    Buffer4.prototype.writeDoubleBE = function writeDoubleBE(value, offset, noAssert) {
+      return writeDouble(this, value, offset, false, noAssert);
+    };
+    Buffer4.prototype.copy = function copy(target, targetStart, start, end) {
+      if (!Buffer4.isBuffer(target)) throw new TypeError("argument should be a Buffer");
+      if (!start) start = 0;
+      if (!end && end !== 0) end = this.length;
+      if (targetStart >= target.length) targetStart = target.length;
+      if (!targetStart) targetStart = 0;
+      if (end > 0 && end < start) end = start;
+      if (end === start) return 0;
+      if (target.length === 0 || this.length === 0) return 0;
+      if (targetStart < 0) {
+        throw new RangeError("targetStart out of bounds");
+      }
+      if (start < 0 || start >= this.length) throw new RangeError("Index out of range");
+      if (end < 0) throw new RangeError("sourceEnd out of bounds");
+      if (end > this.length) end = this.length;
+      if (target.length - targetStart < end - start) {
+        end = target.length - targetStart + start;
+      }
+      const len = end - start;
+      if (this === target && typeof Uint8Array.prototype.copyWithin === "function") {
+        this.copyWithin(targetStart, start, end);
+      } else {
+        Uint8Array.prototype.set.call(
+          target,
+          this.subarray(start, end),
+          targetStart
+        );
+      }
+      return len;
+    };
+    Buffer4.prototype.fill = function fill(val, start, end, encoding) {
+      if (typeof val === "string") {
+        if (typeof start === "string") {
+          encoding = start;
+          start = 0;
+          end = this.length;
+        } else if (typeof end === "string") {
+          encoding = end;
+          end = this.length;
+        }
+        if (encoding !== void 0 && typeof encoding !== "string") {
+          throw new TypeError("encoding must be a string");
+        }
+        if (typeof encoding === "string" && !Buffer4.isEncoding(encoding)) {
+          throw new TypeError("Unknown encoding: " + encoding);
+        }
+        if (val.length === 1) {
+          const code = val.charCodeAt(0);
+          if (encoding === "utf8" && code < 128 || encoding === "latin1") {
+            val = code;
+          }
+        }
+      } else if (typeof val === "number") {
+        val = val & 255;
+      } else if (typeof val === "boolean") {
+        val = Number(val);
+      }
+      if (start < 0 || this.length < start || this.length < end) {
+        throw new RangeError("Out of range index");
+      }
+      if (end <= start) {
+        return this;
+      }
+      start = start >>> 0;
+      end = end === void 0 ? this.length : end >>> 0;
+      if (!val) val = 0;
+      let i;
+      if (typeof val === "number") {
+        for (i = start; i < end; ++i) {
+          this[i] = val;
+        }
+      } else {
+        const bytes = Buffer4.isBuffer(val) ? val : Buffer4.from(val, encoding);
+        const len = bytes.length;
+        if (len === 0) {
+          throw new TypeError('The value "' + val + '" is invalid for argument "value"');
+        }
+        for (i = 0; i < end - start; ++i) {
+          this[i + start] = bytes[i % len];
+        }
+      }
+      return this;
+    };
+    var errors = {};
+    function E(sym, getMessage, Base) {
+      errors[sym] = class NodeError extends Base {
+        constructor() {
+          super();
+          Object.defineProperty(this, "message", {
+            value: getMessage.apply(this, arguments),
+            writable: true,
+            configurable: true
+          });
+          this.name = `${this.name} [${sym}]`;
+          this.stack;
+          delete this.name;
+        }
+        get code() {
+          return sym;
+        }
+        set code(value) {
+          Object.defineProperty(this, "code", {
+            configurable: true,
+            enumerable: true,
+            value,
+            writable: true
+          });
+        }
+        toString() {
+          return `${this.name} [${sym}]: ${this.message}`;
+        }
+      };
+    }
+    E(
+      "ERR_BUFFER_OUT_OF_BOUNDS",
+      function(name) {
+        if (name) {
+          return `${name} is outside of buffer bounds`;
+        }
+        return "Attempt to access memory outside buffer bounds";
+      },
+      RangeError
+    );
+    E(
+      "ERR_INVALID_ARG_TYPE",
+      function(name, actual) {
+        return `The "${name}" argument must be of type number. Received type ${typeof actual}`;
+      },
+      TypeError
+    );
+    E(
+      "ERR_OUT_OF_RANGE",
+      function(str, range, input) {
+        let msg = `The value of "${str}" is out of range.`;
+        let received = input;
+        if (Number.isInteger(input) && Math.abs(input) > 2 ** 32) {
+          received = addNumericalSeparator(String(input));
+        } else if (typeof input === "bigint") {
+          received = String(input);
+          if (input > BigInt(2) ** BigInt(32) || input < -(BigInt(2) ** BigInt(32))) {
+            received = addNumericalSeparator(received);
+          }
+          received += "n";
+        }
+        msg += ` It must be ${range}. Received ${received}`;
+        return msg;
+      },
+      RangeError
+    );
+    function addNumericalSeparator(val) {
+      let res = "";
+      let i = val.length;
+      const start = val[0] === "-" ? 1 : 0;
+      for (; i >= start + 4; i -= 3) {
+        res = `_${val.slice(i - 3, i)}${res}`;
+      }
+      return `${val.slice(0, i)}${res}`;
+    }
+    function checkBounds(buf, offset, byteLength2) {
+      validateNumber(offset, "offset");
+      if (buf[offset] === void 0 || buf[offset + byteLength2] === void 0) {
+        boundsError(offset, buf.length - (byteLength2 + 1));
+      }
+    }
+    function checkIntBI(value, min, max, buf, offset, byteLength2) {
+      if (value > max || value < min) {
+        const n = typeof min === "bigint" ? "n" : "";
+        let range;
+        {
+          if (min === 0 || min === BigInt(0)) {
+            range = `>= 0${n} and < 2${n} ** ${(byteLength2 + 1) * 8}${n}`;
+          } else {
+            range = `>= -(2${n} ** ${(byteLength2 + 1) * 8 - 1}${n}) and < 2 ** ${(byteLength2 + 1) * 8 - 1}${n}`;
+          }
+        }
+        throw new errors.ERR_OUT_OF_RANGE("value", range, value);
+      }
+      checkBounds(buf, offset, byteLength2);
+    }
+    function validateNumber(value, name) {
+      if (typeof value !== "number") {
+        throw new errors.ERR_INVALID_ARG_TYPE(name, "number", value);
+      }
+    }
+    function boundsError(value, length, type) {
+      if (Math.floor(value) !== value) {
+        validateNumber(value, type);
+        throw new errors.ERR_OUT_OF_RANGE("offset", "an integer", value);
+      }
+      if (length < 0) {
+        throw new errors.ERR_BUFFER_OUT_OF_BOUNDS();
+      }
+      throw new errors.ERR_OUT_OF_RANGE(
+        "offset",
+        `>= ${0} and <= ${length}`,
+        value
+      );
+    }
+    var INVALID_BASE64_RE = /[^+/0-9A-Za-z-_]/g;
+    function base64clean(str) {
+      str = str.split("=")[0];
+      str = str.trim().replace(INVALID_BASE64_RE, "");
+      if (str.length < 2) return "";
+      while (str.length % 4 !== 0) {
+        str = str + "=";
+      }
+      return str;
+    }
+    function utf8ToBytes(string, units) {
+      units = units || Infinity;
+      let codePoint;
+      const length = string.length;
+      let leadSurrogate = null;
+      const bytes = [];
+      for (let i = 0; i < length; ++i) {
+        codePoint = string.charCodeAt(i);
+        if (codePoint > 55295 && codePoint < 57344) {
+          if (!leadSurrogate) {
+            if (codePoint > 56319) {
+              if ((units -= 3) > -1) bytes.push(239, 191, 189);
+              continue;
+            } else if (i + 1 === length) {
+              if ((units -= 3) > -1) bytes.push(239, 191, 189);
+              continue;
+            }
+            leadSurrogate = codePoint;
+            continue;
+          }
+          if (codePoint < 56320) {
+            if ((units -= 3) > -1) bytes.push(239, 191, 189);
+            leadSurrogate = codePoint;
+            continue;
+          }
+          codePoint = (leadSurrogate - 55296 << 10 | codePoint - 56320) + 65536;
+        } else if (leadSurrogate) {
+          if ((units -= 3) > -1) bytes.push(239, 191, 189);
+        }
+        leadSurrogate = null;
+        if (codePoint < 128) {
+          if ((units -= 1) < 0) break;
+          bytes.push(codePoint);
+        } else if (codePoint < 2048) {
+          if ((units -= 2) < 0) break;
+          bytes.push(
+            codePoint >> 6 | 192,
+            codePoint & 63 | 128
+          );
+        } else if (codePoint < 65536) {
+          if ((units -= 3) < 0) break;
+          bytes.push(
+            codePoint >> 12 | 224,
+            codePoint >> 6 & 63 | 128,
+            codePoint & 63 | 128
+          );
+        } else if (codePoint < 1114112) {
+          if ((units -= 4) < 0) break;
+          bytes.push(
+            codePoint >> 18 | 240,
+            codePoint >> 12 & 63 | 128,
+            codePoint >> 6 & 63 | 128,
+            codePoint & 63 | 128
+          );
+        } else {
+          throw new Error("Invalid code point");
+        }
+      }
+      return bytes;
+    }
+    function asciiToBytes(str) {
+      const byteArray = [];
+      for (let i = 0; i < str.length; ++i) {
+        byteArray.push(str.charCodeAt(i) & 255);
+      }
+      return byteArray;
+    }
+    function utf16leToBytes(str, units) {
+      let c, hi, lo;
+      const byteArray = [];
+      for (let i = 0; i < str.length; ++i) {
+        if ((units -= 2) < 0) break;
+        c = str.charCodeAt(i);
+        hi = c >> 8;
+        lo = c % 256;
+        byteArray.push(lo);
+        byteArray.push(hi);
+      }
+      return byteArray;
+    }
+    function base64ToBytes(str) {
+      return base64.toByteArray(base64clean(str));
+    }
+    function blitBuffer(src, dst, offset, length) {
+      let i;
+      for (i = 0; i < length; ++i) {
+        if (i + offset >= dst.length || i >= src.length) break;
+        dst[i + offset] = src[i];
+      }
+      return i;
+    }
+    function isInstance(obj, type) {
+      return obj instanceof type || obj != null && obj.constructor != null && obj.constructor.name != null && obj.constructor.name === type.name;
+    }
+    function numberIsNaN(obj) {
+      return obj !== obj;
+    }
+    var hexSliceLookupTable = (function() {
+      const alphabet = "0123456789abcdef";
+      const table = new Array(256);
+      for (let i = 0; i < 16; ++i) {
+        const i16 = i * 16;
+        for (let j = 0; j < 16; ++j) {
+          table[i16 + j] = alphabet[i] + alphabet[j];
+        }
+      }
+      return table;
+    })();
+    function defineBigIntMethod(fn) {
+      return typeof BigInt === "undefined" ? BufferBigIntNotDefined : fn;
+    }
+    function BufferBigIntNotDefined() {
+      throw new Error("BigInt not supported");
+    }
+  }
+});
+
+// node_modules/process/browser.js
+var require_browser = __commonJS({
+  "node_modules/process/browser.js"(exports, module) {
+    init_globals();
+    var process4 = module.exports = {};
+    var cachedSetTimeout;
+    var cachedClearTimeout;
+    function defaultSetTimout() {
+      throw new Error("setTimeout has not been defined");
+    }
+    function defaultClearTimeout() {
+      throw new Error("clearTimeout has not been defined");
+    }
+    (function() {
+      try {
+        if (typeof setTimeout === "function") {
+          cachedSetTimeout = setTimeout;
+        } else {
+          cachedSetTimeout = defaultSetTimout;
+        }
+      } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+      }
+      try {
+        if (typeof clearTimeout === "function") {
+          cachedClearTimeout = clearTimeout;
+        } else {
+          cachedClearTimeout = defaultClearTimeout;
+        }
+      } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+      }
+    })();
+    function runTimeout(fun) {
+      if (cachedSetTimeout === setTimeout) {
+        return setTimeout(fun, 0);
+      }
+      if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+      }
+      try {
+        return cachedSetTimeout(fun, 0);
+      } catch (e) {
+        try {
+          return cachedSetTimeout.call(null, fun, 0);
+        } catch (e2) {
+          return cachedSetTimeout.call(this, fun, 0);
+        }
+      }
+    }
+    function runClearTimeout(marker) {
+      if (cachedClearTimeout === clearTimeout) {
+        return clearTimeout(marker);
+      }
+      if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+      }
+      try {
+        return cachedClearTimeout(marker);
+      } catch (e) {
+        try {
+          return cachedClearTimeout.call(null, marker);
+        } catch (e2) {
+          return cachedClearTimeout.call(this, marker);
+        }
+      }
+    }
+    var queue = [];
+    var draining = false;
+    var currentQueue;
+    var queueIndex = -1;
+    function cleanUpNextTick() {
+      if (!draining || !currentQueue) {
+        return;
+      }
+      draining = false;
+      if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+      } else {
+        queueIndex = -1;
+      }
+      if (queue.length) {
+        drainQueue();
+      }
+    }
+    function drainQueue() {
+      if (draining) {
+        return;
+      }
+      var timeout = runTimeout(cleanUpNextTick);
+      draining = true;
+      var len = queue.length;
+      while (len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+          if (currentQueue) {
+            currentQueue[queueIndex].run();
+          }
+        }
+        queueIndex = -1;
+        len = queue.length;
+      }
+      currentQueue = null;
+      draining = false;
+      runClearTimeout(timeout);
+    }
+    process4.nextTick = function(fun) {
+      var args = new Array(arguments.length - 1);
+      if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+          args[i - 1] = arguments[i];
+        }
+      }
+      queue.push(new Item(fun, args));
+      if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+      }
+    };
+    function Item(fun, array) {
+      this.fun = fun;
+      this.array = array;
+    }
+    Item.prototype.run = function() {
+      this.fun.apply(null, this.array);
+    };
+    process4.title = "browser";
+    process4.browser = true;
+    process4.env = {};
+    process4.argv = [];
+    process4.version = "";
+    process4.versions = {};
+    function noop() {
+    }
+    process4.on = noop;
+    process4.addListener = noop;
+    process4.once = noop;
+    process4.off = noop;
+    process4.removeListener = noop;
+    process4.removeAllListeners = noop;
+    process4.emit = noop;
+    process4.prependListener = noop;
+    process4.prependOnceListener = noop;
+    process4.listeners = function(name) {
+      return [];
+    };
+    process4.binding = function(name) {
+      throw new Error("process.binding is not supported");
+    };
+    process4.cwd = function() {
+      return "/";
+    };
+    process4.chdir = function(dir) {
+      throw new Error("process.chdir is not supported");
+    };
+    process4.umask = function() {
+      return 0;
+    };
+  }
+});
+
+// src/encoder/shims/globals.js
+var import_buffer, import_browser;
+var init_globals = __esm({
+  "src/encoder/shims/globals.js"() {
+    import_buffer = __toESM(require_buffer());
+    import_browser = __toESM(require_browser());
+    globalThis.Buffer = globalThis.Buffer || import_buffer.Buffer;
+    globalThis.process = globalThis.process || import_browser.default;
+  }
+});
 
 // node_modules/has-symbols/shams.js
 var require_shams = __commonJS({
   "node_modules/has-symbols/shams.js"(exports, module) {
+    init_globals();
     module.exports = function hasSymbols() {
       if (typeof Symbol !== "function" || typeof Object.getOwnPropertySymbols !== "function") {
         return false;
@@ -160,6 +2134,7 @@ var require_shams = __commonJS({
 // node_modules/has-tostringtag/shams.js
 var require_shams2 = __commonJS({
   "node_modules/has-tostringtag/shams.js"(exports, module) {
+    init_globals();
     var hasSymbols = require_shams();
     module.exports = function hasToStringTagShams() {
       return hasSymbols() && !!Symbol.toStringTag;
@@ -170,6 +2145,7 @@ var require_shams2 = __commonJS({
 // node_modules/es-object-atoms/index.js
 var require_es_object_atoms = __commonJS({
   "node_modules/es-object-atoms/index.js"(exports, module) {
+    init_globals();
     module.exports = Object;
   }
 });
@@ -177,6 +2153,7 @@ var require_es_object_atoms = __commonJS({
 // node_modules/es-errors/index.js
 var require_es_errors = __commonJS({
   "node_modules/es-errors/index.js"(exports, module) {
+    init_globals();
     module.exports = Error;
   }
 });
@@ -184,6 +2161,7 @@ var require_es_errors = __commonJS({
 // node_modules/es-errors/eval.js
 var require_eval = __commonJS({
   "node_modules/es-errors/eval.js"(exports, module) {
+    init_globals();
     module.exports = EvalError;
   }
 });
@@ -191,6 +2169,7 @@ var require_eval = __commonJS({
 // node_modules/es-errors/range.js
 var require_range = __commonJS({
   "node_modules/es-errors/range.js"(exports, module) {
+    init_globals();
     module.exports = RangeError;
   }
 });
@@ -198,6 +2177,7 @@ var require_range = __commonJS({
 // node_modules/es-errors/ref.js
 var require_ref = __commonJS({
   "node_modules/es-errors/ref.js"(exports, module) {
+    init_globals();
     module.exports = ReferenceError;
   }
 });
@@ -205,6 +2185,7 @@ var require_ref = __commonJS({
 // node_modules/es-errors/syntax.js
 var require_syntax = __commonJS({
   "node_modules/es-errors/syntax.js"(exports, module) {
+    init_globals();
     module.exports = SyntaxError;
   }
 });
@@ -212,6 +2193,7 @@ var require_syntax = __commonJS({
 // node_modules/es-errors/type.js
 var require_type = __commonJS({
   "node_modules/es-errors/type.js"(exports, module) {
+    init_globals();
     module.exports = TypeError;
   }
 });
@@ -219,6 +2201,7 @@ var require_type = __commonJS({
 // node_modules/es-errors/uri.js
 var require_uri = __commonJS({
   "node_modules/es-errors/uri.js"(exports, module) {
+    init_globals();
     module.exports = URIError;
   }
 });
@@ -226,6 +2209,7 @@ var require_uri = __commonJS({
 // node_modules/math-intrinsics/abs.js
 var require_abs = __commonJS({
   "node_modules/math-intrinsics/abs.js"(exports, module) {
+    init_globals();
     module.exports = Math.abs;
   }
 });
@@ -233,6 +2217,7 @@ var require_abs = __commonJS({
 // node_modules/math-intrinsics/floor.js
 var require_floor = __commonJS({
   "node_modules/math-intrinsics/floor.js"(exports, module) {
+    init_globals();
     module.exports = Math.floor;
   }
 });
@@ -240,6 +2225,7 @@ var require_floor = __commonJS({
 // node_modules/math-intrinsics/max.js
 var require_max = __commonJS({
   "node_modules/math-intrinsics/max.js"(exports, module) {
+    init_globals();
     module.exports = Math.max;
   }
 });
@@ -247,6 +2233,7 @@ var require_max = __commonJS({
 // node_modules/math-intrinsics/min.js
 var require_min = __commonJS({
   "node_modules/math-intrinsics/min.js"(exports, module) {
+    init_globals();
     module.exports = Math.min;
   }
 });
@@ -254,6 +2241,7 @@ var require_min = __commonJS({
 // node_modules/math-intrinsics/pow.js
 var require_pow = __commonJS({
   "node_modules/math-intrinsics/pow.js"(exports, module) {
+    init_globals();
     module.exports = Math.pow;
   }
 });
@@ -261,6 +2249,7 @@ var require_pow = __commonJS({
 // node_modules/math-intrinsics/round.js
 var require_round = __commonJS({
   "node_modules/math-intrinsics/round.js"(exports, module) {
+    init_globals();
     module.exports = Math.round;
   }
 });
@@ -268,6 +2257,7 @@ var require_round = __commonJS({
 // node_modules/math-intrinsics/isNaN.js
 var require_isNaN = __commonJS({
   "node_modules/math-intrinsics/isNaN.js"(exports, module) {
+    init_globals();
     module.exports = Number.isNaN || function isNaN2(a) {
       return a !== a;
     };
@@ -277,6 +2267,7 @@ var require_isNaN = __commonJS({
 // node_modules/math-intrinsics/sign.js
 var require_sign = __commonJS({
   "node_modules/math-intrinsics/sign.js"(exports, module) {
+    init_globals();
     var $isNaN = require_isNaN();
     module.exports = function sign(number) {
       if ($isNaN(number) || number === 0) {
@@ -290,6 +2281,7 @@ var require_sign = __commonJS({
 // node_modules/gopd/gOPD.js
 var require_gOPD = __commonJS({
   "node_modules/gopd/gOPD.js"(exports, module) {
+    init_globals();
     module.exports = Object.getOwnPropertyDescriptor;
   }
 });
@@ -297,6 +2289,7 @@ var require_gOPD = __commonJS({
 // node_modules/gopd/index.js
 var require_gopd = __commonJS({
   "node_modules/gopd/index.js"(exports, module) {
+    init_globals();
     var $gOPD = require_gOPD();
     if ($gOPD) {
       try {
@@ -312,6 +2305,7 @@ var require_gopd = __commonJS({
 // node_modules/es-define-property/index.js
 var require_es_define_property = __commonJS({
   "node_modules/es-define-property/index.js"(exports, module) {
+    init_globals();
     var $defineProperty = Object.defineProperty || false;
     if ($defineProperty) {
       try {
@@ -327,6 +2321,7 @@ var require_es_define_property = __commonJS({
 // node_modules/has-symbols/index.js
 var require_has_symbols = __commonJS({
   "node_modules/has-symbols/index.js"(exports, module) {
+    init_globals();
     var origSymbol = typeof Symbol !== "undefined" && Symbol;
     var hasSymbolSham = require_shams();
     module.exports = function hasNativeSymbols() {
@@ -350,6 +2345,7 @@ var require_has_symbols = __commonJS({
 // node_modules/get-proto/Reflect.getPrototypeOf.js
 var require_Reflect_getPrototypeOf = __commonJS({
   "node_modules/get-proto/Reflect.getPrototypeOf.js"(exports, module) {
+    init_globals();
     module.exports = typeof Reflect !== "undefined" && Reflect.getPrototypeOf || null;
   }
 });
@@ -357,6 +2353,7 @@ var require_Reflect_getPrototypeOf = __commonJS({
 // node_modules/get-proto/Object.getPrototypeOf.js
 var require_Object_getPrototypeOf = __commonJS({
   "node_modules/get-proto/Object.getPrototypeOf.js"(exports, module) {
+    init_globals();
     var $Object = require_es_object_atoms();
     module.exports = $Object.getPrototypeOf || null;
   }
@@ -365,6 +2362,7 @@ var require_Object_getPrototypeOf = __commonJS({
 // node_modules/function-bind/implementation.js
 var require_implementation = __commonJS({
   "node_modules/function-bind/implementation.js"(exports, module) {
+    init_globals();
     var ERROR_MESSAGE = "Function.prototype.bind called on incompatible ";
     var toStr = Object.prototype.toString;
     var max = Math.max;
@@ -440,6 +2438,7 @@ var require_implementation = __commonJS({
 // node_modules/function-bind/index.js
 var require_function_bind = __commonJS({
   "node_modules/function-bind/index.js"(exports, module) {
+    init_globals();
     var implementation = require_implementation();
     module.exports = Function.prototype.bind || implementation;
   }
@@ -448,6 +2447,7 @@ var require_function_bind = __commonJS({
 // node_modules/call-bind-apply-helpers/functionCall.js
 var require_functionCall = __commonJS({
   "node_modules/call-bind-apply-helpers/functionCall.js"(exports, module) {
+    init_globals();
     module.exports = Function.prototype.call;
   }
 });
@@ -455,6 +2455,7 @@ var require_functionCall = __commonJS({
 // node_modules/call-bind-apply-helpers/functionApply.js
 var require_functionApply = __commonJS({
   "node_modules/call-bind-apply-helpers/functionApply.js"(exports, module) {
+    init_globals();
     module.exports = Function.prototype.apply;
   }
 });
@@ -462,6 +2463,7 @@ var require_functionApply = __commonJS({
 // node_modules/call-bind-apply-helpers/reflectApply.js
 var require_reflectApply = __commonJS({
   "node_modules/call-bind-apply-helpers/reflectApply.js"(exports, module) {
+    init_globals();
     module.exports = typeof Reflect !== "undefined" && Reflect && Reflect.apply;
   }
 });
@@ -469,6 +2471,7 @@ var require_reflectApply = __commonJS({
 // node_modules/call-bind-apply-helpers/actualApply.js
 var require_actualApply = __commonJS({
   "node_modules/call-bind-apply-helpers/actualApply.js"(exports, module) {
+    init_globals();
     var bind = require_function_bind();
     var $apply = require_functionApply();
     var $call = require_functionCall();
@@ -480,6 +2483,7 @@ var require_actualApply = __commonJS({
 // node_modules/call-bind-apply-helpers/index.js
 var require_call_bind_apply_helpers = __commonJS({
   "node_modules/call-bind-apply-helpers/index.js"(exports, module) {
+    init_globals();
     var bind = require_function_bind();
     var $TypeError = require_type();
     var $call = require_functionCall();
@@ -496,6 +2500,7 @@ var require_call_bind_apply_helpers = __commonJS({
 // node_modules/dunder-proto/get.js
 var require_get = __commonJS({
   "node_modules/dunder-proto/get.js"(exports, module) {
+    init_globals();
     var callBind = require_call_bind_apply_helpers();
     var gOPD = require_gopd();
     var hasProtoAccessor;
@@ -526,6 +2531,7 @@ var require_get = __commonJS({
 // node_modules/get-proto/index.js
 var require_get_proto = __commonJS({
   "node_modules/get-proto/index.js"(exports, module) {
+    init_globals();
     var reflectGetProto = require_Reflect_getPrototypeOf();
     var originalGetProto = require_Object_getPrototypeOf();
     var getDunderProto = require_get();
@@ -545,6 +2551,7 @@ var require_get_proto = __commonJS({
 // node_modules/hasown/index.js
 var require_hasown = __commonJS({
   "node_modules/hasown/index.js"(exports, module) {
+    init_globals();
     var call = Function.prototype.call;
     var $hasOwn = Object.prototype.hasOwnProperty;
     var bind = require_function_bind();
@@ -555,6 +2562,7 @@ var require_hasown = __commonJS({
 // node_modules/get-intrinsic/index.js
 var require_get_intrinsic = __commonJS({
   "node_modules/get-intrinsic/index.js"(exports, module) {
+    init_globals();
     var undefined2;
     var $Object = require_es_object_atoms();
     var $Error = require_es_errors();
@@ -885,6 +2893,7 @@ var require_get_intrinsic = __commonJS({
 // node_modules/call-bound/index.js
 var require_call_bound = __commonJS({
   "node_modules/call-bound/index.js"(exports, module) {
+    init_globals();
     var GetIntrinsic = require_get_intrinsic();
     var callBindBasic = require_call_bind_apply_helpers();
     var $indexOf = callBindBasic([GetIntrinsic("%String.prototype.indexOf%")]);
@@ -907,6 +2916,7 @@ var require_call_bound = __commonJS({
 // node_modules/is-arguments/index.js
 var require_is_arguments = __commonJS({
   "node_modules/is-arguments/index.js"(exports, module) {
+    init_globals();
     var hasToStringTag = require_shams2()();
     var callBound = require_call_bound();
     var $toString = callBound("Object.prototype.toString");
@@ -933,6 +2943,7 @@ var require_is_arguments = __commonJS({
 // node_modules/is-regex/index.js
 var require_is_regex = __commonJS({
   "node_modules/is-regex/index.js"(exports, module) {
+    init_globals();
     var callBound = require_call_bound();
     var hasToStringTag = require_shams2()();
     var hasOwn = require_hasown();
@@ -1001,6 +3012,7 @@ var require_is_regex = __commonJS({
 // node_modules/safe-regex-test/index.js
 var require_safe_regex_test = __commonJS({
   "node_modules/safe-regex-test/index.js"(exports, module) {
+    init_globals();
     var callBound = require_call_bound();
     var isRegex = require_is_regex();
     var $exec = callBound("RegExp.prototype.exec");
@@ -1019,6 +3031,7 @@ var require_safe_regex_test = __commonJS({
 // node_modules/generator-function/index.js
 var require_generator_function = __commonJS({
   "node_modules/generator-function/index.js"(exports, module) {
+    init_globals();
     var cached = (
       /** @type {GeneratorFunctionConstructor} */
       function* () {
@@ -1031,6 +3044,7 @@ var require_generator_function = __commonJS({
 // node_modules/is-generator-function/index.js
 var require_is_generator_function = __commonJS({
   "node_modules/is-generator-function/index.js"(exports, module) {
+    init_globals();
     var callBound = require_call_bound();
     var safeRegexTest = require_safe_regex_test();
     var isFnRegex = safeRegexTest(/^\s*(?:function)?\*/);
@@ -1062,6 +3076,7 @@ var require_is_generator_function = __commonJS({
 // node_modules/is-callable/index.js
 var require_is_callable = __commonJS({
   "node_modules/is-callable/index.js"(exports, module) {
+    init_globals();
     var fnToStr = Function.prototype.toString;
     var reflectApply = typeof Reflect === "object" && Reflect !== null && Reflect.apply;
     var badArrayLike;
@@ -1179,6 +3194,7 @@ var require_is_callable = __commonJS({
 // node_modules/for-each/index.js
 var require_for_each = __commonJS({
   "node_modules/for-each/index.js"(exports, module) {
+    init_globals();
     var isCallable = require_is_callable();
     var toStr = Object.prototype.toString;
     var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -1238,6 +3254,7 @@ var require_for_each = __commonJS({
 // node_modules/possible-typed-array-names/index.js
 var require_possible_typed_array_names = __commonJS({
   "node_modules/possible-typed-array-names/index.js"(exports, module) {
+    init_globals();
     module.exports = [
       "Float16Array",
       "Float32Array",
@@ -1258,6 +3275,7 @@ var require_possible_typed_array_names = __commonJS({
 // node_modules/available-typed-arrays/index.js
 var require_available_typed_arrays = __commonJS({
   "node_modules/available-typed-arrays/index.js"(exports, module) {
+    init_globals();
     var possibleNames = require_possible_typed_array_names();
     var g = typeof globalThis === "undefined" ? global : globalThis;
     module.exports = function availableTypedArrays() {
@@ -1275,6 +3293,7 @@ var require_available_typed_arrays = __commonJS({
 // node_modules/define-data-property/index.js
 var require_define_data_property = __commonJS({
   "node_modules/define-data-property/index.js"(exports, module) {
+    init_globals();
     var $defineProperty = require_es_define_property();
     var $SyntaxError = require_syntax();
     var $TypeError = require_type();
@@ -1322,6 +3341,7 @@ var require_define_data_property = __commonJS({
 // node_modules/has-property-descriptors/index.js
 var require_has_property_descriptors = __commonJS({
   "node_modules/has-property-descriptors/index.js"(exports, module) {
+    init_globals();
     var $defineProperty = require_es_define_property();
     var hasPropertyDescriptors = function hasPropertyDescriptors2() {
       return !!$defineProperty;
@@ -1343,6 +3363,7 @@ var require_has_property_descriptors = __commonJS({
 // node_modules/set-function-length/index.js
 var require_set_function_length = __commonJS({
   "node_modules/set-function-length/index.js"(exports, module) {
+    init_globals();
     var GetIntrinsic = require_get_intrinsic();
     var define2 = require_define_data_property();
     var hasDescriptors = require_has_property_descriptors()();
@@ -1395,6 +3416,7 @@ var require_set_function_length = __commonJS({
 // node_modules/call-bind-apply-helpers/applyBind.js
 var require_applyBind = __commonJS({
   "node_modules/call-bind-apply-helpers/applyBind.js"(exports, module) {
+    init_globals();
     var bind = require_function_bind();
     var $apply = require_functionApply();
     var actualApply = require_actualApply();
@@ -1407,6 +3429,7 @@ var require_applyBind = __commonJS({
 // node_modules/call-bind/index.js
 var require_call_bind = __commonJS({
   "node_modules/call-bind/index.js"(exports, module) {
+    init_globals();
     var setFunctionLength = require_set_function_length();
     var $defineProperty = require_es_define_property();
     var callBindBasic = require_call_bind_apply_helpers();
@@ -1431,6 +3454,7 @@ var require_call_bind = __commonJS({
 // node_modules/which-typed-array/index.js
 var require_which_typed_array = __commonJS({
   "node_modules/which-typed-array/index.js"(exports, module) {
+    init_globals();
     var forEach = require_for_each();
     var availableTypedArrays = require_available_typed_arrays();
     var callBind = require_call_bind();
@@ -1551,6 +3575,7 @@ var require_which_typed_array = __commonJS({
 // node_modules/is-typed-array/index.js
 var require_is_typed_array = __commonJS({
   "node_modules/is-typed-array/index.js"(exports, module) {
+    init_globals();
     var whichTypedArray = require_which_typed_array();
     module.exports = function isTypedArray(value) {
       return !!whichTypedArray(value);
@@ -1561,6 +3586,7 @@ var require_is_typed_array = __commonJS({
 // node_modules/util/support/types.js
 var require_types = __commonJS({
   "node_modules/util/support/types.js"(exports) {
+    init_globals();
     var isArgumentsObject = require_is_arguments();
     var isGeneratorFunction = require_is_generator_function();
     var whichTypedArray = require_which_typed_array();
@@ -1790,6 +3816,7 @@ var require_types = __commonJS({
 // node_modules/util/support/isBufferBrowser.js
 var require_isBufferBrowser = __commonJS({
   "node_modules/util/support/isBufferBrowser.js"(exports, module) {
+    init_globals();
     module.exports = function isBuffer(arg) {
       return arg && typeof arg === "object" && typeof arg.copy === "function" && typeof arg.fill === "function" && typeof arg.readUInt8 === "function";
     };
@@ -1799,6 +3826,7 @@ var require_isBufferBrowser = __commonJS({
 // node_modules/inherits/inherits_browser.js
 var require_inherits_browser = __commonJS({
   "node_modules/inherits/inherits_browser.js"(exports, module) {
+    init_globals();
     if (typeof Object.create === "function") {
       module.exports = function inherits(ctor, superCtor) {
         if (superCtor) {
@@ -1831,6 +3859,7 @@ var require_inherits_browser = __commonJS({
 // node_modules/util/util.js
 var require_util = __commonJS({
   "node_modules/util/util.js"(exports) {
+    init_globals();
     var getOwnPropertyDescriptors = Object.getOwnPropertyDescriptors || function getOwnPropertyDescriptors2(obj) {
       var keys = Object.keys(obj);
       var descriptors = {};
@@ -1879,10 +3908,10 @@ var require_util = __commonJS({
       return str;
     };
     exports.deprecate = function(fn, msg) {
-      if (typeof process !== "undefined" && process.noDeprecation === true) {
+      if (typeof globalThis.process !== "undefined" && globalThis.process.noDeprecation === true) {
         return fn;
       }
-      if (typeof process === "undefined") {
+      if (typeof globalThis.process === "undefined") {
         return function() {
           return exports.deprecate(fn, msg).apply(this, arguments);
         };
@@ -1890,9 +3919,9 @@ var require_util = __commonJS({
       var warned = false;
       function deprecated() {
         if (!warned) {
-          if (process.throwDeprecation) {
+          if (globalThis.process.throwDeprecation) {
             throw new Error(msg);
-          } else if (process.traceDeprecation) {
+          } else if (globalThis.process.traceDeprecation) {
             console.trace(msg);
           } else {
             console.error(msg);
@@ -1909,7 +3938,7 @@ var require_util = __commonJS({
       set = set.toUpperCase();
       if (!debugs[set]) {
         if (debugEnvRegex.test(set)) {
-          var pid = process.pid;
+          var pid = globalThis.process.pid;
           debugs[set] = function() {
             var msg = exports.format.apply(exports, arguments);
             console.error("%s %d: %s", set, pid, msg);
@@ -2361,10 +4390,10 @@ var require_util = __commonJS({
         };
         original.apply(this, args).then(
           function(ret) {
-            process.nextTick(cb.bind(null, null, ret));
+            globalThis.process.nextTick(cb.bind(null, null, ret));
           },
           function(rej) {
-            process.nextTick(callbackifyOnRejected.bind(null, rej, cb));
+            globalThis.process.nextTick(callbackifyOnRejected.bind(null, rej, cb));
           }
         );
       }
@@ -2382,6 +4411,7 @@ var require_util = __commonJS({
 // node_modules/events/events.js
 var require_events = __commonJS({
   "node_modules/events/events.js"(exports, module) {
+    init_globals();
     var R = typeof Reflect === "object" ? Reflect : null;
     var ReflectApply = R && typeof R.apply === "function" ? R.apply : function ReflectApply2(target, receiver, args) {
       return Function.prototype.apply.call(target, receiver, args);
@@ -2749,1785 +4779,15 @@ var require_events = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/stream-browser.js
 var require_stream_browser = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/stream-browser.js"(exports, module) {
+    init_globals();
     module.exports = require_events().EventEmitter;
-  }
-});
-
-// node_modules/base64-js/index.js
-var require_base64_js = __commonJS({
-  "node_modules/base64-js/index.js"(exports) {
-    exports.byteLength = byteLength;
-    exports.toByteArray = toByteArray;
-    exports.fromByteArray = fromByteArray;
-    var lookup = [];
-    var revLookup = [];
-    var Arr = typeof Uint8Array !== "undefined" ? Uint8Array : Array;
-    var code = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    for (i = 0, len = code.length; i < len; ++i) {
-      lookup[i] = code[i];
-      revLookup[code.charCodeAt(i)] = i;
-    }
-    var i;
-    var len;
-    revLookup["-".charCodeAt(0)] = 62;
-    revLookup["_".charCodeAt(0)] = 63;
-    function getLens(b64) {
-      var len2 = b64.length;
-      if (len2 % 4 > 0) {
-        throw new Error("Invalid string. Length must be a multiple of 4");
-      }
-      var validLen = b64.indexOf("=");
-      if (validLen === -1) validLen = len2;
-      var placeHoldersLen = validLen === len2 ? 0 : 4 - validLen % 4;
-      return [validLen, placeHoldersLen];
-    }
-    function byteLength(b64) {
-      var lens = getLens(b64);
-      var validLen = lens[0];
-      var placeHoldersLen = lens[1];
-      return (validLen + placeHoldersLen) * 3 / 4 - placeHoldersLen;
-    }
-    function _byteLength(b64, validLen, placeHoldersLen) {
-      return (validLen + placeHoldersLen) * 3 / 4 - placeHoldersLen;
-    }
-    function toByteArray(b64) {
-      var tmp;
-      var lens = getLens(b64);
-      var validLen = lens[0];
-      var placeHoldersLen = lens[1];
-      var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen));
-      var curByte = 0;
-      var len2 = placeHoldersLen > 0 ? validLen - 4 : validLen;
-      var i2;
-      for (i2 = 0; i2 < len2; i2 += 4) {
-        tmp = revLookup[b64.charCodeAt(i2)] << 18 | revLookup[b64.charCodeAt(i2 + 1)] << 12 | revLookup[b64.charCodeAt(i2 + 2)] << 6 | revLookup[b64.charCodeAt(i2 + 3)];
-        arr[curByte++] = tmp >> 16 & 255;
-        arr[curByte++] = tmp >> 8 & 255;
-        arr[curByte++] = tmp & 255;
-      }
-      if (placeHoldersLen === 2) {
-        tmp = revLookup[b64.charCodeAt(i2)] << 2 | revLookup[b64.charCodeAt(i2 + 1)] >> 4;
-        arr[curByte++] = tmp & 255;
-      }
-      if (placeHoldersLen === 1) {
-        tmp = revLookup[b64.charCodeAt(i2)] << 10 | revLookup[b64.charCodeAt(i2 + 1)] << 4 | revLookup[b64.charCodeAt(i2 + 2)] >> 2;
-        arr[curByte++] = tmp >> 8 & 255;
-        arr[curByte++] = tmp & 255;
-      }
-      return arr;
-    }
-    function tripletToBase64(num) {
-      return lookup[num >> 18 & 63] + lookup[num >> 12 & 63] + lookup[num >> 6 & 63] + lookup[num & 63];
-    }
-    function encodeChunk(uint8, start, end) {
-      var tmp;
-      var output = [];
-      for (var i2 = start; i2 < end; i2 += 3) {
-        tmp = (uint8[i2] << 16 & 16711680) + (uint8[i2 + 1] << 8 & 65280) + (uint8[i2 + 2] & 255);
-        output.push(tripletToBase64(tmp));
-      }
-      return output.join("");
-    }
-    function fromByteArray(uint8) {
-      var tmp;
-      var len2 = uint8.length;
-      var extraBytes = len2 % 3;
-      var parts = [];
-      var maxChunkLength = 16383;
-      for (var i2 = 0, len22 = len2 - extraBytes; i2 < len22; i2 += maxChunkLength) {
-        parts.push(encodeChunk(uint8, i2, i2 + maxChunkLength > len22 ? len22 : i2 + maxChunkLength));
-      }
-      if (extraBytes === 1) {
-        tmp = uint8[len2 - 1];
-        parts.push(
-          lookup[tmp >> 2] + lookup[tmp << 4 & 63] + "=="
-        );
-      } else if (extraBytes === 2) {
-        tmp = (uint8[len2 - 2] << 8) + uint8[len2 - 1];
-        parts.push(
-          lookup[tmp >> 10] + lookup[tmp >> 4 & 63] + lookup[tmp << 2 & 63] + "="
-        );
-      }
-      return parts.join("");
-    }
-  }
-});
-
-// node_modules/ieee754/index.js
-var require_ieee754 = __commonJS({
-  "node_modules/ieee754/index.js"(exports) {
-    exports.read = function(buffer, offset, isLE, mLen, nBytes) {
-      var e, m;
-      var eLen = nBytes * 8 - mLen - 1;
-      var eMax = (1 << eLen) - 1;
-      var eBias = eMax >> 1;
-      var nBits = -7;
-      var i = isLE ? nBytes - 1 : 0;
-      var d = isLE ? -1 : 1;
-      var s = buffer[offset + i];
-      i += d;
-      e = s & (1 << -nBits) - 1;
-      s >>= -nBits;
-      nBits += eLen;
-      for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {
-      }
-      m = e & (1 << -nBits) - 1;
-      e >>= -nBits;
-      nBits += mLen;
-      for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {
-      }
-      if (e === 0) {
-        e = 1 - eBias;
-      } else if (e === eMax) {
-        return m ? NaN : (s ? -1 : 1) * Infinity;
-      } else {
-        m = m + Math.pow(2, mLen);
-        e = e - eBias;
-      }
-      return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
-    };
-    exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
-      var e, m, c;
-      var eLen = nBytes * 8 - mLen - 1;
-      var eMax = (1 << eLen) - 1;
-      var eBias = eMax >> 1;
-      var rt = mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0;
-      var i = isLE ? 0 : nBytes - 1;
-      var d = isLE ? 1 : -1;
-      var s = value < 0 || value === 0 && 1 / value < 0 ? 1 : 0;
-      value = Math.abs(value);
-      if (isNaN(value) || value === Infinity) {
-        m = isNaN(value) ? 1 : 0;
-        e = eMax;
-      } else {
-        e = Math.floor(Math.log(value) / Math.LN2);
-        if (value * (c = Math.pow(2, -e)) < 1) {
-          e--;
-          c *= 2;
-        }
-        if (e + eBias >= 1) {
-          value += rt / c;
-        } else {
-          value += rt * Math.pow(2, 1 - eBias);
-        }
-        if (value * c >= 2) {
-          e++;
-          c /= 2;
-        }
-        if (e + eBias >= eMax) {
-          m = 0;
-          e = eMax;
-        } else if (e + eBias >= 1) {
-          m = (value * c - 1) * Math.pow(2, mLen);
-          e = e + eBias;
-        } else {
-          m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
-          e = 0;
-        }
-      }
-      for (; mLen >= 8; buffer[offset + i] = m & 255, i += d, m /= 256, mLen -= 8) {
-      }
-      e = e << mLen | m;
-      eLen += mLen;
-      for (; eLen > 0; buffer[offset + i] = e & 255, i += d, e /= 256, eLen -= 8) {
-      }
-      buffer[offset + i - d] |= s * 128;
-    };
-  }
-});
-
-// node_modules/buffer/index.js
-var require_buffer = __commonJS({
-  "node_modules/buffer/index.js"(exports) {
-    var base64 = require_base64_js();
-    var ieee754 = require_ieee754();
-    var customInspectSymbol = typeof Symbol === "function" && typeof Symbol["for"] === "function" ? Symbol["for"]("nodejs.util.inspect.custom") : null;
-    exports.Buffer = Buffer2;
-    exports.SlowBuffer = SlowBuffer;
-    exports.INSPECT_MAX_BYTES = 50;
-    var K_MAX_LENGTH = 2147483647;
-    exports.kMaxLength = K_MAX_LENGTH;
-    Buffer2.TYPED_ARRAY_SUPPORT = typedArraySupport();
-    if (!Buffer2.TYPED_ARRAY_SUPPORT && typeof console !== "undefined" && typeof console.error === "function") {
-      console.error(
-        "This browser lacks typed array (Uint8Array) support which is required by `buffer` v5.x. Use `buffer` v4.x if you require old browser support."
-      );
-    }
-    function typedArraySupport() {
-      try {
-        const arr = new Uint8Array(1);
-        const proto = { foo: function() {
-          return 42;
-        } };
-        Object.setPrototypeOf(proto, Uint8Array.prototype);
-        Object.setPrototypeOf(arr, proto);
-        return arr.foo() === 42;
-      } catch (e) {
-        return false;
-      }
-    }
-    Object.defineProperty(Buffer2.prototype, "parent", {
-      enumerable: true,
-      get: function() {
-        if (!Buffer2.isBuffer(this)) return void 0;
-        return this.buffer;
-      }
-    });
-    Object.defineProperty(Buffer2.prototype, "offset", {
-      enumerable: true,
-      get: function() {
-        if (!Buffer2.isBuffer(this)) return void 0;
-        return this.byteOffset;
-      }
-    });
-    function createBuffer(length) {
-      if (length > K_MAX_LENGTH) {
-        throw new RangeError('The value "' + length + '" is invalid for option "size"');
-      }
-      const buf = new Uint8Array(length);
-      Object.setPrototypeOf(buf, Buffer2.prototype);
-      return buf;
-    }
-    function Buffer2(arg, encodingOrOffset, length) {
-      if (typeof arg === "number") {
-        if (typeof encodingOrOffset === "string") {
-          throw new TypeError(
-            'The "string" argument must be of type string. Received type number'
-          );
-        }
-        return allocUnsafe(arg);
-      }
-      return from(arg, encodingOrOffset, length);
-    }
-    Buffer2.poolSize = 8192;
-    function from(value, encodingOrOffset, length) {
-      if (typeof value === "string") {
-        return fromString(value, encodingOrOffset);
-      }
-      if (ArrayBuffer.isView(value)) {
-        return fromArrayView(value);
-      }
-      if (value == null) {
-        throw new TypeError(
-          "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received type " + typeof value
-        );
-      }
-      if (isInstance(value, ArrayBuffer) || value && isInstance(value.buffer, ArrayBuffer)) {
-        return fromArrayBuffer(value, encodingOrOffset, length);
-      }
-      if (typeof SharedArrayBuffer !== "undefined" && (isInstance(value, SharedArrayBuffer) || value && isInstance(value.buffer, SharedArrayBuffer))) {
-        return fromArrayBuffer(value, encodingOrOffset, length);
-      }
-      if (typeof value === "number") {
-        throw new TypeError(
-          'The "value" argument must not be of type number. Received type number'
-        );
-      }
-      const valueOf = value.valueOf && value.valueOf();
-      if (valueOf != null && valueOf !== value) {
-        return Buffer2.from(valueOf, encodingOrOffset, length);
-      }
-      const b = fromObject(value);
-      if (b) return b;
-      if (typeof Symbol !== "undefined" && Symbol.toPrimitive != null && typeof value[Symbol.toPrimitive] === "function") {
-        return Buffer2.from(value[Symbol.toPrimitive]("string"), encodingOrOffset, length);
-      }
-      throw new TypeError(
-        "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received type " + typeof value
-      );
-    }
-    Buffer2.from = function(value, encodingOrOffset, length) {
-      return from(value, encodingOrOffset, length);
-    };
-    Object.setPrototypeOf(Buffer2.prototype, Uint8Array.prototype);
-    Object.setPrototypeOf(Buffer2, Uint8Array);
-    function assertSize(size) {
-      if (typeof size !== "number") {
-        throw new TypeError('"size" argument must be of type number');
-      } else if (size < 0) {
-        throw new RangeError('The value "' + size + '" is invalid for option "size"');
-      }
-    }
-    function alloc(size, fill, encoding) {
-      assertSize(size);
-      if (size <= 0) {
-        return createBuffer(size);
-      }
-      if (fill !== void 0) {
-        return typeof encoding === "string" ? createBuffer(size).fill(fill, encoding) : createBuffer(size).fill(fill);
-      }
-      return createBuffer(size);
-    }
-    Buffer2.alloc = function(size, fill, encoding) {
-      return alloc(size, fill, encoding);
-    };
-    function allocUnsafe(size) {
-      assertSize(size);
-      return createBuffer(size < 0 ? 0 : checked(size) | 0);
-    }
-    Buffer2.allocUnsafe = function(size) {
-      return allocUnsafe(size);
-    };
-    Buffer2.allocUnsafeSlow = function(size) {
-      return allocUnsafe(size);
-    };
-    function fromString(string, encoding) {
-      if (typeof encoding !== "string" || encoding === "") {
-        encoding = "utf8";
-      }
-      if (!Buffer2.isEncoding(encoding)) {
-        throw new TypeError("Unknown encoding: " + encoding);
-      }
-      const length = byteLength(string, encoding) | 0;
-      let buf = createBuffer(length);
-      const actual = buf.write(string, encoding);
-      if (actual !== length) {
-        buf = buf.slice(0, actual);
-      }
-      return buf;
-    }
-    function fromArrayLike(array) {
-      const length = array.length < 0 ? 0 : checked(array.length) | 0;
-      const buf = createBuffer(length);
-      for (let i = 0; i < length; i += 1) {
-        buf[i] = array[i] & 255;
-      }
-      return buf;
-    }
-    function fromArrayView(arrayView) {
-      if (isInstance(arrayView, Uint8Array)) {
-        const copy = new Uint8Array(arrayView);
-        return fromArrayBuffer(copy.buffer, copy.byteOffset, copy.byteLength);
-      }
-      return fromArrayLike(arrayView);
-    }
-    function fromArrayBuffer(array, byteOffset, length) {
-      if (byteOffset < 0 || array.byteLength < byteOffset) {
-        throw new RangeError('"offset" is outside of buffer bounds');
-      }
-      if (array.byteLength < byteOffset + (length || 0)) {
-        throw new RangeError('"length" is outside of buffer bounds');
-      }
-      let buf;
-      if (byteOffset === void 0 && length === void 0) {
-        buf = new Uint8Array(array);
-      } else if (length === void 0) {
-        buf = new Uint8Array(array, byteOffset);
-      } else {
-        buf = new Uint8Array(array, byteOffset, length);
-      }
-      Object.setPrototypeOf(buf, Buffer2.prototype);
-      return buf;
-    }
-    function fromObject(obj) {
-      if (Buffer2.isBuffer(obj)) {
-        const len = checked(obj.length) | 0;
-        const buf = createBuffer(len);
-        if (buf.length === 0) {
-          return buf;
-        }
-        obj.copy(buf, 0, 0, len);
-        return buf;
-      }
-      if (obj.length !== void 0) {
-        if (typeof obj.length !== "number" || numberIsNaN(obj.length)) {
-          return createBuffer(0);
-        }
-        return fromArrayLike(obj);
-      }
-      if (obj.type === "Buffer" && Array.isArray(obj.data)) {
-        return fromArrayLike(obj.data);
-      }
-    }
-    function checked(length) {
-      if (length >= K_MAX_LENGTH) {
-        throw new RangeError("Attempt to allocate Buffer larger than maximum size: 0x" + K_MAX_LENGTH.toString(16) + " bytes");
-      }
-      return length | 0;
-    }
-    function SlowBuffer(length) {
-      if (+length != length) {
-        length = 0;
-      }
-      return Buffer2.alloc(+length);
-    }
-    Buffer2.isBuffer = function isBuffer(b) {
-      return b != null && b._isBuffer === true && b !== Buffer2.prototype;
-    };
-    Buffer2.compare = function compare(a, b) {
-      if (isInstance(a, Uint8Array)) a = Buffer2.from(a, a.offset, a.byteLength);
-      if (isInstance(b, Uint8Array)) b = Buffer2.from(b, b.offset, b.byteLength);
-      if (!Buffer2.isBuffer(a) || !Buffer2.isBuffer(b)) {
-        throw new TypeError(
-          'The "buf1", "buf2" arguments must be one of type Buffer or Uint8Array'
-        );
-      }
-      if (a === b) return 0;
-      let x = a.length;
-      let y = b.length;
-      for (let i = 0, len = Math.min(x, y); i < len; ++i) {
-        if (a[i] !== b[i]) {
-          x = a[i];
-          y = b[i];
-          break;
-        }
-      }
-      if (x < y) return -1;
-      if (y < x) return 1;
-      return 0;
-    };
-    Buffer2.isEncoding = function isEncoding(encoding) {
-      switch (String(encoding).toLowerCase()) {
-        case "hex":
-        case "utf8":
-        case "utf-8":
-        case "ascii":
-        case "latin1":
-        case "binary":
-        case "base64":
-        case "ucs2":
-        case "ucs-2":
-        case "utf16le":
-        case "utf-16le":
-          return true;
-        default:
-          return false;
-      }
-    };
-    Buffer2.concat = function concat(list, length) {
-      if (!Array.isArray(list)) {
-        throw new TypeError('"list" argument must be an Array of Buffers');
-      }
-      if (list.length === 0) {
-        return Buffer2.alloc(0);
-      }
-      let i;
-      if (length === void 0) {
-        length = 0;
-        for (i = 0; i < list.length; ++i) {
-          length += list[i].length;
-        }
-      }
-      const buffer = Buffer2.allocUnsafe(length);
-      let pos = 0;
-      for (i = 0; i < list.length; ++i) {
-        let buf = list[i];
-        if (isInstance(buf, Uint8Array)) {
-          if (pos + buf.length > buffer.length) {
-            if (!Buffer2.isBuffer(buf)) buf = Buffer2.from(buf);
-            buf.copy(buffer, pos);
-          } else {
-            Uint8Array.prototype.set.call(
-              buffer,
-              buf,
-              pos
-            );
-          }
-        } else if (!Buffer2.isBuffer(buf)) {
-          throw new TypeError('"list" argument must be an Array of Buffers');
-        } else {
-          buf.copy(buffer, pos);
-        }
-        pos += buf.length;
-      }
-      return buffer;
-    };
-    function byteLength(string, encoding) {
-      if (Buffer2.isBuffer(string)) {
-        return string.length;
-      }
-      if (ArrayBuffer.isView(string) || isInstance(string, ArrayBuffer)) {
-        return string.byteLength;
-      }
-      if (typeof string !== "string") {
-        throw new TypeError(
-          'The "string" argument must be one of type string, Buffer, or ArrayBuffer. Received type ' + typeof string
-        );
-      }
-      const len = string.length;
-      const mustMatch = arguments.length > 2 && arguments[2] === true;
-      if (!mustMatch && len === 0) return 0;
-      let loweredCase = false;
-      for (; ; ) {
-        switch (encoding) {
-          case "ascii":
-          case "latin1":
-          case "binary":
-            return len;
-          case "utf8":
-          case "utf-8":
-            return utf8ToBytes(string).length;
-          case "ucs2":
-          case "ucs-2":
-          case "utf16le":
-          case "utf-16le":
-            return len * 2;
-          case "hex":
-            return len >>> 1;
-          case "base64":
-            return base64ToBytes(string).length;
-          default:
-            if (loweredCase) {
-              return mustMatch ? -1 : utf8ToBytes(string).length;
-            }
-            encoding = ("" + encoding).toLowerCase();
-            loweredCase = true;
-        }
-      }
-    }
-    Buffer2.byteLength = byteLength;
-    function slowToString(encoding, start, end) {
-      let loweredCase = false;
-      if (start === void 0 || start < 0) {
-        start = 0;
-      }
-      if (start > this.length) {
-        return "";
-      }
-      if (end === void 0 || end > this.length) {
-        end = this.length;
-      }
-      if (end <= 0) {
-        return "";
-      }
-      end >>>= 0;
-      start >>>= 0;
-      if (end <= start) {
-        return "";
-      }
-      if (!encoding) encoding = "utf8";
-      while (true) {
-        switch (encoding) {
-          case "hex":
-            return hexSlice(this, start, end);
-          case "utf8":
-          case "utf-8":
-            return utf8Slice(this, start, end);
-          case "ascii":
-            return asciiSlice(this, start, end);
-          case "latin1":
-          case "binary":
-            return latin1Slice(this, start, end);
-          case "base64":
-            return base64Slice(this, start, end);
-          case "ucs2":
-          case "ucs-2":
-          case "utf16le":
-          case "utf-16le":
-            return utf16leSlice(this, start, end);
-          default:
-            if (loweredCase) throw new TypeError("Unknown encoding: " + encoding);
-            encoding = (encoding + "").toLowerCase();
-            loweredCase = true;
-        }
-      }
-    }
-    Buffer2.prototype._isBuffer = true;
-    function swap(b, n, m) {
-      const i = b[n];
-      b[n] = b[m];
-      b[m] = i;
-    }
-    Buffer2.prototype.swap16 = function swap16() {
-      const len = this.length;
-      if (len % 2 !== 0) {
-        throw new RangeError("Buffer size must be a multiple of 16-bits");
-      }
-      for (let i = 0; i < len; i += 2) {
-        swap(this, i, i + 1);
-      }
-      return this;
-    };
-    Buffer2.prototype.swap32 = function swap32() {
-      const len = this.length;
-      if (len % 4 !== 0) {
-        throw new RangeError("Buffer size must be a multiple of 32-bits");
-      }
-      for (let i = 0; i < len; i += 4) {
-        swap(this, i, i + 3);
-        swap(this, i + 1, i + 2);
-      }
-      return this;
-    };
-    Buffer2.prototype.swap64 = function swap64() {
-      const len = this.length;
-      if (len % 8 !== 0) {
-        throw new RangeError("Buffer size must be a multiple of 64-bits");
-      }
-      for (let i = 0; i < len; i += 8) {
-        swap(this, i, i + 7);
-        swap(this, i + 1, i + 6);
-        swap(this, i + 2, i + 5);
-        swap(this, i + 3, i + 4);
-      }
-      return this;
-    };
-    Buffer2.prototype.toString = function toString() {
-      const length = this.length;
-      if (length === 0) return "";
-      if (arguments.length === 0) return utf8Slice(this, 0, length);
-      return slowToString.apply(this, arguments);
-    };
-    Buffer2.prototype.toLocaleString = Buffer2.prototype.toString;
-    Buffer2.prototype.equals = function equals(b) {
-      if (!Buffer2.isBuffer(b)) throw new TypeError("Argument must be a Buffer");
-      if (this === b) return true;
-      return Buffer2.compare(this, b) === 0;
-    };
-    Buffer2.prototype.inspect = function inspect() {
-      let str = "";
-      const max = exports.INSPECT_MAX_BYTES;
-      str = this.toString("hex", 0, max).replace(/(.{2})/g, "$1 ").trim();
-      if (this.length > max) str += " ... ";
-      return "<Buffer " + str + ">";
-    };
-    if (customInspectSymbol) {
-      Buffer2.prototype[customInspectSymbol] = Buffer2.prototype.inspect;
-    }
-    Buffer2.prototype.compare = function compare(target, start, end, thisStart, thisEnd) {
-      if (isInstance(target, Uint8Array)) {
-        target = Buffer2.from(target, target.offset, target.byteLength);
-      }
-      if (!Buffer2.isBuffer(target)) {
-        throw new TypeError(
-          'The "target" argument must be one of type Buffer or Uint8Array. Received type ' + typeof target
-        );
-      }
-      if (start === void 0) {
-        start = 0;
-      }
-      if (end === void 0) {
-        end = target ? target.length : 0;
-      }
-      if (thisStart === void 0) {
-        thisStart = 0;
-      }
-      if (thisEnd === void 0) {
-        thisEnd = this.length;
-      }
-      if (start < 0 || end > target.length || thisStart < 0 || thisEnd > this.length) {
-        throw new RangeError("out of range index");
-      }
-      if (thisStart >= thisEnd && start >= end) {
-        return 0;
-      }
-      if (thisStart >= thisEnd) {
-        return -1;
-      }
-      if (start >= end) {
-        return 1;
-      }
-      start >>>= 0;
-      end >>>= 0;
-      thisStart >>>= 0;
-      thisEnd >>>= 0;
-      if (this === target) return 0;
-      let x = thisEnd - thisStart;
-      let y = end - start;
-      const len = Math.min(x, y);
-      const thisCopy = this.slice(thisStart, thisEnd);
-      const targetCopy = target.slice(start, end);
-      for (let i = 0; i < len; ++i) {
-        if (thisCopy[i] !== targetCopy[i]) {
-          x = thisCopy[i];
-          y = targetCopy[i];
-          break;
-        }
-      }
-      if (x < y) return -1;
-      if (y < x) return 1;
-      return 0;
-    };
-    function bidirectionalIndexOf(buffer, val, byteOffset, encoding, dir) {
-      if (buffer.length === 0) return -1;
-      if (typeof byteOffset === "string") {
-        encoding = byteOffset;
-        byteOffset = 0;
-      } else if (byteOffset > 2147483647) {
-        byteOffset = 2147483647;
-      } else if (byteOffset < -2147483648) {
-        byteOffset = -2147483648;
-      }
-      byteOffset = +byteOffset;
-      if (numberIsNaN(byteOffset)) {
-        byteOffset = dir ? 0 : buffer.length - 1;
-      }
-      if (byteOffset < 0) byteOffset = buffer.length + byteOffset;
-      if (byteOffset >= buffer.length) {
-        if (dir) return -1;
-        else byteOffset = buffer.length - 1;
-      } else if (byteOffset < 0) {
-        if (dir) byteOffset = 0;
-        else return -1;
-      }
-      if (typeof val === "string") {
-        val = Buffer2.from(val, encoding);
-      }
-      if (Buffer2.isBuffer(val)) {
-        if (val.length === 0) {
-          return -1;
-        }
-        return arrayIndexOf(buffer, val, byteOffset, encoding, dir);
-      } else if (typeof val === "number") {
-        val = val & 255;
-        if (typeof Uint8Array.prototype.indexOf === "function") {
-          if (dir) {
-            return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset);
-          } else {
-            return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset);
-          }
-        }
-        return arrayIndexOf(buffer, [val], byteOffset, encoding, dir);
-      }
-      throw new TypeError("val must be string, number or Buffer");
-    }
-    function arrayIndexOf(arr, val, byteOffset, encoding, dir) {
-      let indexSize = 1;
-      let arrLength = arr.length;
-      let valLength = val.length;
-      if (encoding !== void 0) {
-        encoding = String(encoding).toLowerCase();
-        if (encoding === "ucs2" || encoding === "ucs-2" || encoding === "utf16le" || encoding === "utf-16le") {
-          if (arr.length < 2 || val.length < 2) {
-            return -1;
-          }
-          indexSize = 2;
-          arrLength /= 2;
-          valLength /= 2;
-          byteOffset /= 2;
-        }
-      }
-      function read(buf, i2) {
-        if (indexSize === 1) {
-          return buf[i2];
-        } else {
-          return buf.readUInt16BE(i2 * indexSize);
-        }
-      }
-      let i;
-      if (dir) {
-        let foundIndex = -1;
-        for (i = byteOffset; i < arrLength; i++) {
-          if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
-            if (foundIndex === -1) foundIndex = i;
-            if (i - foundIndex + 1 === valLength) return foundIndex * indexSize;
-          } else {
-            if (foundIndex !== -1) i -= i - foundIndex;
-            foundIndex = -1;
-          }
-        }
-      } else {
-        if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength;
-        for (i = byteOffset; i >= 0; i--) {
-          let found = true;
-          for (let j = 0; j < valLength; j++) {
-            if (read(arr, i + j) !== read(val, j)) {
-              found = false;
-              break;
-            }
-          }
-          if (found) return i;
-        }
-      }
-      return -1;
-    }
-    Buffer2.prototype.includes = function includes(val, byteOffset, encoding) {
-      return this.indexOf(val, byteOffset, encoding) !== -1;
-    };
-    Buffer2.prototype.indexOf = function indexOf(val, byteOffset, encoding) {
-      return bidirectionalIndexOf(this, val, byteOffset, encoding, true);
-    };
-    Buffer2.prototype.lastIndexOf = function lastIndexOf(val, byteOffset, encoding) {
-      return bidirectionalIndexOf(this, val, byteOffset, encoding, false);
-    };
-    function hexWrite(buf, string, offset, length) {
-      offset = Number(offset) || 0;
-      const remaining = buf.length - offset;
-      if (!length) {
-        length = remaining;
-      } else {
-        length = Number(length);
-        if (length > remaining) {
-          length = remaining;
-        }
-      }
-      const strLen = string.length;
-      if (length > strLen / 2) {
-        length = strLen / 2;
-      }
-      let i;
-      for (i = 0; i < length; ++i) {
-        const parsed = parseInt(string.substr(i * 2, 2), 16);
-        if (numberIsNaN(parsed)) return i;
-        buf[offset + i] = parsed;
-      }
-      return i;
-    }
-    function utf8Write(buf, string, offset, length) {
-      return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length);
-    }
-    function asciiWrite(buf, string, offset, length) {
-      return blitBuffer(asciiToBytes(string), buf, offset, length);
-    }
-    function base64Write(buf, string, offset, length) {
-      return blitBuffer(base64ToBytes(string), buf, offset, length);
-    }
-    function ucs2Write(buf, string, offset, length) {
-      return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length);
-    }
-    Buffer2.prototype.write = function write(string, offset, length, encoding) {
-      if (offset === void 0) {
-        encoding = "utf8";
-        length = this.length;
-        offset = 0;
-      } else if (length === void 0 && typeof offset === "string") {
-        encoding = offset;
-        length = this.length;
-        offset = 0;
-      } else if (isFinite(offset)) {
-        offset = offset >>> 0;
-        if (isFinite(length)) {
-          length = length >>> 0;
-          if (encoding === void 0) encoding = "utf8";
-        } else {
-          encoding = length;
-          length = void 0;
-        }
-      } else {
-        throw new Error(
-          "Buffer.write(string, encoding, offset[, length]) is no longer supported"
-        );
-      }
-      const remaining = this.length - offset;
-      if (length === void 0 || length > remaining) length = remaining;
-      if (string.length > 0 && (length < 0 || offset < 0) || offset > this.length) {
-        throw new RangeError("Attempt to write outside buffer bounds");
-      }
-      if (!encoding) encoding = "utf8";
-      let loweredCase = false;
-      for (; ; ) {
-        switch (encoding) {
-          case "hex":
-            return hexWrite(this, string, offset, length);
-          case "utf8":
-          case "utf-8":
-            return utf8Write(this, string, offset, length);
-          case "ascii":
-          case "latin1":
-          case "binary":
-            return asciiWrite(this, string, offset, length);
-          case "base64":
-            return base64Write(this, string, offset, length);
-          case "ucs2":
-          case "ucs-2":
-          case "utf16le":
-          case "utf-16le":
-            return ucs2Write(this, string, offset, length);
-          default:
-            if (loweredCase) throw new TypeError("Unknown encoding: " + encoding);
-            encoding = ("" + encoding).toLowerCase();
-            loweredCase = true;
-        }
-      }
-    };
-    Buffer2.prototype.toJSON = function toJSON() {
-      return {
-        type: "Buffer",
-        data: Array.prototype.slice.call(this._arr || this, 0)
-      };
-    };
-    function base64Slice(buf, start, end) {
-      if (start === 0 && end === buf.length) {
-        return base64.fromByteArray(buf);
-      } else {
-        return base64.fromByteArray(buf.slice(start, end));
-      }
-    }
-    function utf8Slice(buf, start, end) {
-      end = Math.min(buf.length, end);
-      const res = [];
-      let i = start;
-      while (i < end) {
-        const firstByte = buf[i];
-        let codePoint = null;
-        let bytesPerSequence = firstByte > 239 ? 4 : firstByte > 223 ? 3 : firstByte > 191 ? 2 : 1;
-        if (i + bytesPerSequence <= end) {
-          let secondByte, thirdByte, fourthByte, tempCodePoint;
-          switch (bytesPerSequence) {
-            case 1:
-              if (firstByte < 128) {
-                codePoint = firstByte;
-              }
-              break;
-            case 2:
-              secondByte = buf[i + 1];
-              if ((secondByte & 192) === 128) {
-                tempCodePoint = (firstByte & 31) << 6 | secondByte & 63;
-                if (tempCodePoint > 127) {
-                  codePoint = tempCodePoint;
-                }
-              }
-              break;
-            case 3:
-              secondByte = buf[i + 1];
-              thirdByte = buf[i + 2];
-              if ((secondByte & 192) === 128 && (thirdByte & 192) === 128) {
-                tempCodePoint = (firstByte & 15) << 12 | (secondByte & 63) << 6 | thirdByte & 63;
-                if (tempCodePoint > 2047 && (tempCodePoint < 55296 || tempCodePoint > 57343)) {
-                  codePoint = tempCodePoint;
-                }
-              }
-              break;
-            case 4:
-              secondByte = buf[i + 1];
-              thirdByte = buf[i + 2];
-              fourthByte = buf[i + 3];
-              if ((secondByte & 192) === 128 && (thirdByte & 192) === 128 && (fourthByte & 192) === 128) {
-                tempCodePoint = (firstByte & 15) << 18 | (secondByte & 63) << 12 | (thirdByte & 63) << 6 | fourthByte & 63;
-                if (tempCodePoint > 65535 && tempCodePoint < 1114112) {
-                  codePoint = tempCodePoint;
-                }
-              }
-          }
-        }
-        if (codePoint === null) {
-          codePoint = 65533;
-          bytesPerSequence = 1;
-        } else if (codePoint > 65535) {
-          codePoint -= 65536;
-          res.push(codePoint >>> 10 & 1023 | 55296);
-          codePoint = 56320 | codePoint & 1023;
-        }
-        res.push(codePoint);
-        i += bytesPerSequence;
-      }
-      return decodeCodePointsArray(res);
-    }
-    var MAX_ARGUMENTS_LENGTH = 4096;
-    function decodeCodePointsArray(codePoints) {
-      const len = codePoints.length;
-      if (len <= MAX_ARGUMENTS_LENGTH) {
-        return String.fromCharCode.apply(String, codePoints);
-      }
-      let res = "";
-      let i = 0;
-      while (i < len) {
-        res += String.fromCharCode.apply(
-          String,
-          codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH)
-        );
-      }
-      return res;
-    }
-    function asciiSlice(buf, start, end) {
-      let ret = "";
-      end = Math.min(buf.length, end);
-      for (let i = start; i < end; ++i) {
-        ret += String.fromCharCode(buf[i] & 127);
-      }
-      return ret;
-    }
-    function latin1Slice(buf, start, end) {
-      let ret = "";
-      end = Math.min(buf.length, end);
-      for (let i = start; i < end; ++i) {
-        ret += String.fromCharCode(buf[i]);
-      }
-      return ret;
-    }
-    function hexSlice(buf, start, end) {
-      const len = buf.length;
-      if (!start || start < 0) start = 0;
-      if (!end || end < 0 || end > len) end = len;
-      let out = "";
-      for (let i = start; i < end; ++i) {
-        out += hexSliceLookupTable[buf[i]];
-      }
-      return out;
-    }
-    function utf16leSlice(buf, start, end) {
-      const bytes = buf.slice(start, end);
-      let res = "";
-      for (let i = 0; i < bytes.length - 1; i += 2) {
-        res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256);
-      }
-      return res;
-    }
-    Buffer2.prototype.slice = function slice(start, end) {
-      const len = this.length;
-      start = ~~start;
-      end = end === void 0 ? len : ~~end;
-      if (start < 0) {
-        start += len;
-        if (start < 0) start = 0;
-      } else if (start > len) {
-        start = len;
-      }
-      if (end < 0) {
-        end += len;
-        if (end < 0) end = 0;
-      } else if (end > len) {
-        end = len;
-      }
-      if (end < start) end = start;
-      const newBuf = this.subarray(start, end);
-      Object.setPrototypeOf(newBuf, Buffer2.prototype);
-      return newBuf;
-    };
-    function checkOffset(offset, ext, length) {
-      if (offset % 1 !== 0 || offset < 0) throw new RangeError("offset is not uint");
-      if (offset + ext > length) throw new RangeError("Trying to access beyond buffer length");
-    }
-    Buffer2.prototype.readUintLE = Buffer2.prototype.readUIntLE = function readUIntLE(offset, byteLength2, noAssert) {
-      offset = offset >>> 0;
-      byteLength2 = byteLength2 >>> 0;
-      if (!noAssert) checkOffset(offset, byteLength2, this.length);
-      let val = this[offset];
-      let mul = 1;
-      let i = 0;
-      while (++i < byteLength2 && (mul *= 256)) {
-        val += this[offset + i] * mul;
-      }
-      return val;
-    };
-    Buffer2.prototype.readUintBE = Buffer2.prototype.readUIntBE = function readUIntBE(offset, byteLength2, noAssert) {
-      offset = offset >>> 0;
-      byteLength2 = byteLength2 >>> 0;
-      if (!noAssert) {
-        checkOffset(offset, byteLength2, this.length);
-      }
-      let val = this[offset + --byteLength2];
-      let mul = 1;
-      while (byteLength2 > 0 && (mul *= 256)) {
-        val += this[offset + --byteLength2] * mul;
-      }
-      return val;
-    };
-    Buffer2.prototype.readUint8 = Buffer2.prototype.readUInt8 = function readUInt8(offset, noAssert) {
-      offset = offset >>> 0;
-      if (!noAssert) checkOffset(offset, 1, this.length);
-      return this[offset];
-    };
-    Buffer2.prototype.readUint16LE = Buffer2.prototype.readUInt16LE = function readUInt16LE(offset, noAssert) {
-      offset = offset >>> 0;
-      if (!noAssert) checkOffset(offset, 2, this.length);
-      return this[offset] | this[offset + 1] << 8;
-    };
-    Buffer2.prototype.readUint16BE = Buffer2.prototype.readUInt16BE = function readUInt16BE(offset, noAssert) {
-      offset = offset >>> 0;
-      if (!noAssert) checkOffset(offset, 2, this.length);
-      return this[offset] << 8 | this[offset + 1];
-    };
-    Buffer2.prototype.readUint32LE = Buffer2.prototype.readUInt32LE = function readUInt32LE(offset, noAssert) {
-      offset = offset >>> 0;
-      if (!noAssert) checkOffset(offset, 4, this.length);
-      return (this[offset] | this[offset + 1] << 8 | this[offset + 2] << 16) + this[offset + 3] * 16777216;
-    };
-    Buffer2.prototype.readUint32BE = Buffer2.prototype.readUInt32BE = function readUInt32BE(offset, noAssert) {
-      offset = offset >>> 0;
-      if (!noAssert) checkOffset(offset, 4, this.length);
-      return this[offset] * 16777216 + (this[offset + 1] << 16 | this[offset + 2] << 8 | this[offset + 3]);
-    };
-    Buffer2.prototype.readBigUInt64LE = defineBigIntMethod(function readBigUInt64LE(offset) {
-      offset = offset >>> 0;
-      validateNumber(offset, "offset");
-      const first = this[offset];
-      const last = this[offset + 7];
-      if (first === void 0 || last === void 0) {
-        boundsError(offset, this.length - 8);
-      }
-      const lo = first + this[++offset] * 2 ** 8 + this[++offset] * 2 ** 16 + this[++offset] * 2 ** 24;
-      const hi = this[++offset] + this[++offset] * 2 ** 8 + this[++offset] * 2 ** 16 + last * 2 ** 24;
-      return BigInt(lo) + (BigInt(hi) << BigInt(32));
-    });
-    Buffer2.prototype.readBigUInt64BE = defineBigIntMethod(function readBigUInt64BE(offset) {
-      offset = offset >>> 0;
-      validateNumber(offset, "offset");
-      const first = this[offset];
-      const last = this[offset + 7];
-      if (first === void 0 || last === void 0) {
-        boundsError(offset, this.length - 8);
-      }
-      const hi = first * 2 ** 24 + this[++offset] * 2 ** 16 + this[++offset] * 2 ** 8 + this[++offset];
-      const lo = this[++offset] * 2 ** 24 + this[++offset] * 2 ** 16 + this[++offset] * 2 ** 8 + last;
-      return (BigInt(hi) << BigInt(32)) + BigInt(lo);
-    });
-    Buffer2.prototype.readIntLE = function readIntLE(offset, byteLength2, noAssert) {
-      offset = offset >>> 0;
-      byteLength2 = byteLength2 >>> 0;
-      if (!noAssert) checkOffset(offset, byteLength2, this.length);
-      let val = this[offset];
-      let mul = 1;
-      let i = 0;
-      while (++i < byteLength2 && (mul *= 256)) {
-        val += this[offset + i] * mul;
-      }
-      mul *= 128;
-      if (val >= mul) val -= Math.pow(2, 8 * byteLength2);
-      return val;
-    };
-    Buffer2.prototype.readIntBE = function readIntBE(offset, byteLength2, noAssert) {
-      offset = offset >>> 0;
-      byteLength2 = byteLength2 >>> 0;
-      if (!noAssert) checkOffset(offset, byteLength2, this.length);
-      let i = byteLength2;
-      let mul = 1;
-      let val = this[offset + --i];
-      while (i > 0 && (mul *= 256)) {
-        val += this[offset + --i] * mul;
-      }
-      mul *= 128;
-      if (val >= mul) val -= Math.pow(2, 8 * byteLength2);
-      return val;
-    };
-    Buffer2.prototype.readInt8 = function readInt8(offset, noAssert) {
-      offset = offset >>> 0;
-      if (!noAssert) checkOffset(offset, 1, this.length);
-      if (!(this[offset] & 128)) return this[offset];
-      return (255 - this[offset] + 1) * -1;
-    };
-    Buffer2.prototype.readInt16LE = function readInt16LE(offset, noAssert) {
-      offset = offset >>> 0;
-      if (!noAssert) checkOffset(offset, 2, this.length);
-      const val = this[offset] | this[offset + 1] << 8;
-      return val & 32768 ? val | 4294901760 : val;
-    };
-    Buffer2.prototype.readInt16BE = function readInt16BE(offset, noAssert) {
-      offset = offset >>> 0;
-      if (!noAssert) checkOffset(offset, 2, this.length);
-      const val = this[offset + 1] | this[offset] << 8;
-      return val & 32768 ? val | 4294901760 : val;
-    };
-    Buffer2.prototype.readInt32LE = function readInt32LE(offset, noAssert) {
-      offset = offset >>> 0;
-      if (!noAssert) checkOffset(offset, 4, this.length);
-      return this[offset] | this[offset + 1] << 8 | this[offset + 2] << 16 | this[offset + 3] << 24;
-    };
-    Buffer2.prototype.readInt32BE = function readInt32BE(offset, noAssert) {
-      offset = offset >>> 0;
-      if (!noAssert) checkOffset(offset, 4, this.length);
-      return this[offset] << 24 | this[offset + 1] << 16 | this[offset + 2] << 8 | this[offset + 3];
-    };
-    Buffer2.prototype.readBigInt64LE = defineBigIntMethod(function readBigInt64LE(offset) {
-      offset = offset >>> 0;
-      validateNumber(offset, "offset");
-      const first = this[offset];
-      const last = this[offset + 7];
-      if (first === void 0 || last === void 0) {
-        boundsError(offset, this.length - 8);
-      }
-      const val = this[offset + 4] + this[offset + 5] * 2 ** 8 + this[offset + 6] * 2 ** 16 + (last << 24);
-      return (BigInt(val) << BigInt(32)) + BigInt(first + this[++offset] * 2 ** 8 + this[++offset] * 2 ** 16 + this[++offset] * 2 ** 24);
-    });
-    Buffer2.prototype.readBigInt64BE = defineBigIntMethod(function readBigInt64BE(offset) {
-      offset = offset >>> 0;
-      validateNumber(offset, "offset");
-      const first = this[offset];
-      const last = this[offset + 7];
-      if (first === void 0 || last === void 0) {
-        boundsError(offset, this.length - 8);
-      }
-      const val = (first << 24) + // Overflow
-      this[++offset] * 2 ** 16 + this[++offset] * 2 ** 8 + this[++offset];
-      return (BigInt(val) << BigInt(32)) + BigInt(this[++offset] * 2 ** 24 + this[++offset] * 2 ** 16 + this[++offset] * 2 ** 8 + last);
-    });
-    Buffer2.prototype.readFloatLE = function readFloatLE(offset, noAssert) {
-      offset = offset >>> 0;
-      if (!noAssert) checkOffset(offset, 4, this.length);
-      return ieee754.read(this, offset, true, 23, 4);
-    };
-    Buffer2.prototype.readFloatBE = function readFloatBE(offset, noAssert) {
-      offset = offset >>> 0;
-      if (!noAssert) checkOffset(offset, 4, this.length);
-      return ieee754.read(this, offset, false, 23, 4);
-    };
-    Buffer2.prototype.readDoubleLE = function readDoubleLE(offset, noAssert) {
-      offset = offset >>> 0;
-      if (!noAssert) checkOffset(offset, 8, this.length);
-      return ieee754.read(this, offset, true, 52, 8);
-    };
-    Buffer2.prototype.readDoubleBE = function readDoubleBE(offset, noAssert) {
-      offset = offset >>> 0;
-      if (!noAssert) checkOffset(offset, 8, this.length);
-      return ieee754.read(this, offset, false, 52, 8);
-    };
-    function checkInt(buf, value, offset, ext, max, min) {
-      if (!Buffer2.isBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance');
-      if (value > max || value < min) throw new RangeError('"value" argument is out of bounds');
-      if (offset + ext > buf.length) throw new RangeError("Index out of range");
-    }
-    Buffer2.prototype.writeUintLE = Buffer2.prototype.writeUIntLE = function writeUIntLE(value, offset, byteLength2, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      byteLength2 = byteLength2 >>> 0;
-      if (!noAssert) {
-        const maxBytes = Math.pow(2, 8 * byteLength2) - 1;
-        checkInt(this, value, offset, byteLength2, maxBytes, 0);
-      }
-      let mul = 1;
-      let i = 0;
-      this[offset] = value & 255;
-      while (++i < byteLength2 && (mul *= 256)) {
-        this[offset + i] = value / mul & 255;
-      }
-      return offset + byteLength2;
-    };
-    Buffer2.prototype.writeUintBE = Buffer2.prototype.writeUIntBE = function writeUIntBE(value, offset, byteLength2, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      byteLength2 = byteLength2 >>> 0;
-      if (!noAssert) {
-        const maxBytes = Math.pow(2, 8 * byteLength2) - 1;
-        checkInt(this, value, offset, byteLength2, maxBytes, 0);
-      }
-      let i = byteLength2 - 1;
-      let mul = 1;
-      this[offset + i] = value & 255;
-      while (--i >= 0 && (mul *= 256)) {
-        this[offset + i] = value / mul & 255;
-      }
-      return offset + byteLength2;
-    };
-    Buffer2.prototype.writeUint8 = Buffer2.prototype.writeUInt8 = function writeUInt8(value, offset, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      if (!noAssert) checkInt(this, value, offset, 1, 255, 0);
-      this[offset] = value & 255;
-      return offset + 1;
-    };
-    Buffer2.prototype.writeUint16LE = Buffer2.prototype.writeUInt16LE = function writeUInt16LE(value, offset, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      if (!noAssert) checkInt(this, value, offset, 2, 65535, 0);
-      this[offset] = value & 255;
-      this[offset + 1] = value >>> 8;
-      return offset + 2;
-    };
-    Buffer2.prototype.writeUint16BE = Buffer2.prototype.writeUInt16BE = function writeUInt16BE(value, offset, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      if (!noAssert) checkInt(this, value, offset, 2, 65535, 0);
-      this[offset] = value >>> 8;
-      this[offset + 1] = value & 255;
-      return offset + 2;
-    };
-    Buffer2.prototype.writeUint32LE = Buffer2.prototype.writeUInt32LE = function writeUInt32LE(value, offset, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      if (!noAssert) checkInt(this, value, offset, 4, 4294967295, 0);
-      this[offset + 3] = value >>> 24;
-      this[offset + 2] = value >>> 16;
-      this[offset + 1] = value >>> 8;
-      this[offset] = value & 255;
-      return offset + 4;
-    };
-    Buffer2.prototype.writeUint32BE = Buffer2.prototype.writeUInt32BE = function writeUInt32BE(value, offset, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      if (!noAssert) checkInt(this, value, offset, 4, 4294967295, 0);
-      this[offset] = value >>> 24;
-      this[offset + 1] = value >>> 16;
-      this[offset + 2] = value >>> 8;
-      this[offset + 3] = value & 255;
-      return offset + 4;
-    };
-    function wrtBigUInt64LE(buf, value, offset, min, max) {
-      checkIntBI(value, min, max, buf, offset, 7);
-      let lo = Number(value & BigInt(4294967295));
-      buf[offset++] = lo;
-      lo = lo >> 8;
-      buf[offset++] = lo;
-      lo = lo >> 8;
-      buf[offset++] = lo;
-      lo = lo >> 8;
-      buf[offset++] = lo;
-      let hi = Number(value >> BigInt(32) & BigInt(4294967295));
-      buf[offset++] = hi;
-      hi = hi >> 8;
-      buf[offset++] = hi;
-      hi = hi >> 8;
-      buf[offset++] = hi;
-      hi = hi >> 8;
-      buf[offset++] = hi;
-      return offset;
-    }
-    function wrtBigUInt64BE(buf, value, offset, min, max) {
-      checkIntBI(value, min, max, buf, offset, 7);
-      let lo = Number(value & BigInt(4294967295));
-      buf[offset + 7] = lo;
-      lo = lo >> 8;
-      buf[offset + 6] = lo;
-      lo = lo >> 8;
-      buf[offset + 5] = lo;
-      lo = lo >> 8;
-      buf[offset + 4] = lo;
-      let hi = Number(value >> BigInt(32) & BigInt(4294967295));
-      buf[offset + 3] = hi;
-      hi = hi >> 8;
-      buf[offset + 2] = hi;
-      hi = hi >> 8;
-      buf[offset + 1] = hi;
-      hi = hi >> 8;
-      buf[offset] = hi;
-      return offset + 8;
-    }
-    Buffer2.prototype.writeBigUInt64LE = defineBigIntMethod(function writeBigUInt64LE(value, offset = 0) {
-      return wrtBigUInt64LE(this, value, offset, BigInt(0), BigInt("0xffffffffffffffff"));
-    });
-    Buffer2.prototype.writeBigUInt64BE = defineBigIntMethod(function writeBigUInt64BE(value, offset = 0) {
-      return wrtBigUInt64BE(this, value, offset, BigInt(0), BigInt("0xffffffffffffffff"));
-    });
-    Buffer2.prototype.writeIntLE = function writeIntLE(value, offset, byteLength2, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      if (!noAssert) {
-        const limit = Math.pow(2, 8 * byteLength2 - 1);
-        checkInt(this, value, offset, byteLength2, limit - 1, -limit);
-      }
-      let i = 0;
-      let mul = 1;
-      let sub = 0;
-      this[offset] = value & 255;
-      while (++i < byteLength2 && (mul *= 256)) {
-        if (value < 0 && sub === 0 && this[offset + i - 1] !== 0) {
-          sub = 1;
-        }
-        this[offset + i] = (value / mul >> 0) - sub & 255;
-      }
-      return offset + byteLength2;
-    };
-    Buffer2.prototype.writeIntBE = function writeIntBE(value, offset, byteLength2, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      if (!noAssert) {
-        const limit = Math.pow(2, 8 * byteLength2 - 1);
-        checkInt(this, value, offset, byteLength2, limit - 1, -limit);
-      }
-      let i = byteLength2 - 1;
-      let mul = 1;
-      let sub = 0;
-      this[offset + i] = value & 255;
-      while (--i >= 0 && (mul *= 256)) {
-        if (value < 0 && sub === 0 && this[offset + i + 1] !== 0) {
-          sub = 1;
-        }
-        this[offset + i] = (value / mul >> 0) - sub & 255;
-      }
-      return offset + byteLength2;
-    };
-    Buffer2.prototype.writeInt8 = function writeInt8(value, offset, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      if (!noAssert) checkInt(this, value, offset, 1, 127, -128);
-      if (value < 0) value = 255 + value + 1;
-      this[offset] = value & 255;
-      return offset + 1;
-    };
-    Buffer2.prototype.writeInt16LE = function writeInt16LE(value, offset, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      if (!noAssert) checkInt(this, value, offset, 2, 32767, -32768);
-      this[offset] = value & 255;
-      this[offset + 1] = value >>> 8;
-      return offset + 2;
-    };
-    Buffer2.prototype.writeInt16BE = function writeInt16BE(value, offset, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      if (!noAssert) checkInt(this, value, offset, 2, 32767, -32768);
-      this[offset] = value >>> 8;
-      this[offset + 1] = value & 255;
-      return offset + 2;
-    };
-    Buffer2.prototype.writeInt32LE = function writeInt32LE(value, offset, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      if (!noAssert) checkInt(this, value, offset, 4, 2147483647, -2147483648);
-      this[offset] = value & 255;
-      this[offset + 1] = value >>> 8;
-      this[offset + 2] = value >>> 16;
-      this[offset + 3] = value >>> 24;
-      return offset + 4;
-    };
-    Buffer2.prototype.writeInt32BE = function writeInt32BE(value, offset, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      if (!noAssert) checkInt(this, value, offset, 4, 2147483647, -2147483648);
-      if (value < 0) value = 4294967295 + value + 1;
-      this[offset] = value >>> 24;
-      this[offset + 1] = value >>> 16;
-      this[offset + 2] = value >>> 8;
-      this[offset + 3] = value & 255;
-      return offset + 4;
-    };
-    Buffer2.prototype.writeBigInt64LE = defineBigIntMethod(function writeBigInt64LE(value, offset = 0) {
-      return wrtBigUInt64LE(this, value, offset, -BigInt("0x8000000000000000"), BigInt("0x7fffffffffffffff"));
-    });
-    Buffer2.prototype.writeBigInt64BE = defineBigIntMethod(function writeBigInt64BE(value, offset = 0) {
-      return wrtBigUInt64BE(this, value, offset, -BigInt("0x8000000000000000"), BigInt("0x7fffffffffffffff"));
-    });
-    function checkIEEE754(buf, value, offset, ext, max, min) {
-      if (offset + ext > buf.length) throw new RangeError("Index out of range");
-      if (offset < 0) throw new RangeError("Index out of range");
-    }
-    function writeFloat(buf, value, offset, littleEndian, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      if (!noAssert) {
-        checkIEEE754(buf, value, offset, 4);
-      }
-      ieee754.write(buf, value, offset, littleEndian, 23, 4);
-      return offset + 4;
-    }
-    Buffer2.prototype.writeFloatLE = function writeFloatLE(value, offset, noAssert) {
-      return writeFloat(this, value, offset, true, noAssert);
-    };
-    Buffer2.prototype.writeFloatBE = function writeFloatBE(value, offset, noAssert) {
-      return writeFloat(this, value, offset, false, noAssert);
-    };
-    function writeDouble(buf, value, offset, littleEndian, noAssert) {
-      value = +value;
-      offset = offset >>> 0;
-      if (!noAssert) {
-        checkIEEE754(buf, value, offset, 8);
-      }
-      ieee754.write(buf, value, offset, littleEndian, 52, 8);
-      return offset + 8;
-    }
-    Buffer2.prototype.writeDoubleLE = function writeDoubleLE(value, offset, noAssert) {
-      return writeDouble(this, value, offset, true, noAssert);
-    };
-    Buffer2.prototype.writeDoubleBE = function writeDoubleBE(value, offset, noAssert) {
-      return writeDouble(this, value, offset, false, noAssert);
-    };
-    Buffer2.prototype.copy = function copy(target, targetStart, start, end) {
-      if (!Buffer2.isBuffer(target)) throw new TypeError("argument should be a Buffer");
-      if (!start) start = 0;
-      if (!end && end !== 0) end = this.length;
-      if (targetStart >= target.length) targetStart = target.length;
-      if (!targetStart) targetStart = 0;
-      if (end > 0 && end < start) end = start;
-      if (end === start) return 0;
-      if (target.length === 0 || this.length === 0) return 0;
-      if (targetStart < 0) {
-        throw new RangeError("targetStart out of bounds");
-      }
-      if (start < 0 || start >= this.length) throw new RangeError("Index out of range");
-      if (end < 0) throw new RangeError("sourceEnd out of bounds");
-      if (end > this.length) end = this.length;
-      if (target.length - targetStart < end - start) {
-        end = target.length - targetStart + start;
-      }
-      const len = end - start;
-      if (this === target && typeof Uint8Array.prototype.copyWithin === "function") {
-        this.copyWithin(targetStart, start, end);
-      } else {
-        Uint8Array.prototype.set.call(
-          target,
-          this.subarray(start, end),
-          targetStart
-        );
-      }
-      return len;
-    };
-    Buffer2.prototype.fill = function fill(val, start, end, encoding) {
-      if (typeof val === "string") {
-        if (typeof start === "string") {
-          encoding = start;
-          start = 0;
-          end = this.length;
-        } else if (typeof end === "string") {
-          encoding = end;
-          end = this.length;
-        }
-        if (encoding !== void 0 && typeof encoding !== "string") {
-          throw new TypeError("encoding must be a string");
-        }
-        if (typeof encoding === "string" && !Buffer2.isEncoding(encoding)) {
-          throw new TypeError("Unknown encoding: " + encoding);
-        }
-        if (val.length === 1) {
-          const code = val.charCodeAt(0);
-          if (encoding === "utf8" && code < 128 || encoding === "latin1") {
-            val = code;
-          }
-        }
-      } else if (typeof val === "number") {
-        val = val & 255;
-      } else if (typeof val === "boolean") {
-        val = Number(val);
-      }
-      if (start < 0 || this.length < start || this.length < end) {
-        throw new RangeError("Out of range index");
-      }
-      if (end <= start) {
-        return this;
-      }
-      start = start >>> 0;
-      end = end === void 0 ? this.length : end >>> 0;
-      if (!val) val = 0;
-      let i;
-      if (typeof val === "number") {
-        for (i = start; i < end; ++i) {
-          this[i] = val;
-        }
-      } else {
-        const bytes = Buffer2.isBuffer(val) ? val : Buffer2.from(val, encoding);
-        const len = bytes.length;
-        if (len === 0) {
-          throw new TypeError('The value "' + val + '" is invalid for argument "value"');
-        }
-        for (i = 0; i < end - start; ++i) {
-          this[i + start] = bytes[i % len];
-        }
-      }
-      return this;
-    };
-    var errors = {};
-    function E(sym, getMessage, Base) {
-      errors[sym] = class NodeError extends Base {
-        constructor() {
-          super();
-          Object.defineProperty(this, "message", {
-            value: getMessage.apply(this, arguments),
-            writable: true,
-            configurable: true
-          });
-          this.name = `${this.name} [${sym}]`;
-          this.stack;
-          delete this.name;
-        }
-        get code() {
-          return sym;
-        }
-        set code(value) {
-          Object.defineProperty(this, "code", {
-            configurable: true,
-            enumerable: true,
-            value,
-            writable: true
-          });
-        }
-        toString() {
-          return `${this.name} [${sym}]: ${this.message}`;
-        }
-      };
-    }
-    E(
-      "ERR_BUFFER_OUT_OF_BOUNDS",
-      function(name) {
-        if (name) {
-          return `${name} is outside of buffer bounds`;
-        }
-        return "Attempt to access memory outside buffer bounds";
-      },
-      RangeError
-    );
-    E(
-      "ERR_INVALID_ARG_TYPE",
-      function(name, actual) {
-        return `The "${name}" argument must be of type number. Received type ${typeof actual}`;
-      },
-      TypeError
-    );
-    E(
-      "ERR_OUT_OF_RANGE",
-      function(str, range, input) {
-        let msg = `The value of "${str}" is out of range.`;
-        let received = input;
-        if (Number.isInteger(input) && Math.abs(input) > 2 ** 32) {
-          received = addNumericalSeparator(String(input));
-        } else if (typeof input === "bigint") {
-          received = String(input);
-          if (input > BigInt(2) ** BigInt(32) || input < -(BigInt(2) ** BigInt(32))) {
-            received = addNumericalSeparator(received);
-          }
-          received += "n";
-        }
-        msg += ` It must be ${range}. Received ${received}`;
-        return msg;
-      },
-      RangeError
-    );
-    function addNumericalSeparator(val) {
-      let res = "";
-      let i = val.length;
-      const start = val[0] === "-" ? 1 : 0;
-      for (; i >= start + 4; i -= 3) {
-        res = `_${val.slice(i - 3, i)}${res}`;
-      }
-      return `${val.slice(0, i)}${res}`;
-    }
-    function checkBounds(buf, offset, byteLength2) {
-      validateNumber(offset, "offset");
-      if (buf[offset] === void 0 || buf[offset + byteLength2] === void 0) {
-        boundsError(offset, buf.length - (byteLength2 + 1));
-      }
-    }
-    function checkIntBI(value, min, max, buf, offset, byteLength2) {
-      if (value > max || value < min) {
-        const n = typeof min === "bigint" ? "n" : "";
-        let range;
-        {
-          if (min === 0 || min === BigInt(0)) {
-            range = `>= 0${n} and < 2${n} ** ${(byteLength2 + 1) * 8}${n}`;
-          } else {
-            range = `>= -(2${n} ** ${(byteLength2 + 1) * 8 - 1}${n}) and < 2 ** ${(byteLength2 + 1) * 8 - 1}${n}`;
-          }
-        }
-        throw new errors.ERR_OUT_OF_RANGE("value", range, value);
-      }
-      checkBounds(buf, offset, byteLength2);
-    }
-    function validateNumber(value, name) {
-      if (typeof value !== "number") {
-        throw new errors.ERR_INVALID_ARG_TYPE(name, "number", value);
-      }
-    }
-    function boundsError(value, length, type) {
-      if (Math.floor(value) !== value) {
-        validateNumber(value, type);
-        throw new errors.ERR_OUT_OF_RANGE("offset", "an integer", value);
-      }
-      if (length < 0) {
-        throw new errors.ERR_BUFFER_OUT_OF_BOUNDS();
-      }
-      throw new errors.ERR_OUT_OF_RANGE(
-        "offset",
-        `>= ${0} and <= ${length}`,
-        value
-      );
-    }
-    var INVALID_BASE64_RE = /[^+/0-9A-Za-z-_]/g;
-    function base64clean(str) {
-      str = str.split("=")[0];
-      str = str.trim().replace(INVALID_BASE64_RE, "");
-      if (str.length < 2) return "";
-      while (str.length % 4 !== 0) {
-        str = str + "=";
-      }
-      return str;
-    }
-    function utf8ToBytes(string, units) {
-      units = units || Infinity;
-      let codePoint;
-      const length = string.length;
-      let leadSurrogate = null;
-      const bytes = [];
-      for (let i = 0; i < length; ++i) {
-        codePoint = string.charCodeAt(i);
-        if (codePoint > 55295 && codePoint < 57344) {
-          if (!leadSurrogate) {
-            if (codePoint > 56319) {
-              if ((units -= 3) > -1) bytes.push(239, 191, 189);
-              continue;
-            } else if (i + 1 === length) {
-              if ((units -= 3) > -1) bytes.push(239, 191, 189);
-              continue;
-            }
-            leadSurrogate = codePoint;
-            continue;
-          }
-          if (codePoint < 56320) {
-            if ((units -= 3) > -1) bytes.push(239, 191, 189);
-            leadSurrogate = codePoint;
-            continue;
-          }
-          codePoint = (leadSurrogate - 55296 << 10 | codePoint - 56320) + 65536;
-        } else if (leadSurrogate) {
-          if ((units -= 3) > -1) bytes.push(239, 191, 189);
-        }
-        leadSurrogate = null;
-        if (codePoint < 128) {
-          if ((units -= 1) < 0) break;
-          bytes.push(codePoint);
-        } else if (codePoint < 2048) {
-          if ((units -= 2) < 0) break;
-          bytes.push(
-            codePoint >> 6 | 192,
-            codePoint & 63 | 128
-          );
-        } else if (codePoint < 65536) {
-          if ((units -= 3) < 0) break;
-          bytes.push(
-            codePoint >> 12 | 224,
-            codePoint >> 6 & 63 | 128,
-            codePoint & 63 | 128
-          );
-        } else if (codePoint < 1114112) {
-          if ((units -= 4) < 0) break;
-          bytes.push(
-            codePoint >> 18 | 240,
-            codePoint >> 12 & 63 | 128,
-            codePoint >> 6 & 63 | 128,
-            codePoint & 63 | 128
-          );
-        } else {
-          throw new Error("Invalid code point");
-        }
-      }
-      return bytes;
-    }
-    function asciiToBytes(str) {
-      const byteArray = [];
-      for (let i = 0; i < str.length; ++i) {
-        byteArray.push(str.charCodeAt(i) & 255);
-      }
-      return byteArray;
-    }
-    function utf16leToBytes(str, units) {
-      let c, hi, lo;
-      const byteArray = [];
-      for (let i = 0; i < str.length; ++i) {
-        if ((units -= 2) < 0) break;
-        c = str.charCodeAt(i);
-        hi = c >> 8;
-        lo = c % 256;
-        byteArray.push(lo);
-        byteArray.push(hi);
-      }
-      return byteArray;
-    }
-    function base64ToBytes(str) {
-      return base64.toByteArray(base64clean(str));
-    }
-    function blitBuffer(src, dst, offset, length) {
-      let i;
-      for (i = 0; i < length; ++i) {
-        if (i + offset >= dst.length || i >= src.length) break;
-        dst[i + offset] = src[i];
-      }
-      return i;
-    }
-    function isInstance(obj, type) {
-      return obj instanceof type || obj != null && obj.constructor != null && obj.constructor.name != null && obj.constructor.name === type.name;
-    }
-    function numberIsNaN(obj) {
-      return obj !== obj;
-    }
-    var hexSliceLookupTable = (function() {
-      const alphabet = "0123456789abcdef";
-      const table = new Array(256);
-      for (let i = 0; i < 16; ++i) {
-        const i16 = i * 16;
-        for (let j = 0; j < 16; ++j) {
-          table[i16 + j] = alphabet[i] + alphabet[j];
-        }
-      }
-      return table;
-    })();
-    function defineBigIntMethod(fn) {
-      return typeof BigInt === "undefined" ? BufferBigIntNotDefined : fn;
-    }
-    function BufferBigIntNotDefined() {
-      throw new Error("BigInt not supported");
-    }
   }
 });
 
 // node_modules/readable-stream/lib/internal/streams/buffer_list.js
 var require_buffer_list = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/buffer_list.js"(exports, module) {
+    init_globals();
     function ownKeys(object, enumerableOnly) {
       var keys = Object.keys(object);
       if (Object.getOwnPropertySymbols) {
@@ -4592,12 +4852,12 @@ var require_buffer_list = __commonJS({
       return (String )(input);
     }
     var _require = require_buffer();
-    var Buffer2 = _require.Buffer;
+    var Buffer4 = _require.Buffer;
     var _require2 = require_util();
     var inspect = _require2.inspect;
     var custom = inspect && inspect.custom || "inspect";
     function copyBuffer(src, target, offset) {
-      Buffer2.prototype.copy.call(src, target, offset);
+      Buffer4.prototype.copy.call(src, target, offset);
     }
     module.exports = /* @__PURE__ */ (function() {
       function BufferList() {
@@ -4657,8 +4917,8 @@ var require_buffer_list = __commonJS({
       }, {
         key: "concat",
         value: function concat(n) {
-          if (this.length === 0) return Buffer2.alloc(0);
-          var ret = Buffer2.allocUnsafe(n >>> 0);
+          if (this.length === 0) return Buffer4.alloc(0);
+          var ret = Buffer4.allocUnsafe(n >>> 0);
           var p = this.head;
           var i = 0;
           while (p) {
@@ -4722,7 +4982,7 @@ var require_buffer_list = __commonJS({
       }, {
         key: "_getBuffer",
         value: function _getBuffer(n) {
-          var ret = Buffer2.allocUnsafe(n);
+          var ret = Buffer4.allocUnsafe(n);
           var p = this.head;
           var c = 1;
           p.data.copy(ret);
@@ -4768,6 +5028,7 @@ var require_buffer_list = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/destroy.js
 var require_destroy = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/destroy.js"(exports, module) {
+    init_globals();
     function destroy(err, cb) {
       var _this = this;
       var readableDestroyed = this._readableState && this._readableState.destroyed;
@@ -4777,10 +5038,10 @@ var require_destroy = __commonJS({
           cb(err);
         } else if (err) {
           if (!this._writableState) {
-            process.nextTick(emitErrorNT, this, err);
+            globalThis.process.nextTick(emitErrorNT, this, err);
           } else if (!this._writableState.errorEmitted) {
             this._writableState.errorEmitted = true;
-            process.nextTick(emitErrorNT, this, err);
+            globalThis.process.nextTick(emitErrorNT, this, err);
           }
         }
         return this;
@@ -4794,18 +5055,18 @@ var require_destroy = __commonJS({
       this._destroy(err || null, function(err2) {
         if (!cb && err2) {
           if (!_this._writableState) {
-            process.nextTick(emitErrorAndCloseNT, _this, err2);
+            globalThis.process.nextTick(emitErrorAndCloseNT, _this, err2);
           } else if (!_this._writableState.errorEmitted) {
             _this._writableState.errorEmitted = true;
-            process.nextTick(emitErrorAndCloseNT, _this, err2);
+            globalThis.process.nextTick(emitErrorAndCloseNT, _this, err2);
           } else {
-            process.nextTick(emitCloseNT, _this);
+            globalThis.process.nextTick(emitCloseNT, _this);
           }
         } else if (cb) {
-          process.nextTick(emitCloseNT, _this);
+          globalThis.process.nextTick(emitCloseNT, _this);
           cb(err2);
         } else {
-          process.nextTick(emitCloseNT, _this);
+          globalThis.process.nextTick(emitCloseNT, _this);
         }
       });
       return this;
@@ -4856,6 +5117,7 @@ var require_destroy = __commonJS({
 // node_modules/readable-stream/errors-browser.js
 var require_errors_browser = __commonJS({
   "node_modules/readable-stream/errors-browser.js"(exports, module) {
+    init_globals();
     function _inheritsLoose(subClass, superClass) {
       subClass.prototype = Object.create(superClass.prototype);
       subClass.prototype.constructor = subClass;
@@ -4964,6 +5226,7 @@ var require_errors_browser = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/state.js
 var require_state = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/state.js"(exports, module) {
+    init_globals();
     var ERR_INVALID_OPT_VALUE = require_errors_browser().codes.ERR_INVALID_OPT_VALUE;
     function highWaterMarkFrom(options, isDuplex, duplexKey) {
       return options.highWaterMark != null ? options.highWaterMark : isDuplex ? options[duplexKey] : null;
@@ -4986,8 +5249,9 @@ var require_state = __commonJS({
 });
 
 // node_modules/util-deprecate/browser.js
-var require_browser = __commonJS({
+var require_browser2 = __commonJS({
   "node_modules/util-deprecate/browser.js"(exports, module) {
+    init_globals();
     module.exports = deprecate;
     function deprecate(fn, msg) {
       if (config("noDeprecation")) {
@@ -5025,6 +5289,7 @@ var require_browser = __commonJS({
 // node_modules/readable-stream/lib/_stream_writable.js
 var require_stream_writable = __commonJS({
   "node_modules/readable-stream/lib/_stream_writable.js"(exports, module) {
+    init_globals();
     module.exports = Writable;
     function CorkedRequest(state) {
       var _this = this;
@@ -5037,17 +5302,17 @@ var require_stream_writable = __commonJS({
     var Duplex;
     Writable.WritableState = WritableState;
     var internalUtil = {
-      deprecate: require_browser()
+      deprecate: require_browser2()
     };
     var Stream = require_stream_browser();
-    var Buffer2 = require_buffer().Buffer;
+    var Buffer4 = require_buffer().Buffer;
     var OurUint8Array = (typeof global !== "undefined" ? global : typeof window !== "undefined" ? window : typeof self !== "undefined" ? self : {}).Uint8Array || function() {
     };
     function _uint8ArrayToBuffer(chunk) {
-      return Buffer2.from(chunk);
+      return Buffer4.from(chunk);
     }
     function _isUint8Array(obj) {
-      return Buffer2.isBuffer(obj) || obj instanceof OurUint8Array;
+      return Buffer4.isBuffer(obj) || obj instanceof OurUint8Array;
     }
     var destroyImpl = require_destroy();
     var _require = require_state();
@@ -5155,7 +5420,7 @@ var require_stream_writable = __commonJS({
     function writeAfterEnd(stream, cb) {
       var er = new ERR_STREAM_WRITE_AFTER_END();
       errorOrDestroy(stream, er);
-      process.nextTick(cb, er);
+      globalThis.process.nextTick(cb, er);
     }
     function validChunk(stream, state, chunk, cb) {
       var er;
@@ -5166,7 +5431,7 @@ var require_stream_writable = __commonJS({
       }
       if (er) {
         errorOrDestroy(stream, er);
-        process.nextTick(cb, er);
+        globalThis.process.nextTick(cb, er);
         return false;
       }
       return true;
@@ -5175,7 +5440,7 @@ var require_stream_writable = __commonJS({
       var state = this._writableState;
       var ret = false;
       var isBuf = !state.objectMode && _isUint8Array(chunk);
-      if (isBuf && !Buffer2.isBuffer(chunk)) {
+      if (isBuf && !Buffer4.isBuffer(chunk)) {
         chunk = _uint8ArrayToBuffer(chunk);
       }
       if (typeof encoding === "function") {
@@ -5219,7 +5484,7 @@ var require_stream_writable = __commonJS({
     });
     function decodeChunk(state, chunk, encoding) {
       if (!state.objectMode && state.decodeStrings !== false && typeof chunk === "string") {
-        chunk = Buffer2.from(chunk, encoding);
+        chunk = Buffer4.from(chunk, encoding);
       }
       return chunk;
     }
@@ -5278,8 +5543,8 @@ var require_stream_writable = __commonJS({
     function onwriteError(stream, state, sync, er, cb) {
       --state.pendingcb;
       if (sync) {
-        process.nextTick(cb, er);
-        process.nextTick(finishMaybe, stream, state);
+        globalThis.process.nextTick(cb, er);
+        globalThis.process.nextTick(finishMaybe, stream, state);
         stream._writableState.errorEmitted = true;
         errorOrDestroy(stream, er);
       } else {
@@ -5308,7 +5573,7 @@ var require_stream_writable = __commonJS({
           clearBuffer(stream, state);
         }
         if (sync) {
-          process.nextTick(afterWrite, stream, state, finished, cb);
+          globalThis.process.nextTick(afterWrite, stream, state, finished, cb);
         } else {
           afterWrite(stream, state, finished, cb);
         }
@@ -5421,7 +5686,7 @@ var require_stream_writable = __commonJS({
         if (typeof stream._final === "function" && !state.destroyed) {
           state.pendingcb++;
           state.finalCalled = true;
-          process.nextTick(callFinal, stream, state);
+          globalThis.process.nextTick(callFinal, stream, state);
         } else {
           state.prefinished = true;
           stream.emit("prefinish");
@@ -5449,7 +5714,7 @@ var require_stream_writable = __commonJS({
       state.ending = true;
       finishMaybe(stream, state);
       if (cb) {
-        if (state.finished) process.nextTick(cb);
+        if (state.finished) globalThis.process.nextTick(cb);
         else stream.once("finish", cb);
       }
       state.ended = true;
@@ -5495,6 +5760,7 @@ var require_stream_writable = __commonJS({
 // node_modules/readable-stream/lib/_stream_duplex.js
 var require_stream_duplex = __commonJS({
   "node_modules/readable-stream/lib/_stream_duplex.js"(exports, module) {
+    init_globals();
     var objectKeys = Object.keys || function(obj) {
       var keys2 = [];
       for (var key in obj) keys2.push(key);
@@ -5557,7 +5823,7 @@ var require_stream_duplex = __commonJS({
     });
     function onend() {
       if (this._writableState.ended) return;
-      process.nextTick(onEndNT, this);
+      globalThis.process.nextTick(onEndNT, this);
     }
     function onEndNT(self2) {
       self2.end();
@@ -5587,35 +5853,36 @@ var require_stream_duplex = __commonJS({
 // node_modules/safe-buffer/index.js
 var require_safe_buffer = __commonJS({
   "node_modules/safe-buffer/index.js"(exports, module) {
+    init_globals();
     var buffer = require_buffer();
-    var Buffer2 = buffer.Buffer;
+    var Buffer4 = buffer.Buffer;
     function copyProps(src, dst) {
       for (var key in src) {
         dst[key] = src[key];
       }
     }
-    if (Buffer2.from && Buffer2.alloc && Buffer2.allocUnsafe && Buffer2.allocUnsafeSlow) {
+    if (Buffer4.from && Buffer4.alloc && Buffer4.allocUnsafe && Buffer4.allocUnsafeSlow) {
       module.exports = buffer;
     } else {
       copyProps(buffer, exports);
       exports.Buffer = SafeBuffer;
     }
     function SafeBuffer(arg, encodingOrOffset, length) {
-      return Buffer2(arg, encodingOrOffset, length);
+      return Buffer4(arg, encodingOrOffset, length);
     }
-    SafeBuffer.prototype = Object.create(Buffer2.prototype);
-    copyProps(Buffer2, SafeBuffer);
+    SafeBuffer.prototype = Object.create(Buffer4.prototype);
+    copyProps(Buffer4, SafeBuffer);
     SafeBuffer.from = function(arg, encodingOrOffset, length) {
       if (typeof arg === "number") {
         throw new TypeError("Argument must not be a number");
       }
-      return Buffer2(arg, encodingOrOffset, length);
+      return Buffer4(arg, encodingOrOffset, length);
     };
     SafeBuffer.alloc = function(size, fill, encoding) {
       if (typeof size !== "number") {
         throw new TypeError("Argument must be a number");
       }
-      var buf = Buffer2(size);
+      var buf = Buffer4(size);
       if (fill !== void 0) {
         if (typeof encoding === "string") {
           buf.fill(fill, encoding);
@@ -5631,7 +5898,7 @@ var require_safe_buffer = __commonJS({
       if (typeof size !== "number") {
         throw new TypeError("Argument must be a number");
       }
-      return Buffer2(size);
+      return Buffer4(size);
     };
     SafeBuffer.allocUnsafeSlow = function(size) {
       if (typeof size !== "number") {
@@ -5645,8 +5912,9 @@ var require_safe_buffer = __commonJS({
 // node_modules/string_decoder/lib/string_decoder.js
 var require_string_decoder = __commonJS({
   "node_modules/string_decoder/lib/string_decoder.js"(exports) {
-    var Buffer2 = require_safe_buffer().Buffer;
-    var isEncoding = Buffer2.isEncoding || function(encoding) {
+    init_globals();
+    var Buffer4 = require_safe_buffer().Buffer;
+    var isEncoding = Buffer4.isEncoding || function(encoding) {
       encoding = "" + encoding;
       switch (encoding && encoding.toLowerCase()) {
         case "hex":
@@ -5694,7 +5962,7 @@ var require_string_decoder = __commonJS({
     }
     function normalizeEncoding(enc) {
       var nenc = _normalizeEncoding(enc);
-      if (typeof nenc !== "string" && (Buffer2.isEncoding === isEncoding || !isEncoding(enc))) throw new Error("Unknown encoding: " + enc);
+      if (typeof nenc !== "string" && (Buffer4.isEncoding === isEncoding || !isEncoding(enc))) throw new Error("Unknown encoding: " + enc);
       return nenc || enc;
     }
     exports.StringDecoder = StringDecoder;
@@ -5723,7 +5991,7 @@ var require_string_decoder = __commonJS({
       }
       this.lastNeed = 0;
       this.lastTotal = 0;
-      this.lastChar = Buffer2.allocUnsafe(nb);
+      this.lastChar = Buffer4.allocUnsafe(nb);
     }
     StringDecoder.prototype.write = function(buf) {
       if (buf.length === 0) return "";
@@ -5882,6 +6150,7 @@ var require_string_decoder = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/end-of-stream.js
 var require_end_of_stream = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/end-of-stream.js"(exports, module) {
+    init_globals();
     var ERR_STREAM_PREMATURE_CLOSE = require_errors_browser().codes.ERR_STREAM_PREMATURE_CLOSE;
     function once(callback) {
       var called = false;
@@ -5970,6 +6239,7 @@ var require_end_of_stream = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/async_iterator.js
 var require_async_iterator = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/async_iterator.js"(exports, module) {
+    init_globals();
     var _Object$setPrototypeO;
     function _defineProperty(obj, key, value) {
       key = _toPropertyKey(key);
@@ -6021,7 +6291,7 @@ var require_async_iterator = __commonJS({
       }
     }
     function onReadable(iter) {
-      process.nextTick(readAndResolve, iter);
+      globalThis.process.nextTick(readAndResolve, iter);
     }
     function wrapForNext(lastPromise, iter) {
       return function(resolve, reject) {
@@ -6051,7 +6321,7 @@ var require_async_iterator = __commonJS({
         }
         if (this[kStream].destroyed) {
           return new Promise(function(resolve, reject) {
-            process.nextTick(function() {
+            globalThis.process.nextTick(function() {
               if (_this[kError]) {
                 reject(_this[kError]);
               } else {
@@ -6152,6 +6422,7 @@ var require_async_iterator = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/from-browser.js
 var require_from_browser = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/from-browser.js"(exports, module) {
+    init_globals();
     module.exports = function() {
       throw new Error("Readable.from is not available in the browser");
     };
@@ -6161,6 +6432,7 @@ var require_from_browser = __commonJS({
 // node_modules/readable-stream/lib/_stream_readable.js
 var require_stream_readable = __commonJS({
   "node_modules/readable-stream/lib/_stream_readable.js"(exports, module) {
+    init_globals();
     module.exports = Readable;
     var Duplex;
     Readable.ReadableState = ReadableState;
@@ -6169,14 +6441,14 @@ var require_stream_readable = __commonJS({
       return emitter.listeners(type).length;
     };
     var Stream = require_stream_browser();
-    var Buffer2 = require_buffer().Buffer;
+    var Buffer4 = require_buffer().Buffer;
     var OurUint8Array = (typeof global !== "undefined" ? global : typeof window !== "undefined" ? window : typeof self !== "undefined" ? self : {}).Uint8Array || function() {
     };
     function _uint8ArrayToBuffer(chunk) {
-      return Buffer2.from(chunk);
+      return Buffer4.from(chunk);
     }
     function _isUint8Array(obj) {
-      return Buffer2.isBuffer(obj) || obj instanceof OurUint8Array;
+      return Buffer4.isBuffer(obj) || obj instanceof OurUint8Array;
     }
     var debugUtil = require_util();
     var debug;
@@ -6284,7 +6556,7 @@ var require_stream_readable = __commonJS({
         if (typeof chunk === "string") {
           encoding = encoding || state.defaultEncoding;
           if (encoding !== state.encoding) {
-            chunk = Buffer2.from(chunk, encoding);
+            chunk = Buffer4.from(chunk, encoding);
             encoding = "";
           }
           skipChunkCheck = true;
@@ -6309,7 +6581,7 @@ var require_stream_readable = __commonJS({
         if (er) {
           errorOrDestroy(stream, er);
         } else if (state.objectMode || chunk && chunk.length > 0) {
-          if (typeof chunk !== "string" && !state.objectMode && Object.getPrototypeOf(chunk) !== Buffer2.prototype) {
+          if (typeof chunk !== "string" && !state.objectMode && Object.getPrototypeOf(chunk) !== Buffer4.prototype) {
             chunk = _uint8ArrayToBuffer(chunk);
           }
           if (addToFront) {
@@ -6484,7 +6756,7 @@ var require_stream_readable = __commonJS({
       if (!state.emittedReadable) {
         debug("emitReadable", state.flowing);
         state.emittedReadable = true;
-        process.nextTick(emitReadable_, stream);
+        globalThis.process.nextTick(emitReadable_, stream);
       }
     }
     function emitReadable_(stream) {
@@ -6500,7 +6772,7 @@ var require_stream_readable = __commonJS({
     function maybeReadMore(stream, state) {
       if (!state.readingMore) {
         state.readingMore = true;
-        process.nextTick(maybeReadMore_, stream, state);
+        globalThis.process.nextTick(maybeReadMore_, stream, state);
       }
     }
     function maybeReadMore_(stream, state) {
@@ -6532,9 +6804,9 @@ var require_stream_readable = __commonJS({
       }
       state.pipesCount += 1;
       debug("pipe count=%d opts=%j", state.pipesCount, pipeOpts);
-      var doEnd = (!pipeOpts || pipeOpts.end !== false) && dest !== process.stdout && dest !== process.stderr;
+      var doEnd = (!pipeOpts || pipeOpts.end !== false) && dest !== globalThis.process.stdout && dest !== globalThis.process.stderr;
       var endFn = doEnd ? onend : unpipe;
-      if (state.endEmitted) process.nextTick(endFn);
+      if (state.endEmitted) globalThis.process.nextTick(endFn);
       else src.once("end", endFn);
       dest.on("unpipe", onunpipe);
       function onunpipe(readable, unpipeInfo) {
@@ -6668,7 +6940,7 @@ var require_stream_readable = __commonJS({
           if (state.length) {
             emitReadable(this);
           } else if (!state.reading) {
-            process.nextTick(nReadingNextTick, this);
+            globalThis.process.nextTick(nReadingNextTick, this);
           }
         }
       }
@@ -6678,14 +6950,14 @@ var require_stream_readable = __commonJS({
     Readable.prototype.removeListener = function(ev, fn) {
       var res = Stream.prototype.removeListener.call(this, ev, fn);
       if (ev === "readable") {
-        process.nextTick(updateReadableListening, this);
+        globalThis.process.nextTick(updateReadableListening, this);
       }
       return res;
     };
     Readable.prototype.removeAllListeners = function(ev) {
       var res = Stream.prototype.removeAllListeners.apply(this, arguments);
       if (ev === "readable" || ev === void 0) {
-        process.nextTick(updateReadableListening, this);
+        globalThis.process.nextTick(updateReadableListening, this);
       }
       return res;
     };
@@ -6715,7 +6987,7 @@ var require_stream_readable = __commonJS({
     function resume(stream, state) {
       if (!state.resumeScheduled) {
         state.resumeScheduled = true;
-        process.nextTick(resume_, stream, state);
+        globalThis.process.nextTick(resume_, stream, state);
       }
     }
     function resume_(stream, state) {
@@ -6856,7 +7128,7 @@ var require_stream_readable = __commonJS({
       debug("endReadable", state.endEmitted);
       if (!state.endEmitted) {
         state.ended = true;
-        process.nextTick(endReadableNT, state, stream);
+        globalThis.process.nextTick(endReadableNT, state, stream);
       }
     }
     function endReadableNT(state, stream) {
@@ -6893,6 +7165,7 @@ var require_stream_readable = __commonJS({
 // node_modules/readable-stream/lib/_stream_transform.js
 var require_stream_transform = __commonJS({
   "node_modules/readable-stream/lib/_stream_transform.js"(exports, module) {
+    init_globals();
     module.exports = Transform;
     var _require$codes = require_errors_browser().codes;
     var ERR_METHOD_NOT_IMPLEMENTED = _require$codes.ERR_METHOD_NOT_IMPLEMENTED;
@@ -6993,6 +7266,7 @@ var require_stream_transform = __commonJS({
 // node_modules/readable-stream/lib/_stream_passthrough.js
 var require_stream_passthrough = __commonJS({
   "node_modules/readable-stream/lib/_stream_passthrough.js"(exports, module) {
+    init_globals();
     module.exports = PassThrough;
     var Transform = require_stream_transform();
     require_inherits_browser()(PassThrough, Transform);
@@ -7009,6 +7283,7 @@ var require_stream_passthrough = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/pipeline.js
 var require_pipeline = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/pipeline.js"(exports, module) {
+    init_globals();
     var eos;
     function once(callback) {
       var called = false;
@@ -7093,6 +7368,7 @@ var require_pipeline = __commonJS({
 // node_modules/stream-browserify/index.js
 var require_stream_browserify = __commonJS({
   "node_modules/stream-browserify/index.js"(exports, module) {
+    init_globals();
     module.exports = Stream;
     var EE = require_events().EventEmitter;
     var inherits = require_inherits_browser();
@@ -7170,6 +7446,7 @@ var require_stream_browserify = __commonJS({
 // node_modules/assert/build/internal/errors.js
 var require_errors = __commonJS({
   "node_modules/assert/build/internal/errors.js"(exports, module) {
+    init_globals();
     function _typeof(o) {
       "@babel/helpers - typeof";
       return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
@@ -7382,6 +7659,7 @@ var require_errors = __commonJS({
 // node_modules/assert/build/internal/assert/assertion_error.js
 var require_assertion_error = __commonJS({
   "node_modules/assert/build/internal/assert/assertion_error.js"(exports, module) {
+    init_globals();
     function ownKeys(e, r) {
       var t = Object.keys(e);
       if (Object.getOwnPropertySymbols) {
@@ -7643,7 +7921,7 @@ var require_assertion_error = __commonJS({
             return "".concat(kReadableOperator[operator], "\n\n") + "".concat(actualLines[0], " !== ").concat(expectedLines[0], "\n");
           }
         } else if (operator !== "strictEqualObject") {
-          var maxLength = process.stderr && process.stderr.isTTY ? process.stderr.columns : 80;
+          var maxLength = globalThis.process.stderr && globalThis.process.stderr.isTTY ? globalThis.process.stderr.columns : 80;
           if (inputLength < maxLength) {
             while (actualLines[0][i] === expectedLines[0][i]) {
               i++;
@@ -7778,8 +8056,8 @@ var require_assertion_error = __commonJS({
         if (message != null) {
           _this = _super.call(this, String(message));
         } else {
-          if (process.stderr && process.stderr.isTTY) {
-            if (process.stderr && process.stderr.getColorDepth && process.stderr.getColorDepth() !== 1) {
+          if (globalThis.process.stderr && globalThis.process.stderr.isTTY) {
+            if (globalThis.process.stderr && globalThis.process.stderr.getColorDepth && globalThis.process.stderr.getColorDepth() !== 1) {
               blue = "\x1B[34m";
               green = "\x1B[32m";
               white = "\x1B[39m";
@@ -7882,6 +8160,7 @@ var require_assertion_error = __commonJS({
 // node_modules/object-keys/isArguments.js
 var require_isArguments = __commonJS({
   "node_modules/object-keys/isArguments.js"(exports, module) {
+    init_globals();
     var toStr = Object.prototype.toString;
     module.exports = function isArguments(value) {
       var str = toStr.call(value);
@@ -7897,6 +8176,7 @@ var require_isArguments = __commonJS({
 // node_modules/object-keys/implementation.js
 var require_implementation2 = __commonJS({
   "node_modules/object-keys/implementation.js"(exports, module) {
+    init_globals();
     var keysShim;
     if (!Object.keys) {
       has = Object.prototype.hasOwnProperty;
@@ -8028,6 +8308,7 @@ var require_implementation2 = __commonJS({
 // node_modules/object-keys/index.js
 var require_object_keys = __commonJS({
   "node_modules/object-keys/index.js"(exports, module) {
+    init_globals();
     var slice = Array.prototype.slice;
     var isArgs = require_isArguments();
     var origKeys = Object.keys;
@@ -8061,6 +8342,7 @@ var require_object_keys = __commonJS({
 // node_modules/object.assign/implementation.js
 var require_implementation3 = __commonJS({
   "node_modules/object.assign/implementation.js"(exports, module) {
+    init_globals();
     var objectKeys = require_object_keys();
     var hasSymbols = require_shams()();
     var callBound = require_call_bound();
@@ -8105,6 +8387,7 @@ var require_implementation3 = __commonJS({
 // node_modules/object.assign/polyfill.js
 var require_polyfill = __commonJS({
   "node_modules/object.assign/polyfill.js"(exports, module) {
+    init_globals();
     var implementation = require_implementation3();
     var lacksProperEnumerationOrder = function() {
       if (!Object.assign) {
@@ -8153,6 +8436,7 @@ var require_polyfill = __commonJS({
 // node_modules/object-is/implementation.js
 var require_implementation4 = __commonJS({
   "node_modules/object-is/implementation.js"(exports, module) {
+    init_globals();
     var numberIsNaN = function(value) {
       return value !== value;
     };
@@ -8174,6 +8458,7 @@ var require_implementation4 = __commonJS({
 // node_modules/object-is/polyfill.js
 var require_polyfill2 = __commonJS({
   "node_modules/object-is/polyfill.js"(exports, module) {
+    init_globals();
     var implementation = require_implementation4();
     module.exports = function getPolyfill() {
       return typeof Object.is === "function" ? Object.is : implementation;
@@ -8184,6 +8469,7 @@ var require_polyfill2 = __commonJS({
 // node_modules/call-bind/callBound.js
 var require_callBound = __commonJS({
   "node_modules/call-bind/callBound.js"(exports, module) {
+    init_globals();
     var GetIntrinsic = require_get_intrinsic();
     var callBind = require_call_bind();
     var $indexOf = callBind(GetIntrinsic("String.prototype.indexOf"));
@@ -8200,6 +8486,7 @@ var require_callBound = __commonJS({
 // node_modules/define-properties/index.js
 var require_define_properties = __commonJS({
   "node_modules/define-properties/index.js"(exports, module) {
+    init_globals();
     var keys = require_object_keys();
     var hasSymbols = typeof Symbol === "function" && typeof Symbol("foo") === "symbol";
     var toStr = Object.prototype.toString;
@@ -8243,6 +8530,7 @@ var require_define_properties = __commonJS({
 // node_modules/object-is/shim.js
 var require_shim = __commonJS({
   "node_modules/object-is/shim.js"(exports, module) {
+    init_globals();
     var getPolyfill = require_polyfill2();
     var define2 = require_define_properties();
     module.exports = function shimObjectIs() {
@@ -8260,6 +8548,7 @@ var require_shim = __commonJS({
 // node_modules/object-is/index.js
 var require_object_is = __commonJS({
   "node_modules/object-is/index.js"(exports, module) {
+    init_globals();
     var define2 = require_define_properties();
     var callBind = require_call_bind();
     var implementation = require_implementation4();
@@ -8278,6 +8567,7 @@ var require_object_is = __commonJS({
 // node_modules/is-nan/implementation.js
 var require_implementation5 = __commonJS({
   "node_modules/is-nan/implementation.js"(exports, module) {
+    init_globals();
     module.exports = function isNaN2(value) {
       return value !== value;
     };
@@ -8287,6 +8577,7 @@ var require_implementation5 = __commonJS({
 // node_modules/is-nan/polyfill.js
 var require_polyfill3 = __commonJS({
   "node_modules/is-nan/polyfill.js"(exports, module) {
+    init_globals();
     var implementation = require_implementation5();
     module.exports = function getPolyfill() {
       if (Number.isNaN && Number.isNaN(NaN) && !Number.isNaN("a")) {
@@ -8300,6 +8591,7 @@ var require_polyfill3 = __commonJS({
 // node_modules/is-nan/shim.js
 var require_shim2 = __commonJS({
   "node_modules/is-nan/shim.js"(exports, module) {
+    init_globals();
     var define2 = require_define_properties();
     var getPolyfill = require_polyfill3();
     module.exports = function shimNumberIsNaN() {
@@ -8317,6 +8609,7 @@ var require_shim2 = __commonJS({
 // node_modules/is-nan/index.js
 var require_is_nan = __commonJS({
   "node_modules/is-nan/index.js"(exports, module) {
+    init_globals();
     var callBind = require_call_bind();
     var define2 = require_define_properties();
     var implementation = require_implementation5();
@@ -8335,6 +8628,7 @@ var require_is_nan = __commonJS({
 // node_modules/assert/build/internal/util/comparisons.js
 var require_comparisons = __commonJS({
   "node_modules/assert/build/internal/util/comparisons.js"(exports, module) {
+    init_globals();
     function _slicedToArray(arr, i) {
       return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
     }
@@ -8851,6 +9145,7 @@ var require_comparisons = __commonJS({
 // node_modules/assert/build/assert.js
 var require_assert = __commonJS({
   "node_modules/assert/build/assert.js"(exports, module) {
+    init_globals();
     function _typeof(o) {
       "@babel/helpers - typeof";
       return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
@@ -8909,7 +9204,7 @@ var require_assert = __commonJS({
       } else {
         if (warned === false) {
           warned = true;
-          var warn = process.emitWarning ? process.emitWarning : console.warn.bind(console);
+          var warn = globalThis.process.emitWarning ? globalThis.process.emitWarning : console.warn.bind(console);
           warn("assert.fail() with more than one argument is deprecated. Please use assert.strictEqual() instead or only pass a message.", "DeprecationWarning", "DEP0094");
         }
         if (argsLen === 2) operator = "!=";
@@ -9357,6 +9652,7 @@ var require_assert = __commonJS({
 // node_modules/pako/lib/zlib/zstream.js
 var require_zstream = __commonJS({
   "node_modules/pako/lib/zlib/zstream.js"(exports, module) {
+    init_globals();
     function ZStream() {
       this.input = null;
       this.next_in = 0;
@@ -9378,6 +9674,7 @@ var require_zstream = __commonJS({
 // node_modules/pako/lib/utils/common.js
 var require_common = __commonJS({
   "node_modules/pako/lib/utils/common.js"(exports) {
+    init_globals();
     var TYPED_OK = typeof Uint8Array !== "undefined" && typeof Uint16Array !== "undefined" && typeof Int32Array !== "undefined";
     function _has(obj, key) {
       return Object.prototype.hasOwnProperty.call(obj, key);
@@ -9468,6 +9765,7 @@ var require_common = __commonJS({
 // node_modules/pako/lib/zlib/trees.js
 var require_trees = __commonJS({
   "node_modules/pako/lib/zlib/trees.js"(exports) {
+    init_globals();
     var utils = require_common();
     var Z_FIXED = 4;
     var Z_BINARY = 0;
@@ -10109,6 +10407,7 @@ var require_trees = __commonJS({
 // node_modules/pako/lib/zlib/adler32.js
 var require_adler32 = __commonJS({
   "node_modules/pako/lib/zlib/adler32.js"(exports, module) {
+    init_globals();
     function adler32(adler, buf, len, pos) {
       var s1 = adler & 65535 | 0, s2 = adler >>> 16 & 65535 | 0, n = 0;
       while (len !== 0) {
@@ -10130,6 +10429,7 @@ var require_adler32 = __commonJS({
 // node_modules/pako/lib/zlib/crc32.js
 var require_crc32 = __commonJS({
   "node_modules/pako/lib/zlib/crc32.js"(exports, module) {
+    init_globals();
     function makeTable() {
       var c, table = [];
       for (var n = 0; n < 256; n++) {
@@ -10157,6 +10457,7 @@ var require_crc32 = __commonJS({
 // node_modules/pako/lib/zlib/messages.js
 var require_messages = __commonJS({
   "node_modules/pako/lib/zlib/messages.js"(exports, module) {
+    init_globals();
     module.exports = {
       2: "need dictionary",
       /* Z_NEED_DICT       2  */
@@ -10183,6 +10484,7 @@ var require_messages = __commonJS({
 // node_modules/pako/lib/zlib/deflate.js
 var require_deflate = __commonJS({
   "node_modules/pako/lib/zlib/deflate.js"(exports) {
+    init_globals();
     var utils = require_common();
     var trees = require_trees();
     var adler32 = require_adler32();
@@ -11231,6 +11533,7 @@ var require_deflate = __commonJS({
 // node_modules/pako/lib/zlib/inffast.js
 var require_inffast = __commonJS({
   "node_modules/pako/lib/zlib/inffast.js"(exports, module) {
+    init_globals();
     var BAD = 30;
     var TYPE = 12;
     module.exports = function inflate_fast(strm, start) {
@@ -11459,6 +11762,7 @@ var require_inffast = __commonJS({
 // node_modules/pako/lib/zlib/inftrees.js
 var require_inftrees = __commonJS({
   "node_modules/pako/lib/zlib/inftrees.js"(exports, module) {
+    init_globals();
     var utils = require_common();
     var MAXBITS = 15;
     var ENOUGH_LENS = 852;
@@ -11774,6 +12078,7 @@ var require_inftrees = __commonJS({
 // node_modules/pako/lib/zlib/inflate.js
 var require_inflate = __commonJS({
   "node_modules/pako/lib/zlib/inflate.js"(exports) {
+    init_globals();
     var utils = require_common();
     var adler32 = require_adler32();
     var crc32 = require_crc32();
@@ -13009,6 +13314,7 @@ var require_inflate = __commonJS({
 // node_modules/pako/lib/zlib/constants.js
 var require_constants = __commonJS({
   "node_modules/pako/lib/zlib/constants.js"(exports, module) {
+    init_globals();
     module.exports = {
       /* Allowed flush values; see deflate() and inflate() below for details */
       Z_NO_FLUSH: 0,
@@ -13055,6 +13361,7 @@ var require_constants = __commonJS({
 // node_modules/browserify-zlib/lib/binding.js
 var require_binding = __commonJS({
   "node_modules/browserify-zlib/lib/binding.js"(exports) {
+    init_globals();
     var assert = require_assert();
     var Zstream = require_zstream();
     var zlib_deflate = require_deflate();
@@ -13126,7 +13433,7 @@ var require_binding = __commonJS({
         throw new Error("Invalid flush value");
       }
       if (input == null) {
-        input = Buffer.alloc(0);
+        input = globalThis.Buffer.alloc(0);
         in_len = 0;
         in_off = 0;
       }
@@ -13145,7 +13452,7 @@ var require_binding = __commonJS({
         return;
       }
       var self2 = this;
-      process.nextTick(function() {
+      globalThis.process.nextTick(function() {
         self2._process();
         self2._after();
       });
@@ -13370,7 +13677,8 @@ var require_binding = __commonJS({
 // node_modules/browserify-zlib/lib/index.js
 var require_lib = __commonJS({
   "node_modules/browserify-zlib/lib/index.js"(exports) {
-    var Buffer2 = require_buffer().Buffer;
+    init_globals();
+    var Buffer4 = require_buffer().Buffer;
     var Transform = require_stream_browserify().Transform;
     var binding = require_binding();
     var util = require_util();
@@ -13549,7 +13857,7 @@ var require_lib = __commonJS({
         if (nread >= kMaxLength) {
           err = new RangeError(kRangeErrorMessage);
         } else {
-          buf = Buffer2.concat(buffers, nread);
+          buf = Buffer4.concat(buffers, nread);
         }
         buffers = [];
         engine.close();
@@ -13557,8 +13865,8 @@ var require_lib = __commonJS({
       }
     }
     function zlibBufferSync(engine, buffer) {
-      if (typeof buffer === "string") buffer = Buffer2.from(buffer);
-      if (!Buffer2.isBuffer(buffer)) throw new TypeError("Not a string or buffer");
+      if (typeof buffer === "string") buffer = Buffer4.from(buffer);
+      if (!Buffer4.isBuffer(buffer)) throw new TypeError("Not a string or buffer");
       var flushFlag = engine._finishFlushFlag;
       return engine._processChunk(buffer, flushFlag);
     }
@@ -13632,7 +13940,7 @@ var require_lib = __commonJS({
         }
       }
       if (opts.dictionary) {
-        if (!Buffer2.isBuffer(opts.dictionary)) {
+        if (!Buffer4.isBuffer(opts.dictionary)) {
           throw new Error("Invalid dictionary: it should be a Buffer instance");
         }
       }
@@ -13652,7 +13960,7 @@ var require_lib = __commonJS({
       var strategy = exports.Z_DEFAULT_STRATEGY;
       if (typeof opts.strategy === "number") strategy = opts.strategy;
       this._handle.init(opts.windowBits || exports.Z_DEFAULT_WINDOWBITS, level, opts.memLevel || exports.Z_DEFAULT_MEMLEVEL, strategy, opts.dictionary);
-      this._buffer = Buffer2.allocUnsafe(this._chunkSize);
+      this._buffer = Buffer4.allocUnsafe(this._chunkSize);
       this._offset = 0;
       this._level = level;
       this._strategy = strategy;
@@ -13685,7 +13993,7 @@ var require_lib = __commonJS({
           }
         });
       } else {
-        process.nextTick(callback);
+        globalThis.process.nextTick(callback);
       }
     };
     Zlib.prototype.reset = function() {
@@ -13693,7 +14001,7 @@ var require_lib = __commonJS({
       return this._handle.reset();
     };
     Zlib.prototype._flush = function(callback) {
-      this._transform(Buffer2.alloc(0), "", callback);
+      this._transform(Buffer4.alloc(0), "", callback);
     };
     Zlib.prototype.flush = function(kind, callback) {
       var _this2 = this;
@@ -13703,7 +14011,7 @@ var require_lib = __commonJS({
         kind = binding.Z_FULL_FLUSH;
       }
       if (ws.ended) {
-        if (callback) process.nextTick(callback);
+        if (callback) globalThis.process.nextTick(callback);
       } else if (ws.ending) {
         if (callback) this.once("end", callback);
       } else if (ws.needDrain) {
@@ -13714,15 +14022,15 @@ var require_lib = __commonJS({
         }
       } else {
         this._flushFlag = kind;
-        this.write(Buffer2.alloc(0), "", callback);
+        this.write(Buffer4.alloc(0), "", callback);
       }
     };
     Zlib.prototype.close = function(callback) {
       _close(this, callback);
-      process.nextTick(emitCloseNT, this);
+      globalThis.process.nextTick(emitCloseNT, this);
     };
     function _close(engine, callback) {
-      if (callback) process.nextTick(callback);
+      if (callback) globalThis.process.nextTick(callback);
       if (!engine._handle) return;
       engine._handle.close();
       engine._handle = null;
@@ -13735,7 +14043,7 @@ var require_lib = __commonJS({
       var ws = this._writableState;
       var ending = ws.ending || ws.ended;
       var last = ending && (!chunk || ws.length === chunk.length);
-      if (chunk !== null && !Buffer2.isBuffer(chunk)) return cb(new Error("invalid input"));
+      if (chunk !== null && !Buffer4.isBuffer(chunk)) return cb(new Error("invalid input"));
       if (!this._handle) return cb(new Error("zlib binding closed"));
       if (last) flushFlag = this._finishFlushFlag;
       else {
@@ -13783,7 +14091,7 @@ var require_lib = __commonJS({
           _close(this);
           throw new RangeError(kRangeErrorMessage);
         }
-        var buf = Buffer2.concat(buffers, nread);
+        var buf = Buffer4.concat(buffers, nread);
         _close(this);
         return buf;
       }
@@ -13825,7 +14133,7 @@ var require_lib = __commonJS({
         if (availOutAfter === 0 || self2._offset >= self2._chunkSize) {
           availOutBefore = self2._chunkSize;
           self2._offset = 0;
-          self2._buffer = Buffer2.allocUnsafe(self2._chunkSize);
+          self2._buffer = Buffer4.allocUnsafe(self2._chunkSize);
         }
         if (availOutAfter === 0) {
           inOff += availInBefore - availInAfter;
@@ -13853,6 +14161,7 @@ var require_lib = __commonJS({
 // node_modules/pngjs/lib/chunkstream.js
 var require_chunkstream = __commonJS({
   "node_modules/pngjs/lib/chunkstream.js"(exports, module) {
+    init_globals();
     var util = require_util();
     var Stream = require_stream_browserify();
     var ChunkStream = module.exports = function() {
@@ -13872,7 +14181,7 @@ var require_chunkstream = __commonJS({
         allowLess: length < 0,
         func: callback
       });
-      process.nextTick(
+      globalThis.process.nextTick(
         function() {
           this._process();
           if (this._paused && this._reads && this._reads.length > 0) {
@@ -13888,10 +14197,10 @@ var require_chunkstream = __commonJS({
         return false;
       }
       let dataBuffer;
-      if (Buffer.isBuffer(data)) {
+      if (globalThis.Buffer.isBuffer(data)) {
         dataBuffer = data;
       } else {
-        dataBuffer = Buffer.from(data, encoding || this._encoding);
+        dataBuffer = globalThis.Buffer.from(data, encoding || this._encoding);
       }
       this._buffers.push(dataBuffer);
       this._buffered += dataBuffer.length;
@@ -13949,7 +14258,7 @@ var require_chunkstream = __commonJS({
       this._reads.shift();
       let pos = 0;
       let count = 0;
-      let data = Buffer.alloc(read.length);
+      let data = globalThis.Buffer.alloc(read.length);
       while (pos < read.length) {
         let buf = this._buffers[count++];
         let len = Math.min(buf.length, read.length - pos);
@@ -13990,6 +14299,7 @@ var require_chunkstream = __commonJS({
 // node_modules/pngjs/lib/interlace.js
 var require_interlace = __commonJS({
   "node_modules/pngjs/lib/interlace.js"(exports) {
+    init_globals();
     var imagePasses = [
       {
         // pass 1 - 1px
@@ -14072,6 +14382,7 @@ var require_interlace = __commonJS({
 // node_modules/pngjs/lib/paeth-predictor.js
 var require_paeth_predictor = __commonJS({
   "node_modules/pngjs/lib/paeth-predictor.js"(exports, module) {
+    init_globals();
     module.exports = function paethPredictor(left, above, upLeft) {
       let paeth = left + above - upLeft;
       let pLeft = Math.abs(paeth - left);
@@ -14091,6 +14402,7 @@ var require_paeth_predictor = __commonJS({
 // node_modules/pngjs/lib/filter-parse.js
 var require_filter_parse = __commonJS({
   "node_modules/pngjs/lib/filter-parse.js"(exports, module) {
+    init_globals();
     var interlaceUtils = require_interlace();
     var paethPredictor = require_paeth_predictor();
     function getByteWidth(width, bpp, depth) {
@@ -14191,7 +14503,7 @@ var require_filter_parse = __commonJS({
       if (filter === 0) {
         unfilteredLine = rawData.slice(1, byteWidth + 1);
       } else {
-        unfilteredLine = Buffer.alloc(byteWidth);
+        unfilteredLine = globalThis.Buffer.alloc(byteWidth);
         switch (filter) {
           case 1:
             this._unFilterType1(rawData, unfilteredLine, byteWidth);
@@ -14231,6 +14543,7 @@ var require_filter_parse = __commonJS({
 // node_modules/pngjs/lib/filter-parse-async.js
 var require_filter_parse_async = __commonJS({
   "node_modules/pngjs/lib/filter-parse-async.js"(exports, module) {
+    init_globals();
     var util = require_util();
     var ChunkStream = require_chunkstream();
     var Filter = require_filter_parse();
@@ -14244,7 +14557,7 @@ var require_filter_parse_async = __commonJS({
           buffers.push(buffer);
         },
         complete: function() {
-          that.emit("complete", Buffer.concat(buffers));
+          that.emit("complete", globalThis.Buffer.concat(buffers));
         }
       });
       this._filter.start();
@@ -14256,6 +14569,7 @@ var require_filter_parse_async = __commonJS({
 // node_modules/pngjs/lib/constants.js
 var require_constants2 = __commonJS({
   "node_modules/pngjs/lib/constants.js"(exports, module) {
+    init_globals();
     module.exports = {
       PNG_SIGNATURE: [137, 80, 78, 71, 13, 10, 26, 10],
       TYPE_IHDR: 1229472850,
@@ -14290,6 +14604,7 @@ var require_constants2 = __commonJS({
 // node_modules/pngjs/lib/crc.js
 var require_crc = __commonJS({
   "node_modules/pngjs/lib/crc.js"(exports, module) {
+    init_globals();
     var crcTable = [];
     (function() {
       for (let i = 0; i < 256; i++) {
@@ -14329,6 +14644,7 @@ var require_crc = __commonJS({
 // node_modules/pngjs/lib/parser.js
 var require_parser = __commonJS({
   "node_modules/pngjs/lib/parser.js"(exports, module) {
+    init_globals();
     var constants = require_constants2();
     var CrcCalculator = require_crc();
     var Parser = module.exports = function(options, dependencies) {
@@ -14385,7 +14701,7 @@ var require_parser = __commonJS({
         return;
       }
       this._crc = new CrcCalculator();
-      this._crc.write(Buffer.from(name));
+      this._crc.write(globalThis.Buffer.from(name));
       if (this._chunks[type]) {
         return this._chunks[type](length);
       }
@@ -14549,6 +14865,7 @@ var require_parser = __commonJS({
 // node_modules/pngjs/lib/bitmapper.js
 var require_bitmapper = __commonJS({
   "node_modules/pngjs/lib/bitmapper.js"(exports) {
+    init_globals();
     var interlaceUtils = require_interlace();
     var pixelBppMapper = [
       // 0 - dummy entry
@@ -14740,7 +15057,7 @@ var require_bitmapper = __commonJS({
       }
       let pxData;
       if (depth <= 8) {
-        pxData = Buffer.alloc(width * height * 4);
+        pxData = globalThis.Buffer.alloc(width * height * 4);
       } else {
         pxData = new Uint16Array(width * height * 4);
       }
@@ -14796,6 +15113,7 @@ var require_bitmapper = __commonJS({
 // node_modules/pngjs/lib/format-normaliser.js
 var require_format_normaliser = __commonJS({
   "node_modules/pngjs/lib/format-normaliser.js"(exports, module) {
+    init_globals();
     function dePalette(indata, outdata, width, height, palette) {
       let pxPos = 0;
       for (let y = 0; y < height; y++) {
@@ -14863,7 +15181,7 @@ var require_format_normaliser = __commonJS({
         }
         if (depth !== 8 && !skipRescale) {
           if (depth === 16) {
-            outdata = Buffer.alloc(width * height * 4);
+            outdata = globalThis.Buffer.alloc(width * height * 4);
           }
           scaleDepth(indata, outdata, width, height, depth);
         }
@@ -14876,6 +15194,7 @@ var require_format_normaliser = __commonJS({
 // node_modules/pngjs/lib/parser-async.js
 var require_parser_async = __commonJS({
   "node_modules/pngjs/lib/parser-async.js"(exports, module) {
+    init_globals();
     var util = require_util();
     var zlib = require_lib();
     var ChunkStream = require_chunkstream();
@@ -15005,6 +15324,7 @@ var require_parser_async = __commonJS({
 // node_modules/pngjs/lib/bitpacker.js
 var require_bitpacker = __commonJS({
   "node_modules/pngjs/lib/bitpacker.js"(exports, module) {
+    init_globals();
     var constants = require_constants2();
     module.exports = function(dataIn, width, height, options) {
       let outHasAlpha = [constants.COLORTYPE_COLOR_ALPHA, constants.COLORTYPE_ALPHA].indexOf(
@@ -15036,7 +15356,7 @@ var require_bitpacker = __commonJS({
         maxValue = 65535;
         outBpp *= 2;
       }
-      let outData = Buffer.alloc(width * height * outBpp);
+      let outData = globalThis.Buffer.alloc(width * height * outBpp);
       let inIndex = 0;
       let outIndex = 0;
       let bgColor = options.bgColor || {};
@@ -15154,6 +15474,7 @@ var require_bitpacker = __commonJS({
 // node_modules/pngjs/lib/filter-pack.js
 var require_filter_pack = __commonJS({
   "node_modules/pngjs/lib/filter-pack.js"(exports, module) {
+    init_globals();
     var paethPredictor = require_paeth_predictor();
     function filterNone(pxData, pxPos, byteWidth, rawData, rawPos) {
       for (let x = 0; x < byteWidth; x++) {
@@ -15268,7 +15589,7 @@ var require_filter_pack = __commonJS({
       let byteWidth = width * bpp;
       let rawPos = 0;
       let pxPos = 0;
-      let rawData = Buffer.alloc((byteWidth + 1) * height);
+      let rawData = globalThis.Buffer.alloc((byteWidth + 1) * height);
       let sel = filterTypes[0];
       for (let y = 0; y < height; y++) {
         if (filterTypes.length > 1) {
@@ -15295,6 +15616,7 @@ var require_filter_pack = __commonJS({
 // node_modules/pngjs/lib/packer.js
 var require_packer = __commonJS({
   "node_modules/pngjs/lib/packer.js"(exports, module) {
+    init_globals();
     var constants = require_constants2();
     var CrcStream = require_crc();
     var bitPacker = require_bitpacker();
@@ -15354,7 +15676,7 @@ var require_packer = __commonJS({
     };
     Packer.prototype._packChunk = function(type, data) {
       let len = data ? data.length : 0;
-      let buf = Buffer.alloc(len + 12);
+      let buf = globalThis.Buffer.alloc(len + 12);
       buf.writeUInt32BE(len, 0);
       buf.writeUInt32BE(type, 4);
       if (data) {
@@ -15367,12 +15689,12 @@ var require_packer = __commonJS({
       return buf;
     };
     Packer.prototype.packGAMA = function(gamma) {
-      let buf = Buffer.alloc(4);
+      let buf = globalThis.Buffer.alloc(4);
       buf.writeUInt32BE(Math.floor(gamma * constants.GAMMA_DIVISION), 0);
       return this._packChunk(constants.TYPE_gAMA, buf);
     };
     Packer.prototype.packIHDR = function(width, height) {
-      let buf = Buffer.alloc(13);
+      let buf = globalThis.Buffer.alloc(13);
       buf.writeUInt32BE(width, 0);
       buf.writeUInt32BE(height, 4);
       buf[8] = this._options.bitDepth;
@@ -15394,6 +15716,7 @@ var require_packer = __commonJS({
 // node_modules/pngjs/lib/packer-async.js
 var require_packer_async = __commonJS({
   "node_modules/pngjs/lib/packer-async.js"(exports, module) {
+    init_globals();
     var util = require_util();
     var Stream = require_stream_browserify();
     var constants = require_constants2();
@@ -15407,7 +15730,7 @@ var require_packer_async = __commonJS({
     };
     util.inherits(PackerAsync, Stream);
     PackerAsync.prototype.pack = function(data, width, height, gamma) {
-      this.emit("data", Buffer.from(constants.PNG_SIGNATURE));
+      this.emit("data", globalThis.Buffer.from(constants.PNG_SIGNATURE));
       this.emit("data", this._packer.packIHDR(width, height));
       if (gamma) {
         this.emit("data", this._packer.packGAMA(gamma));
@@ -15435,6 +15758,7 @@ var require_packer_async = __commonJS({
 // node_modules/pngjs/lib/sync-inflate.js
 var require_sync_inflate = __commonJS({
   "node_modules/pngjs/lib/sync-inflate.js"(exports, module) {
+    init_globals();
     var assert = require_assert().ok;
     var zlib = require_lib();
     var util = require_util();
@@ -15500,7 +15824,7 @@ var require_sync_inflate = __commonJS({
         if (availOutAfter === 0 || self2._offset >= self2._chunkSize) {
           availOutBefore = self2._chunkSize;
           self2._offset = 0;
-          self2._buffer = Buffer.allocUnsafe(self2._chunkSize);
+          self2._buffer = globalThis.Buffer.allocUnsafe(self2._chunkSize);
         }
         if (availOutAfter === 0) {
           inOff += availInBefore - availInAfter;
@@ -15537,16 +15861,16 @@ var require_sync_inflate = __commonJS({
           "Cannot create final Buffer. It would be larger than 0x" + kMaxLength.toString(16) + " bytes"
         );
       }
-      let buf = Buffer.concat(buffers, nread);
+      let buf = globalThis.Buffer.concat(buffers, nread);
       _close(this);
       return buf;
     };
     util.inherits(Inflate, zlib.Inflate);
     function zlibBufferSync(engine, buffer) {
       if (typeof buffer === "string") {
-        buffer = Buffer.from(buffer);
+        buffer = globalThis.Buffer.from(buffer);
       }
-      if (!(buffer instanceof Buffer)) {
+      if (!(buffer instanceof globalThis.Buffer)) {
         throw new TypeError("Not a string or buffer");
       }
       let flushFlag = engine._finishFlushFlag;
@@ -15568,6 +15892,7 @@ var require_sync_inflate = __commonJS({
 // node_modules/pngjs/lib/sync-reader.js
 var require_sync_reader = __commonJS({
   "node_modules/pngjs/lib/sync-reader.js"(exports, module) {
+    init_globals();
     var SyncReader = module.exports = function(buffer) {
       this._buffer = buffer;
       this._reads = [];
@@ -15605,6 +15930,7 @@ var require_sync_reader = __commonJS({
 // node_modules/pngjs/lib/filter-parse-sync.js
 var require_filter_parse_sync = __commonJS({
   "node_modules/pngjs/lib/filter-parse-sync.js"(exports) {
+    init_globals();
     var SyncReader = require_sync_reader();
     var Filter = require_filter_parse();
     exports.process = function(inBuffer, bitmapInfo) {
@@ -15620,7 +15946,7 @@ var require_filter_parse_sync = __commonJS({
       });
       filter.start();
       reader.process();
-      return Buffer.concat(outBuffers);
+      return globalThis.Buffer.concat(outBuffers);
     };
   }
 });
@@ -15628,6 +15954,7 @@ var require_filter_parse_sync = __commonJS({
 // node_modules/pngjs/lib/parser-sync.js
 var require_parser_sync = __commonJS({
   "node_modules/pngjs/lib/parser-sync.js"(exports, module) {
+    init_globals();
     var hasSyncZlib = true;
     var zlib = require_lib();
     var inflateSync = require_sync_inflate();
@@ -15686,7 +16013,7 @@ var require_parser_sync = __commonJS({
       if (err) {
         throw err;
       }
-      let inflateData = Buffer.concat(inflateDataList);
+      let inflateData = globalThis.Buffer.concat(inflateDataList);
       inflateDataList.length = 0;
       let inflatedData;
       if (metaData.interlace) {
@@ -15722,6 +16049,7 @@ var require_parser_sync = __commonJS({
 // node_modules/pngjs/lib/packer-sync.js
 var require_packer_sync = __commonJS({
   "node_modules/pngjs/lib/packer-sync.js"(exports, module) {
+    init_globals();
     var hasSyncZlib = true;
     var zlib = require_lib();
     if (!zlib.deflateSync) {
@@ -15738,7 +16066,7 @@ var require_packer_sync = __commonJS({
       let options = opt || {};
       let packer = new Packer(options);
       let chunks = [];
-      chunks.push(Buffer.from(constants.PNG_SIGNATURE));
+      chunks.push(globalThis.Buffer.from(constants.PNG_SIGNATURE));
       chunks.push(packer.packIHDR(metaData.width, metaData.height));
       if (metaData.gamma) {
         chunks.push(packer.packGAMA(metaData.gamma));
@@ -15758,7 +16086,7 @@ var require_packer_sync = __commonJS({
       }
       chunks.push(packer.packIDAT(compressedData));
       chunks.push(packer.packIEND());
-      return Buffer.concat(chunks);
+      return globalThis.Buffer.concat(chunks);
     };
   }
 });
@@ -15766,6 +16094,7 @@ var require_packer_sync = __commonJS({
 // node_modules/pngjs/lib/png-sync.js
 var require_png_sync = __commonJS({
   "node_modules/pngjs/lib/png-sync.js"(exports) {
+    init_globals();
     var parse = require_parser_sync();
     var pack = require_packer_sync();
     exports.read = function(buffer, options) {
@@ -15780,6 +16109,7 @@ var require_png_sync = __commonJS({
 // node_modules/pngjs/lib/png.js
 var require_png = __commonJS({
   "node_modules/pngjs/lib/png.js"(exports) {
+    init_globals();
     var util = require_util();
     var Stream = require_stream_browserify();
     var Parser = require_parser_async();
@@ -15790,7 +16120,7 @@ var require_png = __commonJS({
       options = options || {};
       this.width = options.width | 0;
       this.height = options.height | 0;
-      this.data = this.width > 0 && this.height > 0 ? Buffer.alloc(4 * this.width * this.height) : null;
+      this.data = this.width > 0 && this.height > 0 ? globalThis.Buffer.alloc(4 * this.width * this.height) : null;
       if (options.fill && this.data) {
         this.data.fill(0);
       }
@@ -15821,7 +16151,7 @@ var require_png = __commonJS({
         this.emit("error", "No data provided");
         return this;
       }
-      process.nextTick(
+      globalThis.process.nextTick(
         function() {
           this._packer.pack(this.data, this.width, this.height, this.gamma);
         }.bind(this)
@@ -15916,8 +16246,9 @@ var require_png = __commonJS({
 // node_modules/safer-buffer/safer.js
 var require_safer = __commonJS({
   "node_modules/safer-buffer/safer.js"(exports, module) {
+    init_globals();
     var buffer = require_buffer();
-    var Buffer2 = buffer.Buffer;
+    var Buffer4 = buffer.Buffer;
     var safer = {};
     var key;
     for (key in buffer) {
@@ -15926,12 +16257,12 @@ var require_safer = __commonJS({
       safer[key] = buffer[key];
     }
     var Safer = safer.Buffer = {};
-    for (key in Buffer2) {
-      if (!Buffer2.hasOwnProperty(key)) continue;
+    for (key in Buffer4) {
+      if (!Buffer4.hasOwnProperty(key)) continue;
       if (key === "allocUnsafe" || key === "allocUnsafeSlow") continue;
-      Safer[key] = Buffer2[key];
+      Safer[key] = Buffer4[key];
     }
-    safer.Buffer.prototype = Buffer2.prototype;
+    safer.Buffer.prototype = Buffer4.prototype;
     if (!Safer.from || Safer.from === Uint8Array.from) {
       Safer.from = function(value, encodingOrOffset, length) {
         if (typeof value === "number") {
@@ -15940,7 +16271,7 @@ var require_safer = __commonJS({
         if (value && typeof value.length === "undefined") {
           throw new TypeError("The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received type " + typeof value);
         }
-        return Buffer2(value, encodingOrOffset, length);
+        return Buffer4(value, encodingOrOffset, length);
       };
     }
     if (!Safer.alloc) {
@@ -15951,7 +16282,7 @@ var require_safer = __commonJS({
         if (size < 0 || size >= 2 * (1 << 30)) {
           throw new RangeError('The value "' + size + '" is invalid for option "size"');
         }
-        var buf = Buffer2(size);
+        var buf = Buffer4(size);
         if (!fill || fill.length === 0) {
           buf.fill(0);
         } else if (typeof encoding === "string") {
@@ -15964,7 +16295,7 @@ var require_safer = __commonJS({
     }
     if (!safer.kStringMaxLength) {
       try {
-        safer.kStringMaxLength = process.binding("buffer").kStringMaxLength;
+        safer.kStringMaxLength = globalThis.process.binding("buffer").kStringMaxLength;
       } catch (e) {
       }
     }
@@ -15983,6 +16314,7 @@ var require_safer = __commonJS({
 // node_modules/iconv-lite/lib/bom-handling.js
 var require_bom_handling = __commonJS({
   "node_modules/iconv-lite/lib/bom-handling.js"(exports) {
+    init_globals();
     var BOMChar = "\uFEFF";
     exports.PrependBOM = PrependBOMWrapper;
     function PrependBOMWrapper(encoder, options) {
@@ -16026,7 +16358,8 @@ var require_bom_handling = __commonJS({
 // node_modules/iconv-lite/encodings/internal.js
 var require_internal = __commonJS({
   "node_modules/iconv-lite/encodings/internal.js"(exports, module) {
-    var Buffer2 = require_safer().Buffer;
+    init_globals();
+    var Buffer4 = require_safer().Buffer;
     module.exports = {
       // Encodings
       utf8: { type: "_internal", bomAware: true },
@@ -16048,7 +16381,7 @@ var require_internal = __commonJS({
       else if (this.enc === "cesu8") {
         this.enc = "utf8";
         this.encoder = InternalEncoderCesu8;
-        if (Buffer2.from("eda0bdedb2a9", "hex").toString() !== "\u{1F4A9}") {
+        if (Buffer4.from("eda0bdedb2a9", "hex").toString() !== "\u{1F4A9}") {
           this.decoder = InternalDecoderCesu8;
           this.defaultCharUnicode = iconv.defaultCharUnicode;
         }
@@ -16064,8 +16397,8 @@ var require_internal = __commonJS({
       this.decoder = new StringDecoder(codec.enc);
     }
     InternalDecoder.prototype.write = function(buf) {
-      if (!Buffer2.isBuffer(buf)) {
-        buf = Buffer2.from(buf);
+      if (!Buffer4.isBuffer(buf)) {
+        buf = Buffer4.from(buf);
       }
       return this.decoder.write(buf);
     };
@@ -16076,7 +16409,7 @@ var require_internal = __commonJS({
       this.enc = codec.enc;
     }
     InternalEncoder.prototype.write = function(str) {
-      return Buffer2.from(str, this.enc);
+      return Buffer4.from(str, this.enc);
     };
     InternalEncoder.prototype.end = function() {
     };
@@ -16088,15 +16421,15 @@ var require_internal = __commonJS({
       var completeQuads = str.length - str.length % 4;
       this.prevStr = str.slice(completeQuads);
       str = str.slice(0, completeQuads);
-      return Buffer2.from(str, "base64");
+      return Buffer4.from(str, "base64");
     };
     InternalEncoderBase64.prototype.end = function() {
-      return Buffer2.from(this.prevStr, "base64");
+      return Buffer4.from(this.prevStr, "base64");
     };
     function InternalEncoderCesu8(options, codec) {
     }
     InternalEncoderCesu8.prototype.write = function(str) {
-      var buf = Buffer2.alloc(str.length * 3), bufIdx = 0;
+      var buf = Buffer4.alloc(str.length * 3), bufIdx = 0;
       for (var i = 0; i < str.length; i++) {
         var charCode = str.charCodeAt(i);
         if (charCode < 128)
@@ -16177,7 +16510,8 @@ var require_internal = __commonJS({
 // node_modules/iconv-lite/encodings/utf32.js
 var require_utf32 = __commonJS({
   "node_modules/iconv-lite/encodings/utf32.js"(exports) {
-    var Buffer2 = require_safer().Buffer;
+    init_globals();
+    var Buffer4 = require_safer().Buffer;
     exports._utf32 = Utf32Codec;
     function Utf32Codec(codecOptions, iconv) {
       this.iconv = iconv;
@@ -16195,8 +16529,8 @@ var require_utf32 = __commonJS({
       this.highSurrogate = 0;
     }
     Utf32Encoder.prototype.write = function(str) {
-      var src = Buffer2.from(str, "ucs2");
-      var dst = Buffer2.alloc(src.length * 2);
+      var src = Buffer4.from(str, "ucs2");
+      var dst = Buffer4.alloc(src.length * 2);
       var write32 = this.isLE ? dst.writeUInt32LE : dst.writeUInt32BE;
       var offset = 0;
       for (var i = 0; i < src.length; i += 2) {
@@ -16230,7 +16564,7 @@ var require_utf32 = __commonJS({
     Utf32Encoder.prototype.end = function() {
       if (!this.highSurrogate)
         return;
-      var buf = Buffer2.alloc(4);
+      var buf = Buffer4.alloc(4);
       if (this.isLE)
         buf.writeUInt32LE(this.highSurrogate, 0);
       else
@@ -16248,7 +16582,7 @@ var require_utf32 = __commonJS({
         return "";
       var i = 0;
       var codepoint = 0;
-      var dst = Buffer2.alloc(src.length + 4);
+      var dst = Buffer4.alloc(src.length + 4);
       var offset = 0;
       var isLE = this.isLE;
       var overflow = this.overflow;
@@ -16395,7 +16729,8 @@ var require_utf32 = __commonJS({
 // node_modules/iconv-lite/encodings/utf16.js
 var require_utf16 = __commonJS({
   "node_modules/iconv-lite/encodings/utf16.js"(exports) {
-    var Buffer2 = require_safer().Buffer;
+    init_globals();
+    var Buffer4 = require_safer().Buffer;
     exports.utf16be = Utf16BECodec;
     function Utf16BECodec() {
     }
@@ -16405,7 +16740,7 @@ var require_utf16 = __commonJS({
     function Utf16BEEncoder() {
     }
     Utf16BEEncoder.prototype.write = function(str) {
-      var buf = Buffer2.from(str, "ucs2");
+      var buf = Buffer4.from(str, "ucs2");
       for (var i = 0; i < buf.length; i += 2) {
         var tmp = buf[i];
         buf[i] = buf[i + 1];
@@ -16421,7 +16756,7 @@ var require_utf16 = __commonJS({
     Utf16BEDecoder.prototype.write = function(buf) {
       if (buf.length == 0)
         return "";
-      var buf2 = Buffer2.alloc(buf.length + 1), i = 0, j = 0;
+      var buf2 = Buffer4.alloc(buf.length + 1), i = 0, j = 0;
       if (this.overflowByte !== -1) {
         buf2[0] = buf[0];
         buf2[1] = this.overflowByte;
@@ -16528,7 +16863,8 @@ var require_utf16 = __commonJS({
 // node_modules/iconv-lite/encodings/utf7.js
 var require_utf7 = __commonJS({
   "node_modules/iconv-lite/encodings/utf7.js"(exports) {
-    var Buffer2 = require_safer().Buffer;
+    init_globals();
+    var Buffer4 = require_safer().Buffer;
     exports.utf7 = Utf7Codec;
     exports.unicode11utf7 = "utf7";
     function Utf7Codec(codecOptions, iconv) {
@@ -16542,7 +16878,7 @@ var require_utf7 = __commonJS({
       this.iconv = codec.iconv;
     }
     Utf7Encoder.prototype.write = function(str) {
-      return Buffer2.from(str.replace(nonDirectChars, function(chunk) {
+      return Buffer4.from(str.replace(nonDirectChars, function(chunk) {
         return "+" + (chunk === "+" ? "" : this.iconv.encode(chunk, "utf16-be").toString("base64").replace(/=+$/, "")) + "-";
       }.bind(this)));
     };
@@ -16576,7 +16912,7 @@ var require_utf7 = __commonJS({
               res += "+";
             } else {
               var b64str = base64Accum + this.iconv.decode(buf.slice(lastI, i2), "ascii");
-              res += this.iconv.decode(Buffer2.from(b64str, "base64"), "utf16-be");
+              res += this.iconv.decode(Buffer4.from(b64str, "base64"), "utf16-be");
             }
             if (buf[i2] != minusChar)
               i2--;
@@ -16593,7 +16929,7 @@ var require_utf7 = __commonJS({
         var canBeDecoded = b64str.length - b64str.length % 8;
         base64Accum = b64str.slice(canBeDecoded);
         b64str = b64str.slice(0, canBeDecoded);
-        res += this.iconv.decode(Buffer2.from(b64str, "base64"), "utf16-be");
+        res += this.iconv.decode(Buffer4.from(b64str, "base64"), "utf16-be");
       }
       this.inBase64 = inBase64;
       this.base64Accum = base64Accum;
@@ -16602,7 +16938,7 @@ var require_utf7 = __commonJS({
     Utf7Decoder.prototype.end = function() {
       var res = "";
       if (this.inBase64 && this.base64Accum.length > 0)
-        res = this.iconv.decode(Buffer2.from(this.base64Accum, "base64"), "utf16-be");
+        res = this.iconv.decode(Buffer4.from(this.base64Accum, "base64"), "utf16-be");
       this.inBase64 = false;
       this.base64Accum = "";
       return res;
@@ -16617,11 +16953,11 @@ var require_utf7 = __commonJS({
     function Utf7IMAPEncoder(options, codec) {
       this.iconv = codec.iconv;
       this.inBase64 = false;
-      this.base64Accum = Buffer2.alloc(6);
+      this.base64Accum = Buffer4.alloc(6);
       this.base64AccumIdx = 0;
     }
     Utf7IMAPEncoder.prototype.write = function(str) {
-      var inBase64 = this.inBase64, base64Accum = this.base64Accum, base64AccumIdx = this.base64AccumIdx, buf = Buffer2.alloc(str.length * 5 + 10), bufIdx = 0;
+      var inBase64 = this.inBase64, base64Accum = this.base64Accum, base64AccumIdx = this.base64AccumIdx, buf = Buffer4.alloc(str.length * 5 + 10), bufIdx = 0;
       for (var i2 = 0; i2 < str.length; i2++) {
         var uChar = str.charCodeAt(i2);
         if (32 <= uChar && uChar <= 126) {
@@ -16658,7 +16994,7 @@ var require_utf7 = __commonJS({
       return buf.slice(0, bufIdx);
     };
     Utf7IMAPEncoder.prototype.end = function() {
-      var buf = Buffer2.alloc(10), bufIdx = 0;
+      var buf = Buffer4.alloc(10), bufIdx = 0;
       if (this.inBase64) {
         if (this.base64AccumIdx > 0) {
           bufIdx += buf.write(this.base64Accum.slice(0, this.base64AccumIdx).toString("base64").replace(/\//g, ",").replace(/=+$/, ""), bufIdx);
@@ -16691,7 +17027,7 @@ var require_utf7 = __commonJS({
               res += "&";
             } else {
               var b64str = base64Accum + this.iconv.decode(buf.slice(lastI, i2), "ascii").replace(/,/g, "/");
-              res += this.iconv.decode(Buffer2.from(b64str, "base64"), "utf16-be");
+              res += this.iconv.decode(Buffer4.from(b64str, "base64"), "utf16-be");
             }
             if (buf[i2] != minusChar)
               i2--;
@@ -16708,7 +17044,7 @@ var require_utf7 = __commonJS({
         var canBeDecoded = b64str.length - b64str.length % 8;
         base64Accum = b64str.slice(canBeDecoded);
         b64str = b64str.slice(0, canBeDecoded);
-        res += this.iconv.decode(Buffer2.from(b64str, "base64"), "utf16-be");
+        res += this.iconv.decode(Buffer4.from(b64str, "base64"), "utf16-be");
       }
       this.inBase64 = inBase64;
       this.base64Accum = base64Accum;
@@ -16717,7 +17053,7 @@ var require_utf7 = __commonJS({
     Utf7IMAPDecoder.prototype.end = function() {
       var res = "";
       if (this.inBase64 && this.base64Accum.length > 0)
-        res = this.iconv.decode(Buffer2.from(this.base64Accum, "base64"), "utf16-be");
+        res = this.iconv.decode(Buffer4.from(this.base64Accum, "base64"), "utf16-be");
       this.inBase64 = false;
       this.base64Accum = "";
       return res;
@@ -16728,7 +17064,8 @@ var require_utf7 = __commonJS({
 // node_modules/iconv-lite/encodings/sbcs-codec.js
 var require_sbcs_codec = __commonJS({
   "node_modules/iconv-lite/encodings/sbcs-codec.js"(exports) {
-    var Buffer2 = require_safer().Buffer;
+    init_globals();
+    var Buffer4 = require_safer().Buffer;
     exports._sbcs = SBCSCodec;
     function SBCSCodec(codecOptions, iconv) {
       if (!codecOptions)
@@ -16741,8 +17078,8 @@ var require_sbcs_codec = __commonJS({
           asciiString += String.fromCharCode(i);
         codecOptions.chars = asciiString + codecOptions.chars;
       }
-      this.decodeBuf = Buffer2.from(codecOptions.chars, "ucs2");
-      var encodeBuf = Buffer2.alloc(65536, iconv.defaultCharSingleByte.charCodeAt(0));
+      this.decodeBuf = Buffer4.from(codecOptions.chars, "ucs2");
+      var encodeBuf = Buffer4.alloc(65536, iconv.defaultCharSingleByte.charCodeAt(0));
       for (var i = 0; i < codecOptions.chars.length; i++)
         encodeBuf[codecOptions.chars.charCodeAt(i)] = i;
       this.encodeBuf = encodeBuf;
@@ -16753,7 +17090,7 @@ var require_sbcs_codec = __commonJS({
       this.encodeBuf = codec.encodeBuf;
     }
     SBCSEncoder.prototype.write = function(str) {
-      var buf = Buffer2.alloc(str.length);
+      var buf = Buffer4.alloc(str.length);
       for (var i = 0; i < str.length; i++)
         buf[i] = this.encodeBuf[str.charCodeAt(i)];
       return buf;
@@ -16765,7 +17102,7 @@ var require_sbcs_codec = __commonJS({
     }
     SBCSDecoder.prototype.write = function(buf) {
       var decodeBuf = this.decodeBuf;
-      var newBuf = Buffer2.alloc(buf.length * 2);
+      var newBuf = Buffer4.alloc(buf.length * 2);
       var idx1 = 0, idx2 = 0;
       for (var i = 0; i < buf.length; i++) {
         idx1 = buf[i] * 2;
@@ -16783,6 +17120,7 @@ var require_sbcs_codec = __commonJS({
 // node_modules/iconv-lite/encodings/sbcs-data.js
 var require_sbcs_data = __commonJS({
   "node_modules/iconv-lite/encodings/sbcs-data.js"(exports, module) {
+    init_globals();
     module.exports = {
       // Not supported by iconv, not sure why.
       "10029": "maccenteuro",
@@ -16935,6 +17273,7 @@ var require_sbcs_data = __commonJS({
 // node_modules/iconv-lite/encodings/sbcs-data-generated.js
 var require_sbcs_data_generated = __commonJS({
   "node_modules/iconv-lite/encodings/sbcs-data-generated.js"(exports, module) {
+    init_globals();
     module.exports = {
       "437": "cp437",
       "737": "cp737",
@@ -17389,7 +17728,8 @@ var require_sbcs_data_generated = __commonJS({
 // node_modules/iconv-lite/encodings/dbcs-codec.js
 var require_dbcs_codec = __commonJS({
   "node_modules/iconv-lite/encodings/dbcs-codec.js"(exports) {
-    var Buffer2 = require_safer().Buffer;
+    init_globals();
+    var Buffer4 = require_safer().Buffer;
     exports._dbcs = DBCSCodec;
     var UNASSIGNED = -1;
     var GB18030_CODE = -2;
@@ -17601,7 +17941,7 @@ var require_dbcs_codec = __commonJS({
       this.gb18030 = codec.gb18030;
     }
     DBCSEncoder.prototype.write = function(str) {
-      var newBuf = Buffer2.alloc(str.length * (this.gb18030 ? 4 : 3)), leadSurrogate = this.leadSurrogate, seqObj = this.seqObj, nextChar = -1, i2 = 0, j = 0;
+      var newBuf = Buffer4.alloc(str.length * (this.gb18030 ? 4 : 3)), leadSurrogate = this.leadSurrogate, seqObj = this.seqObj, nextChar = -1, i2 = 0, j = 0;
       while (true) {
         if (nextChar === -1) {
           if (i2 == str.length) break;
@@ -17696,7 +18036,7 @@ var require_dbcs_codec = __commonJS({
     DBCSEncoder.prototype.end = function() {
       if (this.leadSurrogate === -1 && this.seqObj === void 0)
         return;
-      var newBuf = Buffer2.alloc(10), j = 0;
+      var newBuf = Buffer4.alloc(10), j = 0;
       if (this.seqObj) {
         var dbcsCode = this.seqObj[DEF_CHAR];
         if (dbcsCode !== void 0) {
@@ -17725,7 +18065,7 @@ var require_dbcs_codec = __commonJS({
       this.gb18030 = codec.gb18030;
     }
     DBCSDecoder.prototype.write = function(buf) {
-      var newBuf = Buffer2.alloc(buf.length * 2), nodeIdx = this.nodeIdx, prevBytes = this.prevBytes, prevOffset = this.prevBytes.length, seqStart = -this.prevBytes.length, uCode;
+      var newBuf = Buffer4.alloc(buf.length * 2), nodeIdx = this.nodeIdx, prevBytes = this.prevBytes, prevOffset = this.prevBytes.length, seqStart = -this.prevBytes.length, uCode;
       for (var i2 = 0, j = 0; i2 < buf.length; i2++) {
         var curByte = i2 >= 0 ? buf[i2] : prevBytes[i2 + prevOffset];
         var uCode = this.decodeTables[nodeIdx][curByte];
@@ -19050,6 +19390,7 @@ var require_big5_added = __commonJS({
 // node_modules/iconv-lite/encodings/dbcs-data.js
 var require_dbcs_data = __commonJS({
   "node_modules/iconv-lite/encodings/dbcs-data.js"(exports, module) {
+    init_globals();
     module.exports = {
       // == Japanese/ShiftJIS ====================================================
       // All japanese encodings are based on JIS X set of standards:
@@ -19296,6 +19637,7 @@ var require_dbcs_data = __commonJS({
 // node_modules/iconv-lite/encodings/index.js
 var require_encodings = __commonJS({
   "node_modules/iconv-lite/encodings/index.js"(exports, module) {
+    init_globals();
     var modules = [
       require_internal(),
       require_utf32(),
@@ -19322,7 +19664,8 @@ var require_encodings = __commonJS({
 // node_modules/iconv-lite/lib/streams.js
 var require_streams = __commonJS({
   "node_modules/iconv-lite/lib/streams.js"(exports, module) {
-    var Buffer2 = require_safer().Buffer;
+    init_globals();
+    var Buffer4 = require_safer().Buffer;
     module.exports = function(stream_module) {
       var Transform = stream_module.Transform;
       function IconvLiteEncoderStream(conv, options) {
@@ -19361,7 +19704,7 @@ var require_streams = __commonJS({
           chunks.push(chunk);
         });
         this.on("end", function() {
-          cb(null, Buffer2.concat(chunks));
+          cb(null, Buffer4.concat(chunks));
         });
         return this;
       };
@@ -19375,7 +19718,7 @@ var require_streams = __commonJS({
         constructor: { value: IconvLiteDecoderStream }
       });
       IconvLiteDecoderStream.prototype._transform = function(chunk, encoding, done) {
-        if (!Buffer2.isBuffer(chunk) && !(chunk instanceof Uint8Array))
+        if (!Buffer4.isBuffer(chunk) && !(chunk instanceof Uint8Array))
           return done(new Error("Iconv decoding stream needs buffers as its input."));
         try {
           var res = this.conv.write(chunk);
@@ -19416,7 +19759,8 @@ var require_streams = __commonJS({
 // node_modules/iconv-lite/lib/index.js
 var require_lib2 = __commonJS({
   "node_modules/iconv-lite/lib/index.js"(exports, module) {
-    var Buffer2 = require_safer().Buffer;
+    init_globals();
+    var Buffer4 = require_safer().Buffer;
     var bomHandling = require_bom_handling();
     var iconv = module.exports;
     iconv.encodings = null;
@@ -19427,7 +19771,7 @@ var require_lib2 = __commonJS({
       var encoder = iconv.getEncoder(encoding, options);
       var res = encoder.write(str);
       var trail = encoder.end();
-      return trail && trail.length > 0 ? Buffer2.concat([res, trail]) : res;
+      return trail && trail.length > 0 ? Buffer4.concat([res, trail]) : res;
     };
     iconv.decode = function decode(buf, encoding, options) {
       if (typeof buf === "string") {
@@ -19435,7 +19779,7 @@ var require_lib2 = __commonJS({
           console.error("Iconv-lite warning: decode()-ing strings is deprecated. Refer to https://github.com/ashtuchkin/iconv-lite/wiki/Use-Buffers-when-decoding");
           iconv.skipDecodeWarning = true;
         }
-        buf = Buffer2.from("" + (buf || ""), "binary");
+        buf = Buffer4.from("" + (buf || ""), "binary");
       }
       var decoder = iconv.getDecoder(encoding, options);
       var res = decoder.write(buf);
@@ -19532,6 +19876,7 @@ var require_lib2 = __commonJS({
 // src/encoder/shims/empty.js
 var require_empty = __commonJS({
   "src/encoder/shims/empty.js"(exports, module) {
+    init_globals();
     module.exports = {};
   }
 });
@@ -19539,6 +19884,7 @@ var require_empty = __commonJS({
 // node_modules/node-thermal-printer/lib/interfaces/interface.js
 var require_interface = __commonJS({
   "node_modules/node-thermal-printer/lib/interfaces/interface.js"(exports, module) {
+    init_globals();
     var Interface = class {
       getPrinterName() {
         throw new Error("'getPrinterName' function not implemented.");
@@ -19557,6 +19903,7 @@ var require_interface = __commonJS({
 // node_modules/node-thermal-printer/lib/interfaces/network.js
 var require_network = __commonJS({
   "node_modules/node-thermal-printer/lib/interfaces/network.js"(exports, module) {
+    init_globals();
     var Net = require_empty();
     var Interface = require_interface();
     var Network = class extends Interface {
@@ -19637,6 +19984,7 @@ var require_network = __commonJS({
 // node_modules/node-thermal-printer/lib/interfaces/printer.js
 var require_printer = __commonJS({
   "node_modules/node-thermal-printer/lib/interfaces/printer.js"(exports, module) {
+    init_globals();
     var Interface = require_interface();
     var Printer = class extends Interface {
       constructor(printerName, moduleName) {
@@ -19692,6 +20040,7 @@ var require_printer = __commonJS({
 // node_modules/dank-do-while/index.js
 var require_dank_do_while = __commonJS({
   "node_modules/dank-do-while/index.js"(exports, module) {
+    init_globals();
     module.exports = function doWhile(fn, done, concurrent) {
       var pending = 0;
       var end = false;
@@ -19722,6 +20071,7 @@ var require_dank_do_while = __commonJS({
 // node_modules/write-file-queue/index.js
 var require_write_file_queue = __commonJS({
   "node_modules/write-file-queue/index.js"(exports, module) {
+    init_globals();
     var fs = require_empty();
     var doWhile = require_dank_do_while();
     module.exports = function(options) {
@@ -19800,6 +20150,7 @@ var require_write_file_queue = __commonJS({
 // node_modules/node-thermal-printer/lib/interfaces/file.js
 var require_file = __commonJS({
   "node_modules/node-thermal-printer/lib/interfaces/file.js"(exports, module) {
+    init_globals();
     var fs = require_empty();
     var Interface = require_interface();
     var File = class extends Interface {
@@ -19843,11 +20194,12 @@ var require_file = __commonJS({
 // node_modules/node-thermal-printer/lib/interfaces/index.js
 var require_interfaces = __commonJS({
   "node_modules/node-thermal-printer/lib/interfaces/index.js"(exports, module) {
+    init_globals();
     function getInterface(uri, options, driver) {
       const networkRegex = /^tcp:\/\/([^/:]+)(?::(\d+))?\/?$/i;
       const printerRegex = /^printer:([^/]+)(?:\/([\w-]*))?$/i;
       const net = networkRegex.exec(uri);
-      const printer = printerRegex.exec(uri);
+      const printer2 = printerRegex.exec(uri);
       if (typeof uri === "object") {
         return uri;
       }
@@ -19855,9 +20207,9 @@ var require_interfaces = __commonJS({
         const Network = require_network();
         return new Network(net[1], net[2], options);
       }
-      if (printer) {
+      if (printer2) {
         const Printer = require_printer();
-        return new Printer(printer[1], driver);
+        return new Printer(printer2[1], driver);
       }
       const File = require_file();
       return new File(uri);
@@ -19869,6 +20221,7 @@ var require_interfaces = __commonJS({
 // node_modules/node-thermal-printer/lib/types/printer-type.js
 var require_printer_type = __commonJS({
   "node_modules/node-thermal-printer/lib/types/printer-type.js"(exports, module) {
+    init_globals();
     var PrinterType = class {
       constructor() {
       }
@@ -19916,141 +20269,142 @@ var require_printer_type = __commonJS({
 // node_modules/node-thermal-printer/lib/types/epson-config.js
 var require_epson_config = __commonJS({
   "node_modules/node-thermal-printer/lib/types/epson-config.js"(exports, module) {
+    init_globals();
     module.exports = {
       // Feed control sequences
-      CTL_LF: Buffer.from([10]),
+      CTL_LF: globalThis.Buffer.from([10]),
       // Print and line feed
-      CTL_FF: Buffer.from([12]),
+      CTL_FF: globalThis.Buffer.from([12]),
       // Form feed
-      CTL_CR: Buffer.from([13]),
+      CTL_CR: globalThis.Buffer.from([13]),
       // Carriage return
-      CTL_HT: Buffer.from([9]),
+      CTL_HT: globalThis.Buffer.from([9]),
       // Horizontal tab
-      CTL_SET_HT: Buffer.from([27, 68]),
+      CTL_SET_HT: globalThis.Buffer.from([27, 68]),
       // Set horizontal tab positions
-      CTL_VT: Buffer.from([27, 100, 4]),
+      CTL_VT: globalThis.Buffer.from([27, 100, 4]),
       // Vertical tab
       // Line spacing
-      LINE_SPACING_DEFAULT: Buffer.from([27, 50]),
+      LINE_SPACING_DEFAULT: globalThis.Buffer.from([27, 50]),
       // ESC 2 - Reset to default line spacing
       // Printer hardware
-      HW_INIT: Buffer.from([27, 64]),
+      HW_INIT: globalThis.Buffer.from([27, 64]),
       // Clear data in buffer and reset modes
-      HW_SELECT: Buffer.from([27, 61, 1]),
+      HW_SELECT: globalThis.Buffer.from([27, 61, 1]),
       // Printer select
-      HW_RESET: Buffer.from([27, 63, 10, 0]),
+      HW_RESET: globalThis.Buffer.from([27, 63, 10, 0]),
       // Reset printer hardware
-      TRANSMIT_PAPER_STATUS: Buffer.from([29, 114, 1]),
+      TRANSMIT_PAPER_STATUS: globalThis.Buffer.from([29, 114, 1]),
       // Transmit printer paper status
-      BEEP: Buffer.from([27, 66]),
+      BEEP: globalThis.Buffer.from([27, 66]),
       // Sounds built-in buzzer (if equipped)
-      UPSIDE_DOWN_ON: Buffer.from([27, 123, 1]),
+      UPSIDE_DOWN_ON: globalThis.Buffer.from([27, 123, 1]),
       // Upside down printing ON (rotated 180 degrees).
-      UPSIDE_DOWN_OFF: Buffer.from([27, 123, 0]),
+      UPSIDE_DOWN_OFF: globalThis.Buffer.from([27, 123, 0]),
       // Upside down printing OFF (default).
       // Cash Drawer
-      CD_KICK_2: Buffer.from([27, 112, 0]),
+      CD_KICK_2: globalThis.Buffer.from([27, 112, 0]),
       // Sends a pulse to pin 2 []
-      CD_KICK_5: Buffer.from([27, 112, 1]),
+      CD_KICK_5: globalThis.Buffer.from([27, 112, 1]),
       // Sends a pulse to pin 5 []
       // Paper
-      PAPER_FULL_CUT: Buffer.from([29, 86, 0]),
+      PAPER_FULL_CUT: globalThis.Buffer.from([29, 86, 0]),
       // Full cut paper
-      PAPER_PART_CUT: Buffer.from([29, 86, 1]),
+      PAPER_PART_CUT: globalThis.Buffer.from([29, 86, 1]),
       // Partial cut paper
       // Text format
-      TXT_NORMAL: Buffer.from([27, 33, 0]),
+      TXT_NORMAL: globalThis.Buffer.from([27, 33, 0]),
       // Normal text
-      TXT_2HEIGHT: Buffer.from([27, 33, 16]),
+      TXT_2HEIGHT: globalThis.Buffer.from([27, 33, 16]),
       // Double height text
-      TXT_2WIDTH: Buffer.from([27, 33, 32]),
+      TXT_2WIDTH: globalThis.Buffer.from([27, 33, 32]),
       // Double width text
-      TXT_4SQUARE: Buffer.from([27, 33, 48]),
+      TXT_4SQUARE: globalThis.Buffer.from([27, 33, 48]),
       // Quad area text
-      TXT_UNDERL_OFF: Buffer.from([27, 45, 0]),
+      TXT_UNDERL_OFF: globalThis.Buffer.from([27, 45, 0]),
       // Underline font OFF
-      TXT_UNDERL_ON: Buffer.from([27, 45, 1]),
+      TXT_UNDERL_ON: globalThis.Buffer.from([27, 45, 1]),
       // Underline font 1-dot ON
-      TXT_UNDERL2_ON: Buffer.from([27, 45, 2]),
+      TXT_UNDERL2_ON: globalThis.Buffer.from([27, 45, 2]),
       // Underline font 2-dot ON
-      TXT_BOLD_OFF: Buffer.from([27, 69, 0]),
+      TXT_BOLD_OFF: globalThis.Buffer.from([27, 69, 0]),
       // Bold font OFF
-      TXT_BOLD_ON: Buffer.from([27, 69, 1]),
+      TXT_BOLD_ON: globalThis.Buffer.from([27, 69, 1]),
       // Bold font ON
-      TXT_INVERT_OFF: Buffer.from([29, 66, 0]),
+      TXT_INVERT_OFF: globalThis.Buffer.from([29, 66, 0]),
       // Invert font OFF (eg. white background)
-      TXT_INVERT_ON: Buffer.from([29, 66, 1]),
+      TXT_INVERT_ON: globalThis.Buffer.from([29, 66, 1]),
       // Invert font ON (eg. black background)
-      TXT_FONT_A: Buffer.from([27, 77, 0]),
+      TXT_FONT_A: globalThis.Buffer.from([27, 77, 0]),
       // Font type A
-      TXT_FONT_B: Buffer.from([27, 77, 1]),
+      TXT_FONT_B: globalThis.Buffer.from([27, 77, 1]),
       // Font type B
-      TXT_FONT_C: Buffer.from([27, 77, 2]),
+      TXT_FONT_C: globalThis.Buffer.from([27, 77, 2]),
       // Font type C - for impact printer ESC M
-      TXT_FONT_D: Buffer.from([27, 77, 3]),
+      TXT_FONT_D: globalThis.Buffer.from([27, 77, 3]),
       // Font type D - for impact printer ESC M
-      TXT_FONT_E: Buffer.from([27, 77, 4]),
+      TXT_FONT_E: globalThis.Buffer.from([27, 77, 4]),
       // Font type E - for impact printer ESC M
-      TXT_ALIGN_LT: Buffer.from([27, 97, 0]),
+      TXT_ALIGN_LT: globalThis.Buffer.from([27, 97, 0]),
       // Left justification
-      TXT_ALIGN_CT: Buffer.from([27, 97, 1]),
+      TXT_ALIGN_CT: globalThis.Buffer.from([27, 97, 1]),
       // Centering
-      TXT_ALIGN_RT: Buffer.from([27, 97, 2]),
+      TXT_ALIGN_RT: globalThis.Buffer.from([27, 97, 2]),
       // Right justification
-      TXT_BLACK: Buffer.from([27, 114, 0]),
+      TXT_BLACK: globalThis.Buffer.from([27, 114, 0]),
       // Black Color for Font - ESC r
-      TXT_RED: Buffer.from([27, 114, 1]),
+      TXT_RED: globalThis.Buffer.from([27, 114, 1]),
       // Red Color for Font - ESC r
       // All code pages supported by printer.
-      CODE_PAGE_PC437_USA: Buffer.from([27, 116, 0]),
-      CODE_PAGE_KATAKANA: Buffer.from([27, 116, 1]),
-      CODE_PAGE_PC850_MULTILINGUAL: Buffer.from([27, 116, 2]),
-      CODE_PAGE_PC860_PORTUGUESE: Buffer.from([27, 116, 3]),
-      CODE_PAGE_PC863_CANADIAN_FRENCH: Buffer.from([27, 116, 4]),
-      CODE_PAGE_PC865_NORDIC: Buffer.from([27, 116, 5]),
-      CODE_PAGE_PC851_GREEK: Buffer.from([27, 116, 11]),
-      CODE_PAGE_PC853_TURKISH: Buffer.from([27, 116, 12]),
-      CODE_PAGE_PC857_TURKISH: Buffer.from([27, 116, 13]),
-      CODE_PAGE_PC737_GREEK: Buffer.from([27, 116, 14]),
-      CODE_PAGE_ISO8859_7_GREEK: Buffer.from([27, 116, 15]),
-      CODE_PAGE_WPC1252: Buffer.from([27, 116, 16]),
-      CODE_PAGE_PC866_CYRILLIC2: Buffer.from([27, 116, 17]),
-      CODE_PAGE_PC852_LATIN2: Buffer.from([27, 116, 18]),
-      CODE_PAGE_SLOVENIA: Buffer.from([27, 116, 18]),
-      CODE_PAGE_PC858_EURO: Buffer.from([27, 116, 19]),
-      CODE_PAGE_KU42_THAI: Buffer.from([27, 116, 20]),
-      CODE_PAGE_TIS11_THAI: Buffer.from([27, 116, 21]),
-      CODE_PAGE_TIS18_THAI: Buffer.from([27, 116, 26]),
-      CODE_PAGE_TCVN3_VIETNAMESE_L: Buffer.from([27, 116, 30]),
-      CODE_PAGE_TCVN3_VIETNAMESE_U: Buffer.from([27, 116, 31]),
-      CODE_PAGE_PC720_ARABIC: Buffer.from([27, 116, 32]),
-      CODE_PAGE_WPC775_BALTIC_RIM: Buffer.from([27, 116, 33]),
-      CODE_PAGE_PC855_CYRILLIC: Buffer.from([27, 116, 34]),
-      CODE_PAGE_PC861_ICELANDIC: Buffer.from([27, 116, 35]),
-      CODE_PAGE_PC862_HEBREW: Buffer.from([27, 116, 36]),
-      CODE_PAGE_PC864_ARABIC: Buffer.from([27, 116, 37]),
-      CODE_PAGE_PC869_GREEK: Buffer.from([27, 116, 38]),
-      CODE_PAGE_ISO8859_2_LATIN2: Buffer.from([27, 116, 39]),
-      CODE_PAGE_ISO8859_15_LATIN9: Buffer.from([27, 116, 40]),
-      CODE_PAGE_PC1098_FARCI: Buffer.from([27, 116, 41]),
-      CODE_PAGE_PC1118_LITHUANIAN: Buffer.from([27, 116, 42]),
-      CODE_PAGE_PC1119_LITHUANIAN: Buffer.from([27, 116, 43]),
-      CODE_PAGE_PC1125_UKRANIAN: Buffer.from([27, 116, 44]),
-      CODE_PAGE_WPC1250_LATIN2: Buffer.from([27, 116, 45]),
-      CODE_PAGE_WPC1251_CYRILLIC: Buffer.from([27, 116, 46]),
-      CODE_PAGE_WPC1253_GREEK: Buffer.from([27, 116, 47]),
-      CODE_PAGE_WPC1254_TURKISH: Buffer.from([27, 116, 48]),
-      CODE_PAGE_WPC1255_HEBREW: Buffer.from([27, 116, 49]),
-      CODE_PAGE_WPC1256_ARABIC: Buffer.from([27, 116, 50]),
-      CODE_PAGE_WPC1257_BALTIC_RIM: Buffer.from([27, 116, 51]),
-      CODE_PAGE_WPC1258_VIETNAMESE: Buffer.from([27, 116, 52]),
-      CODE_PAGE_KZ1048_KAZAKHSTAN: Buffer.from([27, 116, 53]),
-      CODE_PAGE_JAPAN: Buffer.from([27, 82, 8]),
-      CODE_PAGE_KOREA: Buffer.from([27, 82, 13]),
-      CODE_PAGE_CHINA: Buffer.from([27, 82, 15]),
-      CODE_PAGE_HK_TW: Buffer.from([27, 82, 0]),
-      CODE_PAGE_TCVN_VIETNAMESE: Buffer.from([27, 116, 52]),
-      CODE_PAGE_VISCII: Buffer.from([27, 116, 52]),
+      CODE_PAGE_PC437_USA: globalThis.Buffer.from([27, 116, 0]),
+      CODE_PAGE_KATAKANA: globalThis.Buffer.from([27, 116, 1]),
+      CODE_PAGE_PC850_MULTILINGUAL: globalThis.Buffer.from([27, 116, 2]),
+      CODE_PAGE_PC860_PORTUGUESE: globalThis.Buffer.from([27, 116, 3]),
+      CODE_PAGE_PC863_CANADIAN_FRENCH: globalThis.Buffer.from([27, 116, 4]),
+      CODE_PAGE_PC865_NORDIC: globalThis.Buffer.from([27, 116, 5]),
+      CODE_PAGE_PC851_GREEK: globalThis.Buffer.from([27, 116, 11]),
+      CODE_PAGE_PC853_TURKISH: globalThis.Buffer.from([27, 116, 12]),
+      CODE_PAGE_PC857_TURKISH: globalThis.Buffer.from([27, 116, 13]),
+      CODE_PAGE_PC737_GREEK: globalThis.Buffer.from([27, 116, 14]),
+      CODE_PAGE_ISO8859_7_GREEK: globalThis.Buffer.from([27, 116, 15]),
+      CODE_PAGE_WPC1252: globalThis.Buffer.from([27, 116, 16]),
+      CODE_PAGE_PC866_CYRILLIC2: globalThis.Buffer.from([27, 116, 17]),
+      CODE_PAGE_PC852_LATIN2: globalThis.Buffer.from([27, 116, 18]),
+      CODE_PAGE_SLOVENIA: globalThis.Buffer.from([27, 116, 18]),
+      CODE_PAGE_PC858_EURO: globalThis.Buffer.from([27, 116, 19]),
+      CODE_PAGE_KU42_THAI: globalThis.Buffer.from([27, 116, 20]),
+      CODE_PAGE_TIS11_THAI: globalThis.Buffer.from([27, 116, 21]),
+      CODE_PAGE_TIS18_THAI: globalThis.Buffer.from([27, 116, 26]),
+      CODE_PAGE_TCVN3_VIETNAMESE_L: globalThis.Buffer.from([27, 116, 30]),
+      CODE_PAGE_TCVN3_VIETNAMESE_U: globalThis.Buffer.from([27, 116, 31]),
+      CODE_PAGE_PC720_ARABIC: globalThis.Buffer.from([27, 116, 32]),
+      CODE_PAGE_WPC775_BALTIC_RIM: globalThis.Buffer.from([27, 116, 33]),
+      CODE_PAGE_PC855_CYRILLIC: globalThis.Buffer.from([27, 116, 34]),
+      CODE_PAGE_PC861_ICELANDIC: globalThis.Buffer.from([27, 116, 35]),
+      CODE_PAGE_PC862_HEBREW: globalThis.Buffer.from([27, 116, 36]),
+      CODE_PAGE_PC864_ARABIC: globalThis.Buffer.from([27, 116, 37]),
+      CODE_PAGE_PC869_GREEK: globalThis.Buffer.from([27, 116, 38]),
+      CODE_PAGE_ISO8859_2_LATIN2: globalThis.Buffer.from([27, 116, 39]),
+      CODE_PAGE_ISO8859_15_LATIN9: globalThis.Buffer.from([27, 116, 40]),
+      CODE_PAGE_PC1098_FARCI: globalThis.Buffer.from([27, 116, 41]),
+      CODE_PAGE_PC1118_LITHUANIAN: globalThis.Buffer.from([27, 116, 42]),
+      CODE_PAGE_PC1119_LITHUANIAN: globalThis.Buffer.from([27, 116, 43]),
+      CODE_PAGE_PC1125_UKRANIAN: globalThis.Buffer.from([27, 116, 44]),
+      CODE_PAGE_WPC1250_LATIN2: globalThis.Buffer.from([27, 116, 45]),
+      CODE_PAGE_WPC1251_CYRILLIC: globalThis.Buffer.from([27, 116, 46]),
+      CODE_PAGE_WPC1253_GREEK: globalThis.Buffer.from([27, 116, 47]),
+      CODE_PAGE_WPC1254_TURKISH: globalThis.Buffer.from([27, 116, 48]),
+      CODE_PAGE_WPC1255_HEBREW: globalThis.Buffer.from([27, 116, 49]),
+      CODE_PAGE_WPC1256_ARABIC: globalThis.Buffer.from([27, 116, 50]),
+      CODE_PAGE_WPC1257_BALTIC_RIM: globalThis.Buffer.from([27, 116, 51]),
+      CODE_PAGE_WPC1258_VIETNAMESE: globalThis.Buffer.from([27, 116, 52]),
+      CODE_PAGE_KZ1048_KAZAKHSTAN: globalThis.Buffer.from([27, 116, 53]),
+      CODE_PAGE_JAPAN: globalThis.Buffer.from([27, 82, 8]),
+      CODE_PAGE_KOREA: globalThis.Buffer.from([27, 82, 13]),
+      CODE_PAGE_CHINA: globalThis.Buffer.from([27, 82, 15]),
+      CODE_PAGE_HK_TW: globalThis.Buffer.from([27, 82, 0]),
+      CODE_PAGE_TCVN_VIETNAMESE: globalThis.Buffer.from([27, 116, 52]),
+      CODE_PAGE_VISCII: globalThis.Buffer.from([27, 116, 52]),
       // Character code pages / iconv name of code table.
       // Only code pages supported by iconv-lite:
       // https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings
@@ -20097,121 +20451,121 @@ var require_epson_config = __commonJS({
         VISCII: "viscii"
       },
       // Barcode format
-      BARCODE_TXT_OFF: Buffer.from([29, 72, 0]),
+      BARCODE_TXT_OFF: globalThis.Buffer.from([29, 72, 0]),
       // HRI barcode chars OFF
-      BARCODE_TXT_ABV: Buffer.from([29, 72, 1]),
+      BARCODE_TXT_ABV: globalThis.Buffer.from([29, 72, 1]),
       // HRI barcode chars above
-      BARCODE_TXT_BLW: Buffer.from([29, 72, 2]),
+      BARCODE_TXT_BLW: globalThis.Buffer.from([29, 72, 2]),
       // HRI barcode chars below
-      BARCODE_TXT_BTH: Buffer.from([29, 72, 3]),
+      BARCODE_TXT_BTH: globalThis.Buffer.from([29, 72, 3]),
       // HRI barcode chars both above and below
-      BARCODE_FONT_A: Buffer.from([29, 102, 0]),
+      BARCODE_FONT_A: globalThis.Buffer.from([29, 102, 0]),
       // Font type A for HRI barcode chars
-      BARCODE_FONT_B: Buffer.from([29, 102, 1]),
+      BARCODE_FONT_B: globalThis.Buffer.from([29, 102, 1]),
       // Font type B for HRI barcode chars
-      BARCODE_HEIGHT: Buffer.from([29, 104, 100]),
+      BARCODE_HEIGHT: globalThis.Buffer.from([29, 104, 100]),
       // Barcode Height [1-255]
-      BARCODE_WIDTH: Buffer.from([29, 119, 3]),
+      BARCODE_WIDTH: globalThis.Buffer.from([29, 119, 3]),
       // Barcode Width  [2-6]
-      BARCODE_UPC_A: Buffer.from([29, 107, 0]),
+      BARCODE_UPC_A: globalThis.Buffer.from([29, 107, 0]),
       // Barcode type UPC-A
-      BARCODE_UPC_E: Buffer.from([29, 107, 1]),
+      BARCODE_UPC_E: globalThis.Buffer.from([29, 107, 1]),
       // Barcode type UPC-E
-      BARCODE_EAN13: Buffer.from([29, 107, 2]),
+      BARCODE_EAN13: globalThis.Buffer.from([29, 107, 2]),
       // Barcode type EAN13
-      BARCODE_EAN8: Buffer.from([29, 107, 3]),
+      BARCODE_EAN8: globalThis.Buffer.from([29, 107, 3]),
       // Barcode type EAN8
-      BARCODE_CODE39: Buffer.from([29, 107, 4]),
+      BARCODE_CODE39: globalThis.Buffer.from([29, 107, 4]),
       // Barcode type CODE39
-      BARCODE_CODE128: Buffer.from([29, 107, 73]),
+      BARCODE_CODE128: globalThis.Buffer.from([29, 107, 73]),
       // Barcode type CODE128
-      BARCODE_ITF: Buffer.from([29, 107, 5]),
+      BARCODE_ITF: globalThis.Buffer.from([29, 107, 5]),
       // Barcode type ITF
-      BARCODE_NW7: Buffer.from([29, 107, 6]),
+      BARCODE_NW7: globalThis.Buffer.from([29, 107, 6]),
       // Barcode type NW7
       // QR Code
-      QRCODE_MODEL1: Buffer.from([29, 40, 107, 4, 0, 49, 65, 49, 0]),
+      QRCODE_MODEL1: globalThis.Buffer.from([29, 40, 107, 4, 0, 49, 65, 49, 0]),
       // Model 1
-      QRCODE_MODEL2: Buffer.from([29, 40, 107, 4, 0, 49, 65, 50, 0]),
+      QRCODE_MODEL2: globalThis.Buffer.from([29, 40, 107, 4, 0, 49, 65, 50, 0]),
       // Model 2
-      QRCODE_MODEL3: Buffer.from([29, 40, 107, 4, 0, 49, 65, 51, 0]),
+      QRCODE_MODEL3: globalThis.Buffer.from([29, 40, 107, 4, 0, 49, 65, 51, 0]),
       // Model 3
-      QRCODE_CORRECTION_L: Buffer.from([29, 40, 107, 3, 0, 49, 69, 48]),
+      QRCODE_CORRECTION_L: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 69, 48]),
       // Correction level: L - 7%
-      QRCODE_CORRECTION_M: Buffer.from([29, 40, 107, 3, 0, 49, 69, 49]),
+      QRCODE_CORRECTION_M: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 69, 49]),
       // Correction level: M - 15%
-      QRCODE_CORRECTION_Q: Buffer.from([29, 40, 107, 3, 0, 49, 69, 50]),
+      QRCODE_CORRECTION_Q: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 69, 50]),
       // Correction level: Q - 25%
-      QRCODE_CORRECTION_H: Buffer.from([29, 40, 107, 3, 0, 49, 69, 51]),
+      QRCODE_CORRECTION_H: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 69, 51]),
       // Correction level: H - 30%
-      QRCODE_CELLSIZE_1: Buffer.from([29, 40, 107, 3, 0, 49, 67, 1]),
+      QRCODE_CELLSIZE_1: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 1]),
       // Cell size 1
-      QRCODE_CELLSIZE_2: Buffer.from([29, 40, 107, 3, 0, 49, 67, 2]),
+      QRCODE_CELLSIZE_2: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 2]),
       // Cell size 2
-      QRCODE_CELLSIZE_3: Buffer.from([29, 40, 107, 3, 0, 49, 67, 3]),
+      QRCODE_CELLSIZE_3: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 3]),
       // Cell size 3
-      QRCODE_CELLSIZE_4: Buffer.from([29, 40, 107, 3, 0, 49, 67, 4]),
+      QRCODE_CELLSIZE_4: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 4]),
       // Cell size 4
-      QRCODE_CELLSIZE_5: Buffer.from([29, 40, 107, 3, 0, 49, 67, 5]),
+      QRCODE_CELLSIZE_5: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 5]),
       // Cell size 5
-      QRCODE_CELLSIZE_6: Buffer.from([29, 40, 107, 3, 0, 49, 67, 6]),
+      QRCODE_CELLSIZE_6: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 6]),
       // Cell size 6
-      QRCODE_CELLSIZE_7: Buffer.from([29, 40, 107, 3, 0, 49, 67, 7]),
+      QRCODE_CELLSIZE_7: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 7]),
       // Cell size 7
-      QRCODE_CELLSIZE_8: Buffer.from([29, 40, 107, 3, 0, 49, 67, 8]),
+      QRCODE_CELLSIZE_8: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 8]),
       // Cell size 8
-      QRCODE_PRINT: Buffer.from([29, 40, 107, 3, 0, 49, 81, 48]),
+      QRCODE_PRINT: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 81, 48]),
       // Print QR code
       // PDF417
-      PDF417_CORRECTION: Buffer.from([29, 40, 107, 4, 0, 48, 69, 49]),
+      PDF417_CORRECTION: globalThis.Buffer.from([29, 40, 107, 4, 0, 48, 69, 49]),
       // Append 1-40 for ratio
-      PDF417_ROW_HEIGHT: Buffer.from([29, 40, 107, 3, 0, 48, 68]),
+      PDF417_ROW_HEIGHT: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 68]),
       // Append 2-8 for height
-      PDF417_WIDTH: Buffer.from([29, 40, 107, 3, 0, 48, 67]),
+      PDF417_WIDTH: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 67]),
       // Append 2-8 for width
-      PDF417_COLUMNS: Buffer.from([29, 40, 107, 3, 0, 48, 65]),
-      PDF417_OPTION_STANDARD: Buffer.from([29, 40, 107, 3, 0, 48, 70, 0]),
+      PDF417_COLUMNS: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 65]),
+      PDF417_OPTION_STANDARD: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 70, 0]),
       // Standard barcode
-      PDF417_OPTION_TRUNCATED: Buffer.from([29, 40, 107, 3, 0, 48, 70, 1]),
+      PDF417_OPTION_TRUNCATED: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 70, 1]),
       // Truncated barcode
-      PDF417_PRINT: Buffer.from([29, 40, 107, 3, 0, 48, 81, 48]),
+      PDF417_PRINT: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 81, 48]),
       // MaxiCode
       // Formatted data containing a structured Carrier Message with a numeric postal code. (US)
-      MAXI_MODE2: Buffer.from([29, 40, 107, 3, 0, 50, 65, 50]),
+      MAXI_MODE2: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 50]),
       // Formatted data containing a structured Carrier Message with an alphanumeric postal code. (International)
-      MAXI_MODE3: Buffer.from([29, 40, 107, 3, 0, 50, 65, 51]),
-      MAXI_MODE4: Buffer.from([29, 40, 107, 3, 0, 50, 65, 52]),
+      MAXI_MODE3: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 51]),
+      MAXI_MODE4: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 52]),
       // Unformatted data with Standard Error Correction.
-      MAXI_MODE5: Buffer.from([29, 40, 107, 3, 0, 50, 65, 53]),
+      MAXI_MODE5: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 53]),
       // Unformatted data with Enhanced Error Correction.
-      MAXI_MODE6: Buffer.from([29, 40, 107, 3, 0, 50, 65, 54]),
+      MAXI_MODE6: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 54]),
       // For programming hardware devices.
-      MAXI_PRINT: Buffer.from([29, 40, 107, 3, 0, 50, 81, 48]),
+      MAXI_PRINT: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 81, 48]),
       // Image format
-      S_RASTER_N: Buffer.from([29, 118, 48, 0]),
+      S_RASTER_N: globalThis.Buffer.from([29, 118, 48, 0]),
       // Set raster image normal size
-      S_RASTER_2W: Buffer.from([29, 118, 48, 1]),
+      S_RASTER_2W: globalThis.Buffer.from([29, 118, 48, 1]),
       // Set raster image double width
-      S_RASTER_2H: Buffer.from([29, 118, 48, 2]),
+      S_RASTER_2H: globalThis.Buffer.from([29, 118, 48, 2]),
       // Set raster image double height
-      S_RASTER_Q: Buffer.from([29, 118, 48, 3]),
+      S_RASTER_Q: globalThis.Buffer.from([29, 118, 48, 3]),
       // Set raster image quadruple
       // Printing Density
-      PD_N50: Buffer.from([29, 124, 0]),
+      PD_N50: globalThis.Buffer.from([29, 124, 0]),
       // Printing Density -50%
-      PD_N37: Buffer.from([29, 124, 1]),
+      PD_N37: globalThis.Buffer.from([29, 124, 1]),
       // Printing Density -37.5%
-      PD_N25: Buffer.from([29, 124, 2]),
+      PD_N25: globalThis.Buffer.from([29, 124, 2]),
       // Printing Density -25%
-      PD_N12: Buffer.from([29, 124, 3]),
+      PD_N12: globalThis.Buffer.from([29, 124, 3]),
       // Printing Density -12.5%
-      PD_0: Buffer.from([29, 124, 4]),
+      PD_0: globalThis.Buffer.from([29, 124, 4]),
       // Printing Density  0%
-      PD_P50: Buffer.from([29, 124, 8]),
+      PD_P50: globalThis.Buffer.from([29, 124, 8]),
       // Printing Density +50%
-      PD_P37: Buffer.from([29, 124, 7]),
+      PD_P37: globalThis.Buffer.from([29, 124, 7]),
       // Printing Density +37.5%
-      PD_P25: Buffer.from([29, 124, 6])
+      PD_P25: globalThis.Buffer.from([29, 124, 6])
       // Printing Density +25%
     };
   }
@@ -20220,6 +20574,7 @@ var require_epson_config = __commonJS({
 // node_modules/node-thermal-printer/lib/types/epson.js
 var require_epson = __commonJS({
   "node_modules/node-thermal-printer/lib/types/epson.js"(exports, module) {
+    init_globals();
     var PrinterType = require_printer_type();
     var Epson = class extends PrinterType {
       constructor() {
@@ -20233,7 +20588,7 @@ var require_epson = __commonJS({
       // ------------------------------ Append ------------------------------
       append(appendBuffer) {
         if (this.buffer) {
-          this.buffer = Buffer.concat([this.buffer, appendBuffer]);
+          this.buffer = globalThis.Buffer.concat([this.buffer, appendBuffer]);
         } else {
           this.buffer = appendBuffer;
         }
@@ -20246,7 +20601,7 @@ var require_epson = __commonJS({
         if (lengthOfTheSound < 1 || lengthOfTheSound > 9) throw new Error("lengthOfTheSound: Value must be between 1 and 9");
         this.buffer = null;
         this.append(this.config.BEEP);
-        this.append(Buffer.from([numberOfBeeps, lengthOfTheSound]));
+        this.append(globalThis.Buffer.from([numberOfBeeps, lengthOfTheSound]));
         return this.buffer;
       }
       // ------------------------------ Set text size ------------------------------
@@ -20254,16 +20609,16 @@ var require_epson = __commonJS({
         this.buffer = null;
         if (height > 7 || height < 0) throw new Error("setTextSize: Height must be between 0 and 7");
         if (width > 7 || width < 0) throw new Error("setTextSize: Width must be between 0 and 7");
-        const x = Buffer.from(`${height}${width}`, "hex");
-        this.append(Buffer.from([29, 33]));
+        const x = globalThis.Buffer.from(`${height}${width}`, "hex");
+        this.append(globalThis.Buffer.from([29, 33]));
         this.append(x);
         return this.buffer;
       }
       // ------------------------------ Set text Double ------------------------------
       setTextDouble() {
         this.buffer = null;
-        const x = Buffer.from(`${3}${3}`, "hex");
-        this.append(Buffer.from([27, 33]));
+        const x = globalThis.Buffer.from(`${3}${3}`, "hex");
+        this.append(globalThis.Buffer.from([27, 33]));
         this.append(x);
         return this.buffer;
       }
@@ -20273,7 +20628,7 @@ var require_epson = __commonJS({
         if (spacing < 0 || spacing > 255) {
           throw new Error("setLineSpacing: Spacing must be between 0 and 255");
         }
-        this.append(Buffer.from([27, 51, spacing]));
+        this.append(globalThis.Buffer.from([27, 51, spacing]));
         return this.buffer;
       }
       // ------------------------------ CODE 128 ------------------------------
@@ -20286,18 +20641,18 @@ var require_epson = __commonJS({
           height: 162,
           ...settings
         };
-        this.append(Buffer.from([29, 72]));
-        this.append(Buffer.from([settings.hriPos]));
-        this.append(Buffer.from([29, 102]));
-        this.append(Buffer.from([settings.hriFont]));
-        this.append(Buffer.from([29, 119]));
-        this.append(Buffer.from([settings.width]));
-        this.append(Buffer.from([29, 104]));
-        this.append(Buffer.from([settings.height]));
+        this.append(globalThis.Buffer.from([29, 72]));
+        this.append(globalThis.Buffer.from([settings.hriPos]));
+        this.append(globalThis.Buffer.from([29, 102]));
+        this.append(globalThis.Buffer.from([settings.hriFont]));
+        this.append(globalThis.Buffer.from([29, 119]));
+        this.append(globalThis.Buffer.from([settings.width]));
+        this.append(globalThis.Buffer.from([29, 104]));
+        this.append(globalThis.Buffer.from([settings.height]));
         this.append(this.config.BARCODE_CODE128);
-        this.append(Buffer.from([data.length + 2]));
-        this.append(Buffer.from([123, 66]));
-        this.append(Buffer.from(data));
+        this.append(globalThis.Buffer.from([data.length + 2]));
+        this.append(globalThis.Buffer.from([123, 66]));
+        this.append(globalThis.Buffer.from(data));
         return this.buffer;
       }
       // ------------------------------ QR ------------------------------
@@ -20319,8 +20674,8 @@ var require_epson = __commonJS({
         const s = str.length + 3;
         const lsb = parseInt(s % 256);
         const msb = parseInt(s / 256);
-        this.append(Buffer.from([29, 40, 107, lsb, msb, 49, 80, 48]));
-        this.append(Buffer.from(str));
+        this.append(globalThis.Buffer.from([29, 40, 107, lsb, msb, 49, 80, 48]));
+        this.append(globalThis.Buffer.from(str));
         this.append(this.config.QRCODE_PRINT);
         return this.buffer;
       }
@@ -20336,21 +20691,21 @@ var require_epson = __commonJS({
           ...settings
         };
         this.append(this.config.PDF417_CORRECTION);
-        this.append(Buffer.from([settings.correction]));
+        this.append(globalThis.Buffer.from([settings.correction]));
         this.append(this.config.PDF417_ROW_HEIGHT);
-        this.append(Buffer.from([settings.rowHeight]));
+        this.append(globalThis.Buffer.from([settings.rowHeight]));
         this.append(this.config.PDF417_WIDTH);
-        this.append(Buffer.from([settings.width]));
+        this.append(globalThis.Buffer.from([settings.width]));
         this.append(this.config.PDF417_COLUMNS);
-        this.append(Buffer.from([settings.columns]));
+        this.append(globalThis.Buffer.from([settings.columns]));
         if (settings.truncated) this.append(this.config.PDF417_OPTION_TRUNCATED);
         else this.append(this.config.PDF417_OPTION_STANDARD);
         const s = data.length + 3;
         const lsb = parseInt(s % 256);
         const msb = parseInt(s / 256);
-        this.append(Buffer.from([29, 40, 107, lsb, msb, 48, 80, 48]));
-        this.append(Buffer.from(data.toString()));
-        this.append(Buffer.from(this.config.PDF417_PRINT));
+        this.append(globalThis.Buffer.from([29, 40, 107, lsb, msb, 48, 80, 48]));
+        this.append(globalThis.Buffer.from(data.toString()));
+        this.append(globalThis.Buffer.from(this.config.PDF417_PRINT));
         return this.buffer;
       }
       // ------------------------------ MAXI CODE ------------------------------
@@ -20368,8 +20723,8 @@ var require_epson = __commonJS({
         const s = data.length + 3;
         const lsb = parseInt(s % 256);
         const msb = parseInt(s / 256);
-        this.append(Buffer.from([29, 40, 107, lsb, msb, 50, 80, 48]));
-        this.append(Buffer.from(data.toString()));
+        this.append(globalThis.Buffer.from([29, 40, 107, lsb, msb, 50, 80, 48]));
+        this.append(globalThis.Buffer.from(data.toString()));
         this.append(this.config.MAXI_PRINT);
         return this.buffer;
       }
@@ -20383,22 +20738,22 @@ var require_epson = __commonJS({
           height: 162,
           ...settings
         };
-        this.append(Buffer.from([29, 72]));
-        this.append(Buffer.from([settings.hriPos]));
-        this.append(Buffer.from([29, 102]));
-        this.append(Buffer.from([settings.hriFont]));
-        this.append(Buffer.from([29, 119]));
-        this.append(Buffer.from([settings.width]));
-        this.append(Buffer.from([29, 104]));
-        this.append(Buffer.from([settings.height]));
-        this.append(Buffer.from([29, 107]));
+        this.append(globalThis.Buffer.from([29, 72]));
+        this.append(globalThis.Buffer.from([settings.hriPos]));
+        this.append(globalThis.Buffer.from([29, 102]));
+        this.append(globalThis.Buffer.from([settings.hriFont]));
+        this.append(globalThis.Buffer.from([29, 119]));
+        this.append(globalThis.Buffer.from([settings.width]));
+        this.append(globalThis.Buffer.from([29, 104]));
+        this.append(globalThis.Buffer.from([settings.height]));
+        this.append(globalThis.Buffer.from([29, 107]));
         if (type == 73) {
-          this.append(Buffer.from([type, data.length + 2]));
-          this.append(Buffer.from([123, 66]));
+          this.append(globalThis.Buffer.from([type, data.length + 2]));
+          this.append(globalThis.Buffer.from([123, 66]));
         } else {
-          this.append(Buffer.from([type, data.length]));
+          this.append(globalThis.Buffer.from([type, data.length]));
         }
-        this.append(Buffer.from(data));
+        this.append(globalThis.Buffer.from(data));
         return this.buffer;
       }
       // ----------------------------------------------------- PRINT IMAGE -----------------------------------------------------
@@ -20456,15 +20811,15 @@ var require_epson = __commonJS({
             imageBufferArray.push(byte);
           }
         }
-        const imageBuffer = Buffer.from(imageBufferArray);
+        const imageBuffer = globalThis.Buffer.from(imageBufferArray);
         if (width % 8 != 0) {
           width += 8;
         }
-        this.append(Buffer.from([29, 118, 48, 48]));
-        this.append(Buffer.from([width >> 3 & 255]));
-        this.append(Buffer.from([0]));
-        this.append(Buffer.from([height & 255]));
-        this.append(Buffer.from([height >> 8 & 255]));
+        this.append(globalThis.Buffer.from([29, 118, 48, 48]));
+        this.append(globalThis.Buffer.from([width >> 3 & 255]));
+        this.append(globalThis.Buffer.from([0]));
+        this.append(globalThis.Buffer.from([height & 255]));
+        this.append(globalThis.Buffer.from([height >> 8 & 255]));
         this.append(imageBuffer);
         return this.buffer;
       }
@@ -20476,133 +20831,134 @@ var require_epson = __commonJS({
 // node_modules/node-thermal-printer/lib/types/star-config.js
 var require_star_config = __commonJS({
   "node_modules/node-thermal-printer/lib/types/star-config.js"(exports, module) {
+    init_globals();
     module.exports = {
       // Feed control sequences
-      CTL_LF: Buffer.from([10]),
+      CTL_LF: globalThis.Buffer.from([10]),
       // Print and line feed
-      CTL_FF: Buffer.from([12]),
+      CTL_FF: globalThis.Buffer.from([12]),
       // Form feed
-      CTL_CR: Buffer.from([13]),
+      CTL_CR: globalThis.Buffer.from([13]),
       // Carriage return
-      CTL_HT: Buffer.from([9]),
+      CTL_HT: globalThis.Buffer.from([9]),
       // Horizontal tab
-      CTL_VT: Buffer.from([11]),
+      CTL_VT: globalThis.Buffer.from([11]),
       // Vertical tab
-      CTL_SET_HT: Buffer.from([27, 68]),
+      CTL_SET_HT: globalThis.Buffer.from([27, 68]),
       // Set horizontal tab positions
-      CTL_SET_VT: Buffer.from([27, 66]),
+      CTL_SET_VT: globalThis.Buffer.from([27, 66]),
       // Set vertical tab positions
       // Printer hardware
-      HW_INIT: Buffer.from([27, 64]),
+      HW_INIT: globalThis.Buffer.from([27, 64]),
       // Clear data in buffer and reset modes
-      HW_SELECT: Buffer.from([27, 61, 1]),
+      HW_SELECT: globalThis.Buffer.from([27, 61, 1]),
       // Printer select
-      HW_RESET: Buffer.from([27, 63, 10, 0]),
+      HW_RESET: globalThis.Buffer.from([27, 63, 10, 0]),
       // Reset printer hardware
-      UPSIDE_DOWN_ON: Buffer.from([15]),
+      UPSIDE_DOWN_ON: globalThis.Buffer.from([15]),
       // Upside down printing ON (rotated 180 degrees).
-      UPSIDE_DOWN_OFF: Buffer.from([18]),
+      UPSIDE_DOWN_OFF: globalThis.Buffer.from([18]),
       // Upside down printing OFF (default).
       // Cash Drawer
-      CD_KICK_2: Buffer.from([27, 112, 0]),
+      CD_KICK_2: globalThis.Buffer.from([27, 112, 0]),
       // Sends a pulse to pin 2 []
-      CD_KICK_5: Buffer.from([27, 112, 1]),
+      CD_KICK_5: globalThis.Buffer.from([27, 112, 1]),
       // Sends a pulse to pin 5 []
-      CD_KICK: Buffer.from([27, 7, 11, 55, 7]),
+      CD_KICK: globalThis.Buffer.from([27, 7, 11, 55, 7]),
       // Kick the cash drawer
       // Paper
-      PAPER_FULL_CUT: Buffer.from([27, 100, 2]),
+      PAPER_FULL_CUT: globalThis.Buffer.from([27, 100, 2]),
       // Full cut paper
-      PAPER_PART_CUT: Buffer.from([27, 100, 3]),
+      PAPER_PART_CUT: globalThis.Buffer.from([27, 100, 3]),
       // Partial cut paper
       // Text format
-      TXT_NORMAL: Buffer.from([27, 105, 0, 0]),
+      TXT_NORMAL: globalThis.Buffer.from([27, 105, 0, 0]),
       // Normal text
-      TXT_2HEIGHT: Buffer.from([27, 105, 1, 0]),
+      TXT_2HEIGHT: globalThis.Buffer.from([27, 105, 1, 0]),
       // Double height text
-      TXT_2WIDTH: Buffer.from([27, 105, 0, 1]),
+      TXT_2WIDTH: globalThis.Buffer.from([27, 105, 0, 1]),
       // Double width text
-      TXT_4SQUARE: Buffer.from([27, 105, 1, 1]),
+      TXT_4SQUARE: globalThis.Buffer.from([27, 105, 1, 1]),
       // Quad area text
-      TXT_UNDERL_OFF: Buffer.from([27, 45, 0]),
+      TXT_UNDERL_OFF: globalThis.Buffer.from([27, 45, 0]),
       // Underline font OFF
-      TXT_UNDERL_ON: Buffer.from([27, 45, 1]),
+      TXT_UNDERL_ON: globalThis.Buffer.from([27, 45, 1]),
       // Underline font 1-dot ON
-      TXT_UNDERL2_ON: Buffer.from([27, 45, 2]),
+      TXT_UNDERL2_ON: globalThis.Buffer.from([27, 45, 2]),
       // Underline font 2-dot ON
-      TXT_BOLD_OFF: Buffer.from([27, 70]),
+      TXT_BOLD_OFF: globalThis.Buffer.from([27, 70]),
       // Bold font OFF
-      TXT_BOLD_ON: Buffer.from([27, 69]),
+      TXT_BOLD_ON: globalThis.Buffer.from([27, 69]),
       // Bold font ON
-      TXT_INVERT_OFF: Buffer.from([27, 53]),
+      TXT_INVERT_OFF: globalThis.Buffer.from([27, 53]),
       // Invert font OFF (eg. white background)
-      TXT_INVERT_ON: Buffer.from([27, 52]),
+      TXT_INVERT_ON: globalThis.Buffer.from([27, 52]),
       // Invert font ON (eg. black background)
-      TXT_FONT_A: Buffer.from([27, 30, 70, 0]),
+      TXT_FONT_A: globalThis.Buffer.from([27, 30, 70, 0]),
       // Font type A
-      TXT_FONT_B: Buffer.from([27, 30, 70, 1]),
+      TXT_FONT_B: globalThis.Buffer.from([27, 30, 70, 1]),
       // Font type B
-      TXT_ALIGN_LT: Buffer.from([27, 29, 97, 0]),
+      TXT_ALIGN_LT: globalThis.Buffer.from([27, 29, 97, 0]),
       // Left justification
-      TXT_ALIGN_CT: Buffer.from([27, 29, 97, 1]),
+      TXT_ALIGN_CT: globalThis.Buffer.from([27, 29, 97, 1]),
       // Centering
-      TXT_ALIGN_RT: Buffer.from([27, 29, 97, 2]),
+      TXT_ALIGN_RT: globalThis.Buffer.from([27, 29, 97, 2]),
       // Right justification
       // All code pages supported by printer.
-      CODE_PAGE_NORMAL: Buffer.from([27, 29, 116, 0]),
-      CODE_PAGE_PC850_MULTILINGUAL: Buffer.from([27, 29, 116, 0]),
+      CODE_PAGE_NORMAL: globalThis.Buffer.from([27, 29, 116, 0]),
+      CODE_PAGE_PC850_MULTILINGUAL: globalThis.Buffer.from([27, 29, 116, 0]),
       // UNKNOWN
-      CODE_PAGE_ISO8859_2_LATIN2: Buffer.from([27, 29, 116, 0]),
+      CODE_PAGE_ISO8859_2_LATIN2: globalThis.Buffer.from([27, 29, 116, 0]),
       // UNKNOWN
-      CODE_PAGE_ISO8859_15_LATIN9: Buffer.from([27, 29, 116, 0]),
+      CODE_PAGE_ISO8859_15_LATIN9: globalThis.Buffer.from([27, 29, 116, 0]),
       // UNKNOWN
-      CODE_PAGE_PC437_USA: Buffer.from([27, 29, 116, 1]),
-      CODE_PAGE_KATAKANA: Buffer.from([27, 29, 116, 2]),
-      CODE_PAGE_CP437: Buffer.from([27, 29, 116, 3]),
-      CODE_PAGE_PC858_EURO: Buffer.from([27, 29, 116, 4]),
-      CODE_PAGE_PC852_LATIN2: Buffer.from([27, 29, 116, 5]),
-      CODE_PAGE_PC860_PORTUGUESE: Buffer.from([27, 29, 116, 6]),
-      CODE_PAGE_PC861_ICELANDIC: Buffer.from([27, 29, 116, 7]),
-      CODE_PAGE_PC863_CANADIAN_FRENCH: Buffer.from([27, 29, 116, 8]),
-      CODE_PAGE_PC865_NORDIC: Buffer.from([27, 29, 116, 9]),
-      CODE_PAGE_PC866_CYRILLIC2: Buffer.from([27, 29, 116, 10]),
-      CODE_PAGE_PC855_CYRILLIC: Buffer.from([27, 29, 116, 11]),
-      CODE_PAGE_PC857_TURKISH: Buffer.from([27, 29, 116, 12]),
-      CODE_PAGE_PC862_HEBREW: Buffer.from([27, 29, 116, 13]),
-      CODE_PAGE_PC864_ARABIC: Buffer.from([27, 29, 116, 14]),
-      CODE_PAGE_PC737_GREEK: Buffer.from([27, 29, 116, 15]),
-      CODE_PAGE_PC851_GREEK: Buffer.from([27, 29, 116, 16]),
-      CODE_PAGE_PC869_GREEK: Buffer.from([27, 29, 116, 17]),
-      CODE_PAGE_PC928_GREEK: Buffer.from([27, 29, 116, 18]),
-      CODE_PAGE_PC772_LITHUANIAN: Buffer.from([27, 29, 116, 19]),
-      CODE_PAGE_PC774_LITHUANIAN: Buffer.from([27, 29, 116, 20]),
-      CODE_PAGE_PC874_THAI: Buffer.from([27, 29, 116, 21]),
-      CODE_PAGE_WPC1252: Buffer.from([27, 29, 116, 32]),
-      CODE_PAGE_WPC1250_LATIN2: Buffer.from([27, 29, 116, 33]),
-      CODE_PAGE_WPC1251_CYRILLIC: Buffer.from([27, 29, 116, 34]),
-      CODE_PAGE_3840_IBM_Russian: Buffer.from([27, 29, 116, 64]),
-      CODE_PAGE_3841_Gost: Buffer.from([27, 29, 116, 65]),
-      CODE_PAGE_3843_POLISH: Buffer.from([27, 29, 116, 66]),
-      CODE_PAGE_3844_CS2: Buffer.from([27, 29, 116, 67]),
-      CODE_PAGE_3845_HUNGARIAN: Buffer.from([27, 29, 116, 68]),
-      CODE_PAGE_3846_TURKISH: Buffer.from([27, 29, 116, 69]),
-      CODE_PAGE_3847_BRAZIL_ABNT: Buffer.from([27, 29, 116, 70]),
-      CODE_PAGE_3848_RAZIL_ABICOMP: Buffer.from([27, 29, 116, 71]),
-      CODE_PAGE_1001_ARABIC: Buffer.from([27, 29, 116, 72]),
-      CODE_PAGE_2001_LITHUANIAN_KBL: Buffer.from([27, 29, 116, 73]),
-      CODE_PAGE_3001_ESTONIAN1: Buffer.from([27, 29, 116, 74]),
-      CODE_PAGE_3002_ESTONIAN2: Buffer.from([27, 29, 116, 75]),
-      CODE_PAGE_3011_LATVIAN1: Buffer.from([27, 29, 116, 76]),
-      CODE_PAGE_3012_LATVIAN2: Buffer.from([27, 29, 116, 77]),
-      CODE_PAGE_3021_BULGARIAN: Buffer.from([27, 29, 116, 78]),
-      CODE_PAGE_3041_MALTESE: Buffer.from([27, 29, 116, 79]),
-      CODE_PAGE_42_MALTESE: Buffer.from([27, 29, 116, 96]),
-      CODE_PAGE_11_MALTESE: Buffer.from([27, 29, 116, 97]),
-      CODE_PAGE_13_MALTESE: Buffer.from([27, 29, 116, 98]),
-      CODE_PAGE_14_MALTESE: Buffer.from([27, 29, 116, 99]),
-      CODE_PAGE_16_MALTESE: Buffer.from([27, 29, 116, 100]),
-      CODE_PAGE_17_MALTESE: Buffer.from([27, 29, 116, 101]),
-      CODE_PAGE_18_MALTESE: Buffer.from([27, 29, 116, 102]),
+      CODE_PAGE_PC437_USA: globalThis.Buffer.from([27, 29, 116, 1]),
+      CODE_PAGE_KATAKANA: globalThis.Buffer.from([27, 29, 116, 2]),
+      CODE_PAGE_CP437: globalThis.Buffer.from([27, 29, 116, 3]),
+      CODE_PAGE_PC858_EURO: globalThis.Buffer.from([27, 29, 116, 4]),
+      CODE_PAGE_PC852_LATIN2: globalThis.Buffer.from([27, 29, 116, 5]),
+      CODE_PAGE_PC860_PORTUGUESE: globalThis.Buffer.from([27, 29, 116, 6]),
+      CODE_PAGE_PC861_ICELANDIC: globalThis.Buffer.from([27, 29, 116, 7]),
+      CODE_PAGE_PC863_CANADIAN_FRENCH: globalThis.Buffer.from([27, 29, 116, 8]),
+      CODE_PAGE_PC865_NORDIC: globalThis.Buffer.from([27, 29, 116, 9]),
+      CODE_PAGE_PC866_CYRILLIC2: globalThis.Buffer.from([27, 29, 116, 10]),
+      CODE_PAGE_PC855_CYRILLIC: globalThis.Buffer.from([27, 29, 116, 11]),
+      CODE_PAGE_PC857_TURKISH: globalThis.Buffer.from([27, 29, 116, 12]),
+      CODE_PAGE_PC862_HEBREW: globalThis.Buffer.from([27, 29, 116, 13]),
+      CODE_PAGE_PC864_ARABIC: globalThis.Buffer.from([27, 29, 116, 14]),
+      CODE_PAGE_PC737_GREEK: globalThis.Buffer.from([27, 29, 116, 15]),
+      CODE_PAGE_PC851_GREEK: globalThis.Buffer.from([27, 29, 116, 16]),
+      CODE_PAGE_PC869_GREEK: globalThis.Buffer.from([27, 29, 116, 17]),
+      CODE_PAGE_PC928_GREEK: globalThis.Buffer.from([27, 29, 116, 18]),
+      CODE_PAGE_PC772_LITHUANIAN: globalThis.Buffer.from([27, 29, 116, 19]),
+      CODE_PAGE_PC774_LITHUANIAN: globalThis.Buffer.from([27, 29, 116, 20]),
+      CODE_PAGE_PC874_THAI: globalThis.Buffer.from([27, 29, 116, 21]),
+      CODE_PAGE_WPC1252: globalThis.Buffer.from([27, 29, 116, 32]),
+      CODE_PAGE_WPC1250_LATIN2: globalThis.Buffer.from([27, 29, 116, 33]),
+      CODE_PAGE_WPC1251_CYRILLIC: globalThis.Buffer.from([27, 29, 116, 34]),
+      CODE_PAGE_3840_IBM_Russian: globalThis.Buffer.from([27, 29, 116, 64]),
+      CODE_PAGE_3841_Gost: globalThis.Buffer.from([27, 29, 116, 65]),
+      CODE_PAGE_3843_POLISH: globalThis.Buffer.from([27, 29, 116, 66]),
+      CODE_PAGE_3844_CS2: globalThis.Buffer.from([27, 29, 116, 67]),
+      CODE_PAGE_3845_HUNGARIAN: globalThis.Buffer.from([27, 29, 116, 68]),
+      CODE_PAGE_3846_TURKISH: globalThis.Buffer.from([27, 29, 116, 69]),
+      CODE_PAGE_3847_BRAZIL_ABNT: globalThis.Buffer.from([27, 29, 116, 70]),
+      CODE_PAGE_3848_RAZIL_ABICOMP: globalThis.Buffer.from([27, 29, 116, 71]),
+      CODE_PAGE_1001_ARABIC: globalThis.Buffer.from([27, 29, 116, 72]),
+      CODE_PAGE_2001_LITHUANIAN_KBL: globalThis.Buffer.from([27, 29, 116, 73]),
+      CODE_PAGE_3001_ESTONIAN1: globalThis.Buffer.from([27, 29, 116, 74]),
+      CODE_PAGE_3002_ESTONIAN2: globalThis.Buffer.from([27, 29, 116, 75]),
+      CODE_PAGE_3011_LATVIAN1: globalThis.Buffer.from([27, 29, 116, 76]),
+      CODE_PAGE_3012_LATVIAN2: globalThis.Buffer.from([27, 29, 116, 77]),
+      CODE_PAGE_3021_BULGARIAN: globalThis.Buffer.from([27, 29, 116, 78]),
+      CODE_PAGE_3041_MALTESE: globalThis.Buffer.from([27, 29, 116, 79]),
+      CODE_PAGE_42_MALTESE: globalThis.Buffer.from([27, 29, 116, 96]),
+      CODE_PAGE_11_MALTESE: globalThis.Buffer.from([27, 29, 116, 97]),
+      CODE_PAGE_13_MALTESE: globalThis.Buffer.from([27, 29, 116, 98]),
+      CODE_PAGE_14_MALTESE: globalThis.Buffer.from([27, 29, 116, 99]),
+      CODE_PAGE_16_MALTESE: globalThis.Buffer.from([27, 29, 116, 100]),
+      CODE_PAGE_17_MALTESE: globalThis.Buffer.from([27, 29, 116, 101]),
+      CODE_PAGE_18_MALTESE: globalThis.Buffer.from([27, 29, 116, 102]),
       // Character code pages / iconv name of code table.
       // Only code pages supported by iconv-lite:
       // https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings
@@ -20644,110 +21000,110 @@ var require_star_config = __commonJS({
         CHINA: "EUC-CN"
       },
       // Barcode format
-      BARCODE_TXT_OFF: Buffer.from([29, 72, 0]),
+      BARCODE_TXT_OFF: globalThis.Buffer.from([29, 72, 0]),
       // HRI barcode chars OFF
-      BARCODE_TXT_ABV: Buffer.from([29, 72, 1]),
+      BARCODE_TXT_ABV: globalThis.Buffer.from([29, 72, 1]),
       // HRI barcode chars above
-      BARCODE_TXT_BLW: Buffer.from([29, 72, 2]),
+      BARCODE_TXT_BLW: globalThis.Buffer.from([29, 72, 2]),
       // HRI barcode chars below
-      BARCODE_TXT_BTH: Buffer.from([29, 72, 3]),
+      BARCODE_TXT_BTH: globalThis.Buffer.from([29, 72, 3]),
       // HRI barcode chars both above and below
-      BARCODE_FONT_A: Buffer.from([29, 102, 0]),
+      BARCODE_FONT_A: globalThis.Buffer.from([29, 102, 0]),
       // Font type A for HRI barcode chars
-      BARCODE_FONT_B: Buffer.from([29, 102, 1]),
+      BARCODE_FONT_B: globalThis.Buffer.from([29, 102, 1]),
       // Font type B for HRI barcode chars
-      BARCODE_HEIGHT: Buffer.from([29, 104, 100]),
+      BARCODE_HEIGHT: globalThis.Buffer.from([29, 104, 100]),
       // Barcode Height [1-255]
-      BARCODE_WIDTH: Buffer.from([29, 119, 3]),
+      BARCODE_WIDTH: globalThis.Buffer.from([29, 119, 3]),
       // Barcode Width  [2-6]
-      BARCODE_UPC_A: Buffer.from([29, 107, 0]),
+      BARCODE_UPC_A: globalThis.Buffer.from([29, 107, 0]),
       // Barcode type UPC-A
-      BARCODE_UPC_E: Buffer.from([29, 107, 1]),
+      BARCODE_UPC_E: globalThis.Buffer.from([29, 107, 1]),
       // Barcode type UPC-E
-      BARCODE_EAN13: Buffer.from([29, 107, 2]),
+      BARCODE_EAN13: globalThis.Buffer.from([29, 107, 2]),
       // Barcode type EAN13
-      BARCODE_EAN8: Buffer.from([29, 107, 3]),
+      BARCODE_EAN8: globalThis.Buffer.from([29, 107, 3]),
       // Barcode type EAN8
-      BARCODE_CODE39: Buffer.from([29, 107, 4]),
+      BARCODE_CODE39: globalThis.Buffer.from([29, 107, 4]),
       // Barcode type CODE39
-      BARCODE_ITF: Buffer.from([29, 107, 5]),
+      BARCODE_ITF: globalThis.Buffer.from([29, 107, 5]),
       // Barcode type ITF
-      BARCODE_NW7: Buffer.from([29, 107, 6]),
+      BARCODE_NW7: globalThis.Buffer.from([29, 107, 6]),
       // Barcode type NW7
-      BARCODE_CODE128: Buffer.from([27, 98, 54]),
+      BARCODE_CODE128: globalThis.Buffer.from([27, 98, 54]),
       // Barcode type CODE128
-      BARCODE_CODE128_TEXT_1: Buffer.from([1]),
+      BARCODE_CODE128_TEXT_1: globalThis.Buffer.from([1]),
       // No text
-      BARCODE_CODE128_TEXT_2: Buffer.from([2]),
+      BARCODE_CODE128_TEXT_2: globalThis.Buffer.from([2]),
       // Text on bottom
-      BARCODE_CODE128_TEXT_3: Buffer.from([3]),
+      BARCODE_CODE128_TEXT_3: globalThis.Buffer.from([3]),
       // No text inline
-      BARCODE_CODE128_TEXT_4: Buffer.from([4]),
+      BARCODE_CODE128_TEXT_4: globalThis.Buffer.from([4]),
       // Text on bottom inline
-      BARCODE_CODE128_WIDTH_SMALL: Buffer.from([49]),
+      BARCODE_CODE128_WIDTH_SMALL: globalThis.Buffer.from([49]),
       // Small
-      BARCODE_CODE128_WIDTH_MEDIUM: Buffer.from([50]),
+      BARCODE_CODE128_WIDTH_MEDIUM: globalThis.Buffer.from([50]),
       // Medium
-      BARCODE_CODE128_WIDTH_LARGE: Buffer.from([51]),
+      BARCODE_CODE128_WIDTH_LARGE: globalThis.Buffer.from([51]),
       // Large
       // QR Code
-      QRCODE_MODEL1: Buffer.from([27, 29, 121, 83, 48, 1]),
+      QRCODE_MODEL1: globalThis.Buffer.from([27, 29, 121, 83, 48, 1]),
       // Model 1
-      QRCODE_MODEL2: Buffer.from([27, 29, 121, 83, 48, 2]),
+      QRCODE_MODEL2: globalThis.Buffer.from([27, 29, 121, 83, 48, 2]),
       // Model 2
-      QRCODE_CORRECTION_L: Buffer.from([27, 29, 121, 83, 49, 0]),
+      QRCODE_CORRECTION_L: globalThis.Buffer.from([27, 29, 121, 83, 49, 0]),
       // Correction level: L - 7%
-      QRCODE_CORRECTION_M: Buffer.from([27, 29, 121, 83, 49, 1]),
+      QRCODE_CORRECTION_M: globalThis.Buffer.from([27, 29, 121, 83, 49, 1]),
       // Correction level: M - 15%
-      QRCODE_CORRECTION_Q: Buffer.from([27, 29, 121, 83, 49, 2]),
+      QRCODE_CORRECTION_Q: globalThis.Buffer.from([27, 29, 121, 83, 49, 2]),
       // Correction level: Q - 25%
-      QRCODE_CORRECTION_H: Buffer.from([27, 29, 121, 83, 49, 3]),
+      QRCODE_CORRECTION_H: globalThis.Buffer.from([27, 29, 121, 83, 49, 3]),
       // Correction level: H - 30%
-      QRCODE_CELLSIZE_1: Buffer.from([27, 29, 121, 83, 50, 1]),
+      QRCODE_CELLSIZE_1: globalThis.Buffer.from([27, 29, 121, 83, 50, 1]),
       // Cell size 1
-      QRCODE_CELLSIZE_2: Buffer.from([27, 29, 121, 83, 50, 2]),
+      QRCODE_CELLSIZE_2: globalThis.Buffer.from([27, 29, 121, 83, 50, 2]),
       // Cell size 2
-      QRCODE_CELLSIZE_3: Buffer.from([27, 29, 121, 83, 50, 3]),
+      QRCODE_CELLSIZE_3: globalThis.Buffer.from([27, 29, 121, 83, 50, 3]),
       // Cell size 3
-      QRCODE_CELLSIZE_4: Buffer.from([27, 29, 121, 83, 50, 4]),
+      QRCODE_CELLSIZE_4: globalThis.Buffer.from([27, 29, 121, 83, 50, 4]),
       // Cell size 4
-      QRCODE_CELLSIZE_5: Buffer.from([27, 29, 121, 83, 50, 5]),
+      QRCODE_CELLSIZE_5: globalThis.Buffer.from([27, 29, 121, 83, 50, 5]),
       // Cell size 5
-      QRCODE_CELLSIZE_6: Buffer.from([27, 29, 121, 83, 50, 6]),
+      QRCODE_CELLSIZE_6: globalThis.Buffer.from([27, 29, 121, 83, 50, 6]),
       // Cell size 6
-      QRCODE_CELLSIZE_7: Buffer.from([27, 29, 121, 83, 50, 7]),
+      QRCODE_CELLSIZE_7: globalThis.Buffer.from([27, 29, 121, 83, 50, 7]),
       // Cell size 7
-      QRCODE_CELLSIZE_8: Buffer.from([27, 29, 121, 83, 50, 8]),
+      QRCODE_CELLSIZE_8: globalThis.Buffer.from([27, 29, 121, 83, 50, 8]),
       // Cell size 8
-      QRCODE_CELLSIZE: Buffer.from([27, 29, 121, 68, 49, 0]),
+      QRCODE_CELLSIZE: globalThis.Buffer.from([27, 29, 121, 68, 49, 0]),
       // Cell size nL nH dk
-      QRCODE_PRINT: Buffer.from([27, 29, 121, 80]),
+      QRCODE_PRINT: globalThis.Buffer.from([27, 29, 121, 80]),
       // Print QR code
       // Image format
-      S_RASTER_N: Buffer.from([29, 118, 48, 0]),
+      S_RASTER_N: globalThis.Buffer.from([29, 118, 48, 0]),
       // Set raster image normal size
-      S_RASTER_2W: Buffer.from([29, 118, 48, 1]),
+      S_RASTER_2W: globalThis.Buffer.from([29, 118, 48, 1]),
       // Set raster image double width
-      S_RASTER_2H: Buffer.from([29, 118, 48, 2]),
+      S_RASTER_2H: globalThis.Buffer.from([29, 118, 48, 2]),
       // Set raster image double height
-      S_RASTER_Q: Buffer.from([29, 118, 48, 3]),
+      S_RASTER_Q: globalThis.Buffer.from([29, 118, 48, 3]),
       // Set raster image quadruple
       // Printing Density
-      PD_N50: Buffer.from([29, 124, 0]),
+      PD_N50: globalThis.Buffer.from([29, 124, 0]),
       // Printing Density -50%
-      PD_N37: Buffer.from([29, 124, 1]),
+      PD_N37: globalThis.Buffer.from([29, 124, 1]),
       // Printing Density -37.5%
-      PD_N25: Buffer.from([29, 124, 2]),
+      PD_N25: globalThis.Buffer.from([29, 124, 2]),
       // Printing Density -25%
-      PD_N12: Buffer.from([29, 124, 3]),
+      PD_N12: globalThis.Buffer.from([29, 124, 3]),
       // Printing Density -12.5%
-      PD_0: Buffer.from([29, 124, 4]),
+      PD_0: globalThis.Buffer.from([29, 124, 4]),
       // Printing Density  0%
-      PD_P50: Buffer.from([29, 124, 8]),
+      PD_P50: globalThis.Buffer.from([29, 124, 8]),
       // Printing Density +50%
-      PD_P37: Buffer.from([29, 124, 7]),
+      PD_P37: globalThis.Buffer.from([29, 124, 7]),
       // Printing Density +37.5%
-      PD_P25: Buffer.from([29, 124, 6])
+      PD_P25: globalThis.Buffer.from([29, 124, 6])
       // Printing Density +25%
     };
   }
@@ -20756,6 +21112,7 @@ var require_star_config = __commonJS({
 // node_modules/node-thermal-printer/lib/types/star.js
 var require_star = __commonJS({
   "node_modules/node-thermal-printer/lib/types/star.js"(exports, module) {
+    init_globals();
     var PrinterType = require_printer_type();
     var Star = class extends PrinterType {
       constructor() {
@@ -20765,7 +21122,7 @@ var require_star = __commonJS({
       // ------------------------------ Append ------------------------------
       append(appendBuffer) {
         if (this.buffer) {
-          this.buffer = Buffer.concat([this.buffer, appendBuffer]);
+          this.buffer = globalThis.Buffer.concat([this.buffer, appendBuffer]);
         } else {
           this.buffer = appendBuffer;
         }
@@ -20822,9 +21179,9 @@ var require_star = __commonJS({
         const s = str.length;
         const lsb = parseInt(s % 256);
         const msb = parseInt(s / 256);
-        this.append(Buffer.from([lsb, msb]));
-        this.append(Buffer.from(str.toString()));
-        this.append(Buffer.from([10]));
+        this.append(globalThis.Buffer.from([lsb, msb]));
+        this.append(globalThis.Buffer.from(str.toString()));
+        this.append(globalThis.Buffer.from([10]));
         this.append(this.config.QRCODE_PRINT);
         return this.buffer;
       }
@@ -20834,18 +21191,18 @@ var require_star = __commonJS({
         if (settings) {
           throw new Error("PDF417 settings not yet available for star printers!");
         }
-        this.append(Buffer.from([27, 29, 120, 83, 48, 0, 1, 2]));
-        this.append(Buffer.from([27, 29, 120, 83, 49, 2]));
-        this.append(Buffer.from([27, 29, 120, 83, 50, 2]));
-        this.append(Buffer.from([27, 29, 120, 83, 51, 3]));
+        this.append(globalThis.Buffer.from([27, 29, 120, 83, 48, 0, 1, 2]));
+        this.append(globalThis.Buffer.from([27, 29, 120, 83, 49, 2]));
+        this.append(globalThis.Buffer.from([27, 29, 120, 83, 50, 2]));
+        this.append(globalThis.Buffer.from([27, 29, 120, 83, 51, 3]));
         const s = data.length;
         const lsb = parseInt(s % 256);
         const msb = parseInt(s / 256);
-        this.append(Buffer.from([27, 29, 120, 68]));
-        this.append(Buffer.from([lsb, msb]));
-        this.append(Buffer.from(data.toString()));
-        this.append(Buffer.from([10]));
-        this.append(Buffer.from([27, 29, 120, 80]));
+        this.append(globalThis.Buffer.from([27, 29, 120, 68]));
+        this.append(globalThis.Buffer.from([lsb, msb]));
+        this.append(globalThis.Buffer.from(data.toString()));
+        this.append(globalThis.Buffer.from([10]));
+        this.append(globalThis.Buffer.from([27, 29, 120, 80]));
         return this.buffer;
       }
       // ------------------------------ CODE128 ------------------------------
@@ -20867,10 +21224,10 @@ var require_star = __commonJS({
         } else {
           this.append(this.config.BARCODE_CODE128_WIDTH_LARGE);
         }
-        if (settings && settings.height) this.append(Buffer.from([settings.height]));
-        else this.append(Buffer.from([80]));
-        this.append(Buffer.from(data.toString()));
-        this.append(Buffer.from([30]));
+        if (settings && settings.height) this.append(globalThis.Buffer.from([settings.height]));
+        else this.append(globalThis.Buffer.from([80]));
+        this.append(globalThis.Buffer.from(data.toString()));
+        this.append(globalThis.Buffer.from([30]));
         return this.buffer;
       }
       // ----------------------------------------------------- PRINT IMAGE -----------------------------------------------------
@@ -20902,9 +21259,9 @@ var require_star = __commonJS({
           }
           pixels.push(line);
         }
-        this.append(Buffer.from([27, 48]));
+        this.append(globalThis.Buffer.from([27, 48]));
         for (let i = 0; i < Math.ceil(height / 24); i++) {
-          let imageBuffer = Buffer.from([]);
+          let imageBuffer = globalThis.Buffer.from([]);
           for (let y = 0; y < 24; y++) {
             for (let j = 0; j < Math.ceil(width / 8); j++) {
               let byte = 0;
@@ -20920,14 +21277,14 @@ var require_star = __commonJS({
                   }
                 }
               }
-              imageBuffer = Buffer.concat([imageBuffer, Buffer.from([byte])]);
+              imageBuffer = globalThis.Buffer.concat([imageBuffer, globalThis.Buffer.from([byte])]);
             }
           }
-          this.append(Buffer.from([27, 107, parseInt(imageBuffer.length / 24), 0]));
+          this.append(globalThis.Buffer.from([27, 107, parseInt(imageBuffer.length / 24), 0]));
           this.append(imageBuffer);
-          this.append(Buffer.from("\n"));
+          this.append(globalThis.Buffer.from("\n"));
         }
-        this.append(Buffer.from([27, 122, 1]));
+        this.append(globalThis.Buffer.from([27, 122, 1]));
         return this.buffer;
       }
       // ------------------------------ BARCODE ------------------------------
@@ -20936,13 +21293,13 @@ var require_star = __commonJS({
         if (!settings) {
           settings = {};
         }
-        this.append(Buffer.from([27, 98]));
-        this.append(Buffer.from([type || 7]));
-        this.append(Buffer.from([settings.characters || 1]));
-        this.append(Buffer.from([settings.mode || 2]));
-        this.append(Buffer.from([settings.height || 150]));
-        this.append(Buffer.from(data));
-        this.append(Buffer.from([30]));
+        this.append(globalThis.Buffer.from([27, 98]));
+        this.append(globalThis.Buffer.from([type || 7]));
+        this.append(globalThis.Buffer.from([settings.characters || 1]));
+        this.append(globalThis.Buffer.from([settings.mode || 2]));
+        this.append(globalThis.Buffer.from([settings.height || 150]));
+        this.append(globalThis.Buffer.from(data));
+        this.append(globalThis.Buffer.from([30]));
         return this.buffer;
       }
     };
@@ -20953,124 +21310,125 @@ var require_star = __commonJS({
 // node_modules/node-thermal-printer/lib/types/tanca-config.js
 var require_tanca_config = __commonJS({
   "node_modules/node-thermal-printer/lib/types/tanca-config.js"(exports, module) {
+    init_globals();
     module.exports = {
       // Feed control sequences
-      CTL_LF: Buffer.from([10]),
+      CTL_LF: globalThis.Buffer.from([10]),
       // Print and line feed
-      CTL_FF: Buffer.from([12]),
+      CTL_FF: globalThis.Buffer.from([12]),
       // Form feed
-      CTL_CR: Buffer.from([13]),
+      CTL_CR: globalThis.Buffer.from([13]),
       // Carriage return
-      CTL_HT: Buffer.from([9]),
+      CTL_HT: globalThis.Buffer.from([9]),
       // Horizontal tab
-      CTL_SET_HT: Buffer.from([27, 68]),
+      CTL_SET_HT: globalThis.Buffer.from([27, 68]),
       // Set horizontal tab positions
-      CTL_VT: Buffer.from([27, 100, 4]),
+      CTL_VT: globalThis.Buffer.from([27, 100, 4]),
       // Vertical tab
       // Printer hardware
-      HW_INIT: Buffer.from([27, 64]),
+      HW_INIT: globalThis.Buffer.from([27, 64]),
       // Clear data in buffer and reset modes
-      HW_SELECT: Buffer.from([27, 61, 1]),
+      HW_SELECT: globalThis.Buffer.from([27, 61, 1]),
       // Printer select
-      HW_RESET: Buffer.from([27, 63, 10, 0]),
+      HW_RESET: globalThis.Buffer.from([27, 63, 10, 0]),
       // Reset printer hardware
-      BEEP: Buffer.from([27, 66, 5, 1]),
+      BEEP: globalThis.Buffer.from([27, 66, 5, 1]),
       // Sounds built-in buzzer (if equipped)
-      UPSIDE_DOWN_ON: Buffer.from([27, 123, 1]),
+      UPSIDE_DOWN_ON: globalThis.Buffer.from([27, 123, 1]),
       // Upside down printing ON (rotated 180 degrees).
-      UPSIDE_DOWN_OFF: Buffer.from([27, 123, 0]),
+      UPSIDE_DOWN_OFF: globalThis.Buffer.from([27, 123, 0]),
       // Upside down printing OFF (default).
       // Cash Drawer
-      CD_KICK_2: Buffer.from([27, 112, 0]),
+      CD_KICK_2: globalThis.Buffer.from([27, 112, 0]),
       // Sends a pulse to pin 2 []
-      CD_KICK_5: Buffer.from([27, 112, 1]),
+      CD_KICK_5: globalThis.Buffer.from([27, 112, 1]),
       // Sends a pulse to pin 5 []
       // Paper
-      PAPER_FULL_CUT: Buffer.from([29, 86, 0]),
+      PAPER_FULL_CUT: globalThis.Buffer.from([29, 86, 0]),
       // Full cut paper
-      PAPER_PART_CUT: Buffer.from([29, 86, 1]),
+      PAPER_PART_CUT: globalThis.Buffer.from([29, 86, 1]),
       // Partial cut paper
       // Text format
-      TXT_NORMAL: Buffer.from([27, 33, 0]),
+      TXT_NORMAL: globalThis.Buffer.from([27, 33, 0]),
       // Normal text
-      TXT_2HEIGHT: Buffer.from([27, 33, 16]),
+      TXT_2HEIGHT: globalThis.Buffer.from([27, 33, 16]),
       // Double height text
-      TXT_2WIDTH: Buffer.from([27, 33, 32]),
+      TXT_2WIDTH: globalThis.Buffer.from([27, 33, 32]),
       // Double width text
-      TXT_4SQUARE: Buffer.from([27, 33, 48]),
+      TXT_4SQUARE: globalThis.Buffer.from([27, 33, 48]),
       // Quad area text
-      TXT_UNDERL_OFF: Buffer.from([27, 45, 0]),
+      TXT_UNDERL_OFF: globalThis.Buffer.from([27, 45, 0]),
       // Underline font OFF
-      TXT_UNDERL_ON: Buffer.from([27, 45, 1]),
+      TXT_UNDERL_ON: globalThis.Buffer.from([27, 45, 1]),
       // Underline font 1-dot ON
-      TXT_UNDERL2_ON: Buffer.from([27, 45, 2]),
+      TXT_UNDERL2_ON: globalThis.Buffer.from([27, 45, 2]),
       // Underline font 2-dot ON
-      TXT_BOLD_OFF: Buffer.from([27, 69, 0]),
+      TXT_BOLD_OFF: globalThis.Buffer.from([27, 69, 0]),
       // Bold font OFF
-      TXT_BOLD_ON: Buffer.from([27, 69, 1]),
+      TXT_BOLD_ON: globalThis.Buffer.from([27, 69, 1]),
       // Bold font ON
-      TXT_INVERT_OFF: Buffer.from([29, 66, 0]),
+      TXT_INVERT_OFF: globalThis.Buffer.from([29, 66, 0]),
       // Invert font OFF (eg. white background)
-      TXT_INVERT_ON: Buffer.from([29, 66, 1]),
+      TXT_INVERT_ON: globalThis.Buffer.from([29, 66, 1]),
       // Invert font ON (eg. black background)
-      TXT_FONT_A: Buffer.from([27, 77, 0]),
+      TXT_FONT_A: globalThis.Buffer.from([27, 77, 0]),
       // Font type A
-      TXT_FONT_B: Buffer.from([27, 77, 1]),
+      TXT_FONT_B: globalThis.Buffer.from([27, 77, 1]),
       // Font type B
-      TXT_ALIGN_LT: Buffer.from([27, 97, 0]),
+      TXT_ALIGN_LT: globalThis.Buffer.from([27, 97, 0]),
       // Left justification
-      TXT_ALIGN_CT: Buffer.from([27, 97, 1]),
+      TXT_ALIGN_CT: globalThis.Buffer.from([27, 97, 1]),
       // Centering
-      TXT_ALIGN_RT: Buffer.from([27, 97, 2]),
+      TXT_ALIGN_RT: globalThis.Buffer.from([27, 97, 2]),
       // Right justification
       // All code pages supported by printer.
-      CODE_PAGE_PC437_USA: Buffer.from([27, 116, 0]),
-      CODE_PAGE_KATAKANA: Buffer.from([27, 116, 1]),
-      CODE_PAGE_PC850_MULTILINGUAL: Buffer.from([27, 116, 2]),
-      CODE_PAGE_PC860_PORTUGUESE: Buffer.from([27, 116, 3]),
-      CODE_PAGE_PC863_CANADIAN_FRENCH: Buffer.from([27, 116, 4]),
-      CODE_PAGE_PC865_NORDIC: Buffer.from([27, 116, 5]),
-      CODE_PAGE_PC851_GREEK: Buffer.from([27, 116, 11]),
-      CODE_PAGE_PC853_TURKISH: Buffer.from([27, 116, 12]),
-      CODE_PAGE_PC857_TURKISH: Buffer.from([27, 116, 13]),
-      CODE_PAGE_PC737_GREEK: Buffer.from([27, 116, 14]),
-      CODE_PAGE_ISO8859_7_GREEK: Buffer.from([27, 116, 15]),
-      CODE_PAGE_WPC1252: Buffer.from([27, 116, 16]),
-      CODE_PAGE_PC866_CYRILLIC2: Buffer.from([27, 116, 17]),
-      CODE_PAGE_PC852_LATIN2: Buffer.from([27, 116, 18]),
-      CODE_PAGE_SLOVENIA: Buffer.from([27, 116, 18]),
-      CODE_PAGE_PC858_EURO: Buffer.from([27, 116, 19]),
-      CODE_PAGE_KU42_THAI: Buffer.from([27, 116, 20]),
-      CODE_PAGE_TIS11_THAI: Buffer.from([27, 116, 21]),
-      CODE_PAGE_TIS18_THAI: Buffer.from([27, 116, 26]),
-      CODE_PAGE_TCVN3_VIETNAMESE_L: Buffer.from([27, 116, 30]),
-      CODE_PAGE_TCVN3_VIETNAMESE_U: Buffer.from([27, 116, 31]),
-      CODE_PAGE_PC720_ARABIC: Buffer.from([27, 116, 32]),
-      CODE_PAGE_WPC775_BALTIC_RIM: Buffer.from([27, 116, 33]),
-      CODE_PAGE_PC855_CYRILLIC: Buffer.from([27, 116, 34]),
-      CODE_PAGE_PC861_ICELANDIC: Buffer.from([27, 116, 35]),
-      CODE_PAGE_PC862_HEBREW: Buffer.from([27, 116, 36]),
-      CODE_PAGE_PC864_ARABIC: Buffer.from([27, 116, 37]),
-      CODE_PAGE_PC869_GREEK: Buffer.from([27, 116, 38]),
-      CODE_PAGE_ISO8859_2_LATIN2: Buffer.from([27, 116, 39]),
-      CODE_PAGE_ISO8859_15_LATIN9: Buffer.from([27, 116, 40]),
-      CODE_PAGE_PC1098_FARCI: Buffer.from([27, 116, 41]),
-      CODE_PAGE_PC1118_LITHUANIAN: Buffer.from([27, 116, 42]),
-      CODE_PAGE_PC1119_LITHUANIAN: Buffer.from([27, 116, 43]),
-      CODE_PAGE_PC1125_UKRANIAN: Buffer.from([27, 116, 44]),
-      CODE_PAGE_WPC1250_LATIN2: Buffer.from([27, 116, 45]),
-      CODE_PAGE_WPC1251_CYRILLIC: Buffer.from([27, 116, 46]),
-      CODE_PAGE_WPC1253_GREEK: Buffer.from([27, 116, 47]),
-      CODE_PAGE_WPC1254_TURKISH: Buffer.from([27, 116, 48]),
-      CODE_PAGE_WPC1255_HEBREW: Buffer.from([27, 116, 49]),
-      CODE_PAGE_WPC1256_ARABIC: Buffer.from([27, 116, 50]),
-      CODE_PAGE_WPC1257_BALTIC_RIM: Buffer.from([27, 116, 51]),
-      CODE_PAGE_WPC1258_VIETNAMESE: Buffer.from([27, 116, 52]),
-      CODE_PAGE_KZ1048_KAZAKHSTAN: Buffer.from([27, 116, 53]),
-      CODE_PAGE_JAPAN: Buffer.from([27, 82, 8]),
-      CODE_PAGE_KOREA: Buffer.from([27, 82, 13]),
-      CODE_PAGE_CHINA: Buffer.from([27, 82, 15]),
-      CODE_PAGE_HK_TW: Buffer.from([27, 82, 0]),
+      CODE_PAGE_PC437_USA: globalThis.Buffer.from([27, 116, 0]),
+      CODE_PAGE_KATAKANA: globalThis.Buffer.from([27, 116, 1]),
+      CODE_PAGE_PC850_MULTILINGUAL: globalThis.Buffer.from([27, 116, 2]),
+      CODE_PAGE_PC860_PORTUGUESE: globalThis.Buffer.from([27, 116, 3]),
+      CODE_PAGE_PC863_CANADIAN_FRENCH: globalThis.Buffer.from([27, 116, 4]),
+      CODE_PAGE_PC865_NORDIC: globalThis.Buffer.from([27, 116, 5]),
+      CODE_PAGE_PC851_GREEK: globalThis.Buffer.from([27, 116, 11]),
+      CODE_PAGE_PC853_TURKISH: globalThis.Buffer.from([27, 116, 12]),
+      CODE_PAGE_PC857_TURKISH: globalThis.Buffer.from([27, 116, 13]),
+      CODE_PAGE_PC737_GREEK: globalThis.Buffer.from([27, 116, 14]),
+      CODE_PAGE_ISO8859_7_GREEK: globalThis.Buffer.from([27, 116, 15]),
+      CODE_PAGE_WPC1252: globalThis.Buffer.from([27, 116, 16]),
+      CODE_PAGE_PC866_CYRILLIC2: globalThis.Buffer.from([27, 116, 17]),
+      CODE_PAGE_PC852_LATIN2: globalThis.Buffer.from([27, 116, 18]),
+      CODE_PAGE_SLOVENIA: globalThis.Buffer.from([27, 116, 18]),
+      CODE_PAGE_PC858_EURO: globalThis.Buffer.from([27, 116, 19]),
+      CODE_PAGE_KU42_THAI: globalThis.Buffer.from([27, 116, 20]),
+      CODE_PAGE_TIS11_THAI: globalThis.Buffer.from([27, 116, 21]),
+      CODE_PAGE_TIS18_THAI: globalThis.Buffer.from([27, 116, 26]),
+      CODE_PAGE_TCVN3_VIETNAMESE_L: globalThis.Buffer.from([27, 116, 30]),
+      CODE_PAGE_TCVN3_VIETNAMESE_U: globalThis.Buffer.from([27, 116, 31]),
+      CODE_PAGE_PC720_ARABIC: globalThis.Buffer.from([27, 116, 32]),
+      CODE_PAGE_WPC775_BALTIC_RIM: globalThis.Buffer.from([27, 116, 33]),
+      CODE_PAGE_PC855_CYRILLIC: globalThis.Buffer.from([27, 116, 34]),
+      CODE_PAGE_PC861_ICELANDIC: globalThis.Buffer.from([27, 116, 35]),
+      CODE_PAGE_PC862_HEBREW: globalThis.Buffer.from([27, 116, 36]),
+      CODE_PAGE_PC864_ARABIC: globalThis.Buffer.from([27, 116, 37]),
+      CODE_PAGE_PC869_GREEK: globalThis.Buffer.from([27, 116, 38]),
+      CODE_PAGE_ISO8859_2_LATIN2: globalThis.Buffer.from([27, 116, 39]),
+      CODE_PAGE_ISO8859_15_LATIN9: globalThis.Buffer.from([27, 116, 40]),
+      CODE_PAGE_PC1098_FARCI: globalThis.Buffer.from([27, 116, 41]),
+      CODE_PAGE_PC1118_LITHUANIAN: globalThis.Buffer.from([27, 116, 42]),
+      CODE_PAGE_PC1119_LITHUANIAN: globalThis.Buffer.from([27, 116, 43]),
+      CODE_PAGE_PC1125_UKRANIAN: globalThis.Buffer.from([27, 116, 44]),
+      CODE_PAGE_WPC1250_LATIN2: globalThis.Buffer.from([27, 116, 45]),
+      CODE_PAGE_WPC1251_CYRILLIC: globalThis.Buffer.from([27, 116, 46]),
+      CODE_PAGE_WPC1253_GREEK: globalThis.Buffer.from([27, 116, 47]),
+      CODE_PAGE_WPC1254_TURKISH: globalThis.Buffer.from([27, 116, 48]),
+      CODE_PAGE_WPC1255_HEBREW: globalThis.Buffer.from([27, 116, 49]),
+      CODE_PAGE_WPC1256_ARABIC: globalThis.Buffer.from([27, 116, 50]),
+      CODE_PAGE_WPC1257_BALTIC_RIM: globalThis.Buffer.from([27, 116, 51]),
+      CODE_PAGE_WPC1258_VIETNAMESE: globalThis.Buffer.from([27, 116, 52]),
+      CODE_PAGE_KZ1048_KAZAKHSTAN: globalThis.Buffer.from([27, 116, 53]),
+      CODE_PAGE_JAPAN: globalThis.Buffer.from([27, 82, 8]),
+      CODE_PAGE_KOREA: globalThis.Buffer.from([27, 82, 13]),
+      CODE_PAGE_CHINA: globalThis.Buffer.from([27, 82, 15]),
+      CODE_PAGE_HK_TW: globalThis.Buffer.from([27, 82, 0]),
       // Character code pages / iconv name of code table.
       // Only code pages supported by iconv-lite:
       // https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings
@@ -21113,119 +21471,119 @@ var require_tanca_config = __commonJS({
         HK_TW: "Big5-HKSCS"
       },
       // Barcode format
-      BARCODE_TXT_OFF: Buffer.from([29, 72, 0]),
+      BARCODE_TXT_OFF: globalThis.Buffer.from([29, 72, 0]),
       // HRI barcode chars OFF
-      BARCODE_TXT_ABV: Buffer.from([29, 72, 1]),
+      BARCODE_TXT_ABV: globalThis.Buffer.from([29, 72, 1]),
       // HRI barcode chars above
-      BARCODE_TXT_BLW: Buffer.from([29, 72, 2]),
+      BARCODE_TXT_BLW: globalThis.Buffer.from([29, 72, 2]),
       // HRI barcode chars below
-      BARCODE_TXT_BTH: Buffer.from([29, 72, 3]),
+      BARCODE_TXT_BTH: globalThis.Buffer.from([29, 72, 3]),
       // HRI barcode chars both above and below
-      BARCODE_FONT_A: Buffer.from([29, 102, 0]),
+      BARCODE_FONT_A: globalThis.Buffer.from([29, 102, 0]),
       // Font type A for HRI barcode chars
-      BARCODE_FONT_B: Buffer.from([29, 102, 1]),
+      BARCODE_FONT_B: globalThis.Buffer.from([29, 102, 1]),
       // Font type B for HRI barcode chars
-      BARCODE_HEIGHT: Buffer.from([29, 104, 100]),
+      BARCODE_HEIGHT: globalThis.Buffer.from([29, 104, 100]),
       // Barcode Height [1-255]
-      BARCODE_WIDTH: Buffer.from([29, 119, 3]),
+      BARCODE_WIDTH: globalThis.Buffer.from([29, 119, 3]),
       // Barcode Width  [2-6]
-      BARCODE_UPC_A: Buffer.from([29, 107, 0]),
+      BARCODE_UPC_A: globalThis.Buffer.from([29, 107, 0]),
       // Barcode type UPC-A
-      BARCODE_UPC_E: Buffer.from([29, 107, 1]),
+      BARCODE_UPC_E: globalThis.Buffer.from([29, 107, 1]),
       // Barcode type UPC-E
-      BARCODE_EAN13: Buffer.from([29, 107, 2]),
+      BARCODE_EAN13: globalThis.Buffer.from([29, 107, 2]),
       // Barcode type EAN13
-      BARCODE_EAN8: Buffer.from([29, 107, 3]),
+      BARCODE_EAN8: globalThis.Buffer.from([29, 107, 3]),
       // Barcode type EAN8
-      BARCODE_CODE39: Buffer.from([29, 107, 4]),
+      BARCODE_CODE39: globalThis.Buffer.from([29, 107, 4]),
       // Barcode type CODE39
-      BARCODE_ITF: Buffer.from([29, 107, 5]),
+      BARCODE_ITF: globalThis.Buffer.from([29, 107, 5]),
       // Barcode type ITF
-      BARCODE_NW7: Buffer.from([29, 107, 6]),
+      BARCODE_NW7: globalThis.Buffer.from([29, 107, 6]),
       // Barcode type NW7
       // QR Code
-      QRCODE_MODEL1: Buffer.from([29, 40, 107, 4, 0, 49, 65, 49, 0]),
+      QRCODE_MODEL1: globalThis.Buffer.from([29, 40, 107, 4, 0, 49, 65, 49, 0]),
       // Model 1
-      QRCODE_MODEL2: Buffer.from([29, 40, 107, 4, 0, 49, 65, 50, 0]),
+      QRCODE_MODEL2: globalThis.Buffer.from([29, 40, 107, 4, 0, 49, 65, 50, 0]),
       // Model 2
-      QRCODE_MODEL3: Buffer.from([29, 40, 107, 4, 0, 49, 65, 51, 0]),
+      QRCODE_MODEL3: globalThis.Buffer.from([29, 40, 107, 4, 0, 49, 65, 51, 0]),
       // Model 3
-      QRCODE_CORRECTION_L: Buffer.from([29, 40, 107, 3, 0, 49, 69, 48]),
+      QRCODE_CORRECTION_L: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 69, 48]),
       // Correction level: L - 7%
-      QRCODE_CORRECTION_M: Buffer.from([29, 40, 107, 3, 0, 49, 69, 49]),
+      QRCODE_CORRECTION_M: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 69, 49]),
       // Correction level: M - 15%
-      QRCODE_CORRECTION_Q: Buffer.from([29, 40, 107, 3, 0, 49, 69, 50]),
+      QRCODE_CORRECTION_Q: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 69, 50]),
       // Correction level: Q - 25%
-      QRCODE_CORRECTION_H: Buffer.from([29, 40, 107, 3, 0, 49, 69, 51]),
+      QRCODE_CORRECTION_H: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 69, 51]),
       // Correction level: H - 30%
-      QRCODE_CELLSIZE_1: Buffer.from([29, 40, 107, 3, 0, 49, 67, 1]),
+      QRCODE_CELLSIZE_1: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 1]),
       // Cell size 1
-      QRCODE_CELLSIZE_2: Buffer.from([29, 40, 107, 3, 0, 49, 67, 2]),
+      QRCODE_CELLSIZE_2: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 2]),
       // Cell size 2
-      QRCODE_CELLSIZE_3: Buffer.from([29, 40, 107, 3, 0, 49, 67, 3]),
+      QRCODE_CELLSIZE_3: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 3]),
       // Cell size 3
-      QRCODE_CELLSIZE_4: Buffer.from([29, 40, 107, 3, 0, 49, 67, 4]),
+      QRCODE_CELLSIZE_4: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 4]),
       // Cell size 4
-      QRCODE_CELLSIZE_5: Buffer.from([29, 40, 107, 3, 0, 49, 67, 5]),
+      QRCODE_CELLSIZE_5: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 5]),
       // Cell size 5
-      QRCODE_CELLSIZE_6: Buffer.from([29, 40, 107, 3, 0, 49, 67, 6]),
+      QRCODE_CELLSIZE_6: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 6]),
       // Cell size 6
-      QRCODE_CELLSIZE_7: Buffer.from([29, 40, 107, 3, 0, 49, 67, 7]),
+      QRCODE_CELLSIZE_7: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 7]),
       // Cell size 7
-      QRCODE_CELLSIZE_8: Buffer.from([29, 40, 107, 3, 0, 49, 67, 8]),
+      QRCODE_CELLSIZE_8: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 8]),
       // Cell size 8
-      QRCODE_PRINT: Buffer.from([29, 40, 107, 3, 0, 49, 81, 48]),
+      QRCODE_PRINT: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 81, 48]),
       // Print QR code
       // PDF417
-      PDF417_CORRECTION: Buffer.from([29, 40, 107, 4, 0, 48, 69, 49]),
+      PDF417_CORRECTION: globalThis.Buffer.from([29, 40, 107, 4, 0, 48, 69, 49]),
       // Append 1-40 for ratio
-      PDF417_ROW_HEIGHT: Buffer.from([29, 40, 107, 3, 0, 48, 68]),
+      PDF417_ROW_HEIGHT: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 68]),
       // Append 2-8 for height
-      PDF417_WIDTH: Buffer.from([29, 40, 107, 3, 0, 48, 67]),
+      PDF417_WIDTH: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 67]),
       // Append 2-8 for width
-      PDF417_COLUMNS: Buffer.from([29, 40, 107, 3, 0, 48, 65]),
-      PDF417_OPTION_STANDARD: Buffer.from([29, 40, 107, 3, 0, 48, 70, 0]),
+      PDF417_COLUMNS: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 65]),
+      PDF417_OPTION_STANDARD: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 70, 0]),
       // Standard barcode
-      PDF417_OPTION_TRUNCATED: Buffer.from([29, 40, 107, 3, 0, 48, 70, 1]),
+      PDF417_OPTION_TRUNCATED: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 70, 1]),
       // Truncated barcode
-      PDF417_PRINT: Buffer.from([29, 40, 107, 3, 0, 48, 81, 48]),
+      PDF417_PRINT: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 81, 48]),
       // MaxiCode
       // Formatted data containing a structured Carrier Message with a numeric postal code. (US)
-      MAXI_MODE2: Buffer.from([29, 40, 107, 3, 0, 50, 65, 50]),
+      MAXI_MODE2: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 50]),
       // Formatted data containing a structured Carrier Message with an alphanumeric postal code. (International)
-      MAXI_MODE3: Buffer.from([29, 40, 107, 3, 0, 50, 65, 51]),
-      MAXI_MODE4: Buffer.from([29, 40, 107, 3, 0, 50, 65, 52]),
+      MAXI_MODE3: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 51]),
+      MAXI_MODE4: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 52]),
       // Unformatted data with Standard Error Correction.
-      MAXI_MODE5: Buffer.from([29, 40, 107, 3, 0, 50, 65, 53]),
+      MAXI_MODE5: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 53]),
       // Unformatted data with Enhanced Error Correction.
-      MAXI_MODE6: Buffer.from([29, 40, 107, 3, 0, 50, 65, 54]),
+      MAXI_MODE6: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 54]),
       // For programming hardware devices.
-      MAXI_PRINT: Buffer.from([29, 40, 107, 3, 0, 50, 81, 48]),
+      MAXI_PRINT: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 81, 48]),
       // Image format
-      S_RASTER_N: Buffer.from([29, 118, 48, 0]),
+      S_RASTER_N: globalThis.Buffer.from([29, 118, 48, 0]),
       // Set raster image normal size
-      S_RASTER_2W: Buffer.from([29, 118, 48, 1]),
+      S_RASTER_2W: globalThis.Buffer.from([29, 118, 48, 1]),
       // Set raster image double width
-      S_RASTER_2H: Buffer.from([29, 118, 48, 2]),
+      S_RASTER_2H: globalThis.Buffer.from([29, 118, 48, 2]),
       // Set raster image double height
-      S_RASTER_Q: Buffer.from([29, 118, 48, 3]),
+      S_RASTER_Q: globalThis.Buffer.from([29, 118, 48, 3]),
       // Set raster image quadruple
       // Printing Density
-      PD_N50: Buffer.from([29, 124, 0]),
+      PD_N50: globalThis.Buffer.from([29, 124, 0]),
       // Printing Density -50%
-      PD_N37: Buffer.from([29, 124, 1]),
+      PD_N37: globalThis.Buffer.from([29, 124, 1]),
       // Printing Density -37.5%
-      PD_N25: Buffer.from([29, 124, 2]),
+      PD_N25: globalThis.Buffer.from([29, 124, 2]),
       // Printing Density -25%
-      PD_N12: Buffer.from([29, 124, 3]),
+      PD_N12: globalThis.Buffer.from([29, 124, 3]),
       // Printing Density -12.5%
-      PD_0: Buffer.from([29, 124, 4]),
+      PD_0: globalThis.Buffer.from([29, 124, 4]),
       // Printing Density  0%
-      PD_P50: Buffer.from([29, 124, 8]),
+      PD_P50: globalThis.Buffer.from([29, 124, 8]),
       // Printing Density +50%
-      PD_P37: Buffer.from([29, 124, 7]),
+      PD_P37: globalThis.Buffer.from([29, 124, 7]),
       // Printing Density +37.5%
-      PD_P25: Buffer.from([29, 124, 6])
+      PD_P25: globalThis.Buffer.from([29, 124, 6])
       // Printing Density +25%
     };
   }
@@ -21234,6 +21592,7 @@ var require_tanca_config = __commonJS({
 // node_modules/node-thermal-printer/lib/types/tanca.js
 var require_tanca = __commonJS({
   "node_modules/node-thermal-printer/lib/types/tanca.js"(exports, module) {
+    init_globals();
     var PrinterType = require_printer_type();
     var Tanca = class extends PrinterType {
       constructor() {
@@ -21243,7 +21602,7 @@ var require_tanca = __commonJS({
       // ------------------------------ Append ------------------------------
       append(appendBuffer) {
         if (this.buffer) {
-          this.buffer = Buffer.concat([this.buffer, appendBuffer]);
+          this.buffer = globalThis.Buffer.concat([this.buffer, appendBuffer]);
         } else {
           this.buffer = appendBuffer;
         }
@@ -21257,8 +21616,8 @@ var require_tanca = __commonJS({
         this.buffer = null;
         if (height > 7 || height < 0) throw new Error("setTextSize: Height must be between 0 and 7");
         if (width > 7 || width < 0) throw new Error("setTextSize: Width must be between 0 and 7");
-        const x = Buffer.from(`${height}${width}`, "hex");
-        this.append(Buffer.from([29, 33]));
+        const x = globalThis.Buffer.from(`${height}${width}`, "hex");
+        this.append(globalThis.Buffer.from([29, 33]));
         this.append(x);
         return this.buffer;
       }
@@ -21288,8 +21647,8 @@ var require_tanca = __commonJS({
         const s = str.length + 3;
         const lsb = parseInt(s % 256);
         const msb = parseInt(s / 256);
-        this.append(Buffer.from([29, 40, 107, lsb, msb, 49, 80, 48]));
-        this.append(Buffer.from(str));
+        this.append(globalThis.Buffer.from([29, 40, 107, lsb, msb, 49, 80, 48]));
+        this.append(globalThis.Buffer.from(str));
         this.append(this.config.QRCODE_PRINT);
         return this.buffer;
       }
@@ -21299,40 +21658,40 @@ var require_tanca = __commonJS({
         settings = settings || {};
         if (settings.correction) {
           this.append(this.config.PDF417_CORRECTION);
-          this.append(Buffer.from([settings.correction]));
+          this.append(globalThis.Buffer.from([settings.correction]));
         } else {
           this.append(this.config.PDF417_CORRECTION);
-          this.append(Buffer.from([1]));
+          this.append(globalThis.Buffer.from([1]));
         }
         if (settings.rowHeight) {
           this.append(this.config.PDF417_ROW_HEIGHT);
-          this.append(Buffer.from([settings.rowHeight]));
+          this.append(globalThis.Buffer.from([settings.rowHeight]));
         } else {
           this.append(this.config.PDF417_ROW_HEIGHT);
-          this.append(Buffer.from([3]));
+          this.append(globalThis.Buffer.from([3]));
         }
         if (settings.width) {
           this.append(this.config.PDF417_WIDTH);
-          this.append(Buffer.from([settings.width]));
+          this.append(globalThis.Buffer.from([settings.width]));
         } else {
           this.append(this.config.PDF417_WIDTH);
-          this.append(Buffer.from([3]));
+          this.append(globalThis.Buffer.from([3]));
         }
         if (settings.columns) {
           this.append(this.config.PDF417_COLUMNS);
-          this.append(Buffer.from([settings.columns]));
+          this.append(globalThis.Buffer.from([settings.columns]));
         } else {
           this.append(this.config.PDF417_COLUMNS);
-          this.append(Buffer.from([0]));
+          this.append(globalThis.Buffer.from([0]));
         }
         if (settings.truncated) this.append(this.config.PDF417_OPTION_TRUNCATED);
         else this.append(this.config.PDF417_OPTION_STANDARD);
         const s = data.length + 3;
         const lsb = parseInt(s % 256);
         const msb = parseInt(s / 256);
-        this.append(Buffer.from([29, 40, 107, lsb, msb, 48, 80, 48]));
-        this.append(Buffer.from(data.toString()));
-        this.append(Buffer.from(this.config.PDF417_PRINT));
+        this.append(globalThis.Buffer.from([29, 40, 107, lsb, msb, 48, 80, 48]));
+        this.append(globalThis.Buffer.from(data.toString()));
+        this.append(globalThis.Buffer.from(this.config.PDF417_PRINT));
         return this.buffer;
       }
       // ------------------------------ MAXI CODE ------------------------------
@@ -21351,8 +21710,8 @@ var require_tanca = __commonJS({
         const s = data.length + 3;
         const lsb = parseInt(s % 256);
         const msb = parseInt(s / 256);
-        this.append(Buffer.from([29, 40, 107, lsb, msb, 50, 80, 48]));
-        this.append(Buffer.from(data.toString()));
+        this.append(globalThis.Buffer.from([29, 40, 107, lsb, msb, 50, 80, 48]));
+        this.append(globalThis.Buffer.from(data.toString()));
         this.append(this.config.MAXI_PRINT);
         return this.buffer;
       }
@@ -21361,32 +21720,32 @@ var require_tanca = __commonJS({
         this.buffer = null;
         settings = settings || {};
         if (settings.hriPos) {
-          this.append(Buffer.from([29, 72]));
-          this.append(Buffer.from([settings.hriPos]));
+          this.append(globalThis.Buffer.from([29, 72]));
+          this.append(globalThis.Buffer.from([settings.hriPos]));
         } else {
-          this.append(Buffer.from([29, 72, 0]));
+          this.append(globalThis.Buffer.from([29, 72, 0]));
         }
         if (settings.hriFont) {
-          this.append(Buffer.from([29, 102]));
-          this.append(Buffer.from([settings.hriFont]));
+          this.append(globalThis.Buffer.from([29, 102]));
+          this.append(globalThis.Buffer.from([settings.hriFont]));
         } else {
-          this.append(Buffer.from([29, 102, 0]));
+          this.append(globalThis.Buffer.from([29, 102, 0]));
         }
         if (settings.width) {
-          this.append(Buffer.from([29, 119]));
-          this.append(Buffer.from([settings.width]));
+          this.append(globalThis.Buffer.from([29, 119]));
+          this.append(globalThis.Buffer.from([settings.width]));
         } else {
-          this.append(Buffer.from([29, 119, 3]));
+          this.append(globalThis.Buffer.from([29, 119, 3]));
         }
         if (settings.height) {
-          this.append(Buffer.from([29, 104]));
-          this.append(Buffer.from([settings.height]));
+          this.append(globalThis.Buffer.from([29, 104]));
+          this.append(globalThis.Buffer.from([settings.height]));
         } else {
-          this.append(Buffer.from([29, 104, 162]));
+          this.append(globalThis.Buffer.from([29, 104, 162]));
         }
-        this.append(Buffer.from([29, 107]));
-        this.append(Buffer.from([type, data.length]));
-        this.append(Buffer.from(data));
+        this.append(globalThis.Buffer.from([29, 107]));
+        this.append(globalThis.Buffer.from([type, data.length]));
+        this.append(globalThis.Buffer.from(data));
         return this.buffer;
       }
       // ----------------------------------------------------- PRINT IMAGE -----------------------------------------------------
@@ -21444,15 +21803,15 @@ var require_tanca = __commonJS({
             imageBufferArray.push(byte);
           }
         }
-        const imageBuffer = Buffer.from(imageBufferArray);
+        const imageBuffer = globalThis.Buffer.from(imageBufferArray);
         if (width % 8 != 0) {
           width += 8;
         }
-        this.append(Buffer.from([29, 118, 48, 48]));
-        this.append(Buffer.from([width >> 3 & 255]));
-        this.append(Buffer.from([0]));
-        this.append(Buffer.from([height & 255]));
-        this.append(Buffer.from([height >> 8 & 255]));
+        this.append(globalThis.Buffer.from([29, 118, 48, 48]));
+        this.append(globalThis.Buffer.from([width >> 3 & 255]));
+        this.append(globalThis.Buffer.from([0]));
+        this.append(globalThis.Buffer.from([height & 255]));
+        this.append(globalThis.Buffer.from([height >> 8 & 255]));
         this.append(imageBuffer);
         return this.buffer;
       }
@@ -21464,114 +21823,115 @@ var require_tanca = __commonJS({
 // node_modules/node-thermal-printer/lib/types/daruma-config.js
 var require_daruma_config = __commonJS({
   "node_modules/node-thermal-printer/lib/types/daruma-config.js"(exports, module) {
+    init_globals();
     module.exports = {
       // Feed control sequences
-      CTL_LF: Buffer.from([10]),
+      CTL_LF: globalThis.Buffer.from([10]),
       // Print and line feed
-      CTL_FF: Buffer.from([12]),
+      CTL_FF: globalThis.Buffer.from([12]),
       // Form feed
-      CTL_CR: Buffer.from([13]),
+      CTL_CR: globalThis.Buffer.from([13]),
       // Carriage return
-      CTL_HT: Buffer.from([9]),
+      CTL_HT: globalThis.Buffer.from([9]),
       // Horizontal tab
-      CTL_SET_HT: Buffer.from([27, 68]),
+      CTL_SET_HT: globalThis.Buffer.from([27, 68]),
       // Set horizontal tab positions
-      CTL_VT: Buffer.from([11]),
+      CTL_VT: globalThis.Buffer.from([11]),
       // Vertical tab
       // Printer hardware
-      HW_INIT: Buffer.from([27, 64]),
+      HW_INIT: globalThis.Buffer.from([27, 64]),
       // Clear data in buffer and reset modes
-      HW_SELECT: Buffer.from([27, 61, 1]),
+      HW_SELECT: globalThis.Buffer.from([27, 61, 1]),
       // Printer select
-      HW_RESET: Buffer.from([27, 63, 10, 0]),
+      HW_RESET: globalThis.Buffer.from([27, 63, 10, 0]),
       // Reset printer hardware
-      BEEP: Buffer.from([7]),
+      BEEP: globalThis.Buffer.from([7]),
       // Sounds built-in buzzer (if equipped)
       // Cash Drawer
-      CD_KICK_2: Buffer.from([27, 112, 0]),
+      CD_KICK_2: globalThis.Buffer.from([27, 112, 0]),
       // Sends a pulse to pin 2 []
-      CD_KICK_5: Buffer.from([27, 112, 1]),
+      CD_KICK_5: globalThis.Buffer.from([27, 112, 1]),
       // Sends a pulse to pin 5 []
       // Paper
-      PAPER_FULL_CUT: Buffer.from([27, 109]),
+      PAPER_FULL_CUT: globalThis.Buffer.from([27, 109]),
       // Full cut paper
-      PAPER_PART_CUT: Buffer.from([27, 109]),
+      PAPER_PART_CUT: globalThis.Buffer.from([27, 109]),
       // Partial cut paper
       // Text format
-      TXT_NORMAL: Buffer.from([27, 33, 0, 18]),
+      TXT_NORMAL: globalThis.Buffer.from([27, 33, 0, 18]),
       // Normal text
-      TXT_2HEIGHT: Buffer.from([27, 119, 1]),
+      TXT_2HEIGHT: globalThis.Buffer.from([27, 119, 1]),
       // Double height text
-      TXT_2WIDTH: Buffer.from([27, 14, 0]),
+      TXT_2WIDTH: globalThis.Buffer.from([27, 14, 0]),
       // Double width text
-      TXT_UNDERL_OFF: Buffer.from([27, 45, 0]),
+      TXT_UNDERL_OFF: globalThis.Buffer.from([27, 45, 0]),
       // Underline font OFF
-      TXT_UNDERL_ON: Buffer.from([27, 45, 1]),
+      TXT_UNDERL_ON: globalThis.Buffer.from([27, 45, 1]),
       // Underline font 1-dot ON
-      TXT_BOLD_OFF: Buffer.from([27, 70]),
+      TXT_BOLD_OFF: globalThis.Buffer.from([27, 70]),
       // Bold font OFF
-      TXT_BOLD_ON: Buffer.from([27, 69]),
+      TXT_BOLD_ON: globalThis.Buffer.from([27, 69]),
       // Bold font ON
-      TXT_FONT_A: Buffer.from([20]),
+      TXT_FONT_A: globalThis.Buffer.from([20]),
       // Font type A
-      TXT_FONT_B: Buffer.from([27, 15]),
+      TXT_FONT_B: globalThis.Buffer.from([27, 15]),
       // Font type B
-      TXT_ALIGN_LT: Buffer.from([27, 106, 0]),
+      TXT_ALIGN_LT: globalThis.Buffer.from([27, 106, 0]),
       // Left justification
-      TXT_ALIGN_CT: Buffer.from([27, 106, 1]),
+      TXT_ALIGN_CT: globalThis.Buffer.from([27, 106, 1]),
       // Centering
-      TXT_ALIGN_RT: Buffer.from([27, 106, 2]),
+      TXT_ALIGN_RT: globalThis.Buffer.from([27, 106, 2]),
       // Right justification
       // All code pages supported by printer.
-      CODE_PAGE_PC437_USA: Buffer.from([27, 116, 0]),
-      CODE_PAGE_KATAKANA: Buffer.from([27, 116, 1]),
-      CODE_PAGE_PC850_MULTILINGUAL: Buffer.from([27, 116, 2]),
-      CODE_PAGE_PC860_PORTUGUESE: Buffer.from([27, 116, 3]),
-      CODE_PAGE_PC863_CANADIAN_FRENCH: Buffer.from([27, 116, 4]),
-      CODE_PAGE_PC865_NORDIC: Buffer.from([27, 116, 5]),
-      CODE_PAGE_PC851_GREEK: Buffer.from([27, 116, 11]),
-      CODE_PAGE_PC853_TURKISH: Buffer.from([27, 116, 12]),
-      CODE_PAGE_PC857_TURKISH: Buffer.from([27, 116, 13]),
-      CODE_PAGE_PC737_GREEK: Buffer.from([27, 116, 14]),
-      CODE_PAGE_ISO8859_7_GREEK: Buffer.from([27, 116, 15]),
-      CODE_PAGE_WPC1252: Buffer.from([27, 116, 16]),
-      CODE_PAGE_PC866_CYRILLIC2: Buffer.from([27, 116, 17]),
-      CODE_PAGE_PC852_LATIN2: Buffer.from([27, 116, 18]),
-      CODE_PAGE_SLOVENIA: Buffer.from([27, 116, 18]),
-      CODE_PAGE_PC858_EURO: Buffer.from([27, 116, 19]),
-      CODE_PAGE_KU42_THAI: Buffer.from([27, 116, 20]),
-      CODE_PAGE_TIS11_THAI: Buffer.from([27, 116, 21]),
-      CODE_PAGE_TIS18_THAI: Buffer.from([27, 116, 26]),
-      CODE_PAGE_TCVN3_VIETNAMESE_L: Buffer.from([27, 116, 30]),
-      CODE_PAGE_TCVN3_VIETNAMESE_U: Buffer.from([27, 116, 31]),
-      CODE_PAGE_PC720_ARABIC: Buffer.from([27, 116, 32]),
-      CODE_PAGE_WPC775_BALTIC_RIM: Buffer.from([27, 116, 33]),
-      CODE_PAGE_PC855_CYRILLIC: Buffer.from([27, 116, 34]),
-      CODE_PAGE_PC861_ICELANDIC: Buffer.from([27, 116, 35]),
-      CODE_PAGE_PC862_HEBREW: Buffer.from([27, 116, 36]),
-      CODE_PAGE_PC864_ARABIC: Buffer.from([27, 116, 37]),
-      CODE_PAGE_PC869_GREEK: Buffer.from([27, 116, 38]),
-      CODE_PAGE_ISO8859_2_LATIN2: Buffer.from([27, 116, 39]),
-      CODE_PAGE_ISO8859_15_LATIN9: Buffer.from([27, 116, 40]),
-      CODE_PAGE_PC1098_FARCI: Buffer.from([27, 116, 41]),
-      CODE_PAGE_PC1118_LITHUANIAN: Buffer.from([27, 116, 42]),
-      CODE_PAGE_PC1119_LITHUANIAN: Buffer.from([27, 116, 43]),
-      CODE_PAGE_PC1125_UKRANIAN: Buffer.from([27, 116, 44]),
-      CODE_PAGE_WPC1250_LATIN2: Buffer.from([27, 116, 45]),
-      CODE_PAGE_WPC1251_CYRILLIC: Buffer.from([27, 116, 46]),
-      CODE_PAGE_WPC1253_GREEK: Buffer.from([27, 116, 47]),
-      CODE_PAGE_WPC1254_TURKISH: Buffer.from([27, 116, 48]),
-      CODE_PAGE_WPC1255_HEBREW: Buffer.from([27, 116, 49]),
-      CODE_PAGE_WPC1256_ARABIC: Buffer.from([27, 116, 50]),
-      CODE_PAGE_WPC1257_BALTIC_RIM: Buffer.from([27, 116, 51]),
-      CODE_PAGE_WPC1258_VIETNAMESE: Buffer.from([27, 116, 52]),
-      CODE_PAGE_KZ1048_KAZAKHSTAN: Buffer.from([27, 116, 53]),
-      CODE_PAGE_JAPAN: Buffer.from([27, 82, 8]),
-      CODE_PAGE_KOREA: Buffer.from([27, 82, 13]),
-      CODE_PAGE_CHINA: Buffer.from([27, 82, 15]),
-      CODE_PAGE_HK_TW: Buffer.from([27, 82, 0]),
-      CODE_PAGE_TCVN_VIETNAMESE: Buffer.from([27, 116, 52]),
-      CODE_PAGE_VISCII: Buffer.from([27, 116, 52]),
+      CODE_PAGE_PC437_USA: globalThis.Buffer.from([27, 116, 0]),
+      CODE_PAGE_KATAKANA: globalThis.Buffer.from([27, 116, 1]),
+      CODE_PAGE_PC850_MULTILINGUAL: globalThis.Buffer.from([27, 116, 2]),
+      CODE_PAGE_PC860_PORTUGUESE: globalThis.Buffer.from([27, 116, 3]),
+      CODE_PAGE_PC863_CANADIAN_FRENCH: globalThis.Buffer.from([27, 116, 4]),
+      CODE_PAGE_PC865_NORDIC: globalThis.Buffer.from([27, 116, 5]),
+      CODE_PAGE_PC851_GREEK: globalThis.Buffer.from([27, 116, 11]),
+      CODE_PAGE_PC853_TURKISH: globalThis.Buffer.from([27, 116, 12]),
+      CODE_PAGE_PC857_TURKISH: globalThis.Buffer.from([27, 116, 13]),
+      CODE_PAGE_PC737_GREEK: globalThis.Buffer.from([27, 116, 14]),
+      CODE_PAGE_ISO8859_7_GREEK: globalThis.Buffer.from([27, 116, 15]),
+      CODE_PAGE_WPC1252: globalThis.Buffer.from([27, 116, 16]),
+      CODE_PAGE_PC866_CYRILLIC2: globalThis.Buffer.from([27, 116, 17]),
+      CODE_PAGE_PC852_LATIN2: globalThis.Buffer.from([27, 116, 18]),
+      CODE_PAGE_SLOVENIA: globalThis.Buffer.from([27, 116, 18]),
+      CODE_PAGE_PC858_EURO: globalThis.Buffer.from([27, 116, 19]),
+      CODE_PAGE_KU42_THAI: globalThis.Buffer.from([27, 116, 20]),
+      CODE_PAGE_TIS11_THAI: globalThis.Buffer.from([27, 116, 21]),
+      CODE_PAGE_TIS18_THAI: globalThis.Buffer.from([27, 116, 26]),
+      CODE_PAGE_TCVN3_VIETNAMESE_L: globalThis.Buffer.from([27, 116, 30]),
+      CODE_PAGE_TCVN3_VIETNAMESE_U: globalThis.Buffer.from([27, 116, 31]),
+      CODE_PAGE_PC720_ARABIC: globalThis.Buffer.from([27, 116, 32]),
+      CODE_PAGE_WPC775_BALTIC_RIM: globalThis.Buffer.from([27, 116, 33]),
+      CODE_PAGE_PC855_CYRILLIC: globalThis.Buffer.from([27, 116, 34]),
+      CODE_PAGE_PC861_ICELANDIC: globalThis.Buffer.from([27, 116, 35]),
+      CODE_PAGE_PC862_HEBREW: globalThis.Buffer.from([27, 116, 36]),
+      CODE_PAGE_PC864_ARABIC: globalThis.Buffer.from([27, 116, 37]),
+      CODE_PAGE_PC869_GREEK: globalThis.Buffer.from([27, 116, 38]),
+      CODE_PAGE_ISO8859_2_LATIN2: globalThis.Buffer.from([27, 116, 39]),
+      CODE_PAGE_ISO8859_15_LATIN9: globalThis.Buffer.from([27, 116, 40]),
+      CODE_PAGE_PC1098_FARCI: globalThis.Buffer.from([27, 116, 41]),
+      CODE_PAGE_PC1118_LITHUANIAN: globalThis.Buffer.from([27, 116, 42]),
+      CODE_PAGE_PC1119_LITHUANIAN: globalThis.Buffer.from([27, 116, 43]),
+      CODE_PAGE_PC1125_UKRANIAN: globalThis.Buffer.from([27, 116, 44]),
+      CODE_PAGE_WPC1250_LATIN2: globalThis.Buffer.from([27, 116, 45]),
+      CODE_PAGE_WPC1251_CYRILLIC: globalThis.Buffer.from([27, 116, 46]),
+      CODE_PAGE_WPC1253_GREEK: globalThis.Buffer.from([27, 116, 47]),
+      CODE_PAGE_WPC1254_TURKISH: globalThis.Buffer.from([27, 116, 48]),
+      CODE_PAGE_WPC1255_HEBREW: globalThis.Buffer.from([27, 116, 49]),
+      CODE_PAGE_WPC1256_ARABIC: globalThis.Buffer.from([27, 116, 50]),
+      CODE_PAGE_WPC1257_BALTIC_RIM: globalThis.Buffer.from([27, 116, 51]),
+      CODE_PAGE_WPC1258_VIETNAMESE: globalThis.Buffer.from([27, 116, 52]),
+      CODE_PAGE_KZ1048_KAZAKHSTAN: globalThis.Buffer.from([27, 116, 53]),
+      CODE_PAGE_JAPAN: globalThis.Buffer.from([27, 82, 8]),
+      CODE_PAGE_KOREA: globalThis.Buffer.from([27, 82, 13]),
+      CODE_PAGE_CHINA: globalThis.Buffer.from([27, 82, 15]),
+      CODE_PAGE_HK_TW: globalThis.Buffer.from([27, 82, 0]),
+      CODE_PAGE_TCVN_VIETNAMESE: globalThis.Buffer.from([27, 116, 52]),
+      CODE_PAGE_VISCII: globalThis.Buffer.from([27, 116, 52]),
       // Character code pages / iconv name of code table.
       // Only code pages supported by iconv-lite:
       // https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings
@@ -21622,6 +21982,7 @@ var require_daruma_config = __commonJS({
 // node_modules/node-thermal-printer/lib/types/daruma.js
 var require_daruma = __commonJS({
   "node_modules/node-thermal-printer/lib/types/daruma.js"(exports, module) {
+    init_globals();
     var PrinterType = require_printer_type();
     var Daruma = class extends PrinterType {
       constructor() {
@@ -21631,7 +21992,7 @@ var require_daruma = __commonJS({
       // ------------------------------ Append ------------------------------
       append(appendBuffer) {
         if (this.buffer) {
-          this.buffer = Buffer.concat([this.buffer, appendBuffer]);
+          this.buffer = globalThis.Buffer.concat([this.buffer, appendBuffer]);
         } else {
           this.buffer = appendBuffer;
         }
@@ -21648,64 +22009,65 @@ var require_daruma = __commonJS({
 // node_modules/node-thermal-printer/lib/types/brother-config.js
 var require_brother_config = __commonJS({
   "node_modules/node-thermal-printer/lib/types/brother-config.js"(exports, module) {
+    init_globals();
     module.exports = {
       // Feed control sequences
-      CTL_LF: Buffer.from([10]),
+      CTL_LF: globalThis.Buffer.from([10]),
       // Print and line feed
-      CTL_FF: Buffer.from([12]),
+      CTL_FF: globalThis.Buffer.from([12]),
       // Form feed
-      CTL_CR: Buffer.from([13]),
+      CTL_CR: globalThis.Buffer.from([13]),
       // Carriage return
-      CTL_HT: Buffer.from([9]),
+      CTL_HT: globalThis.Buffer.from([9]),
       // Horizontal tab
-      CTL_SET_HT: Buffer.from([27, 68]),
+      CTL_SET_HT: globalThis.Buffer.from([27, 68]),
       // Set horizontal tab positions
-      CTL_VT: Buffer.from([11]),
+      CTL_VT: globalThis.Buffer.from([11]),
       // Perform vertical tab    
       // Printer hardware
-      HW_INIT: Buffer.from([27, 105, 97, 0, 27, 64]),
+      HW_INIT: globalThis.Buffer.from([27, 105, 97, 0, 27, 64]),
       // Clear data in buffer and reset modes
-      HW_INITSOFT: Buffer.from([27, 64]),
+      HW_INITSOFT: globalThis.Buffer.from([27, 64]),
       // Paper
-      PAPER_FULL_CUT: Buffer.from([27, 105, 67, 1]),
+      PAPER_FULL_CUT: globalThis.Buffer.from([27, 105, 67, 1]),
       // Full cut paper
-      PAPER_PART_CUT: Buffer.from([27, 105, 67, 2]),
+      PAPER_PART_CUT: globalThis.Buffer.from([27, 105, 67, 2]),
       // Cancels cutting
       // Text format
       // TXT_NORMAL      : Buffer.from([0x1b, 0x21, 0x00]), // Normal text
       // TXT_2HEIGHT     : Buffer.from([0x1b, 0x21, 0x10]), // Double height text
-      TXT_2WIDTH: Buffer.from([27, 87, 1]),
+      TXT_2WIDTH: globalThis.Buffer.from([27, 87, 1]),
       // Double width text
-      TXT_2WIDTH_OFF: Buffer.from([27, 87, 0]),
+      TXT_2WIDTH_OFF: globalThis.Buffer.from([27, 87, 0]),
       // Cancel Double width text
       // TXT_4SQUARE     : Buffer.from([0x1b, 0x21, 0x30]), // Quad area text
-      TXT_UNDERL_OFF: Buffer.from([27, 45, 0]),
+      TXT_UNDERL_OFF: globalThis.Buffer.from([27, 45, 0]),
       // Underline font OFF
-      TXT_UNDERL_ON: Buffer.from([27, 45, 1]),
+      TXT_UNDERL_ON: globalThis.Buffer.from([27, 45, 1]),
       // Underline font 1-dot ON
-      TXT_UNDERL2_ON: Buffer.from([27, 45, 2]),
+      TXT_UNDERL2_ON: globalThis.Buffer.from([27, 45, 2]),
       // Underline font 2-dot ON
-      TXT_BOLD_OFF: Buffer.from([27, 70]),
+      TXT_BOLD_OFF: globalThis.Buffer.from([27, 70]),
       // Bold font OFF
-      TXT_BOLD_ON: Buffer.from([27, 69]),
+      TXT_BOLD_ON: globalThis.Buffer.from([27, 69]),
       // Bold font ON
       // TXT_INVERT_OFF  : Buffer.from([0x1d, 0x42, 0x00]), // Invert font OFF (eg. white background)
       // TXT_INVERT_ON   : Buffer.from([0x1d, 0x42, 0x01]), // Invert font ON (eg. black background)
-      TXT_FONT_A: Buffer.from([27, 107, 11]),
+      TXT_FONT_A: globalThis.Buffer.from([27, 107, 11]),
       // Font type A
       // TXT_FONT_B      : Buffer.from([0x1b, 0x4d, 0x01]), // Font type B
-      TXT_ALIGN_LT: Buffer.from([27, 97, 0]),
+      TXT_ALIGN_LT: globalThis.Buffer.from([27, 97, 0]),
       // Left justification
-      TXT_ALIGN_CT: Buffer.from([27, 97, 1]),
+      TXT_ALIGN_CT: globalThis.Buffer.from([27, 97, 1]),
       // Centering
-      TXT_ALIGN_RT: Buffer.from([27, 97, 2]),
+      TXT_ALIGN_RT: globalThis.Buffer.from([27, 97, 2]),
       // Right justification
       // All code pages supported by printer.
-      CODE_PAGE_STANDARD: Buffer.from([27, 116, 0]),
-      CODE_PAGE_EASTERN_EUROPEAN: Buffer.from([27, 116, 1]),
-      CODE_PAGE_WESTERN_EUROPEAN: Buffer.from([27, 116, 2]),
-      CODE_PAGE_RESERVED: Buffer.from([27, 116, 3]),
-      CODE_PAGE_JAPANESE: Buffer.from([27, 116, 4]),
+      CODE_PAGE_STANDARD: globalThis.Buffer.from([27, 116, 0]),
+      CODE_PAGE_EASTERN_EUROPEAN: globalThis.Buffer.from([27, 116, 1]),
+      CODE_PAGE_WESTERN_EUROPEAN: globalThis.Buffer.from([27, 116, 2]),
+      CODE_PAGE_RESERVED: globalThis.Buffer.from([27, 116, 3]),
+      CODE_PAGE_JAPANESE: globalThis.Buffer.from([27, 116, 4]),
       // Character code pages / iconv name of code table.
       // Only code pages supported by iconv-lite:
       // https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings
@@ -21716,186 +22078,186 @@ var require_brother_config = __commonJS({
         JAPANESE: "EUC-JP"
       },
       // Character / style selection commands
-      ESCR: Buffer.from([27, 82]),
+      ESCR: globalThis.Buffer.from([27, 82]),
       //Select international character set
-      ESCq: Buffer.from([27, 113]),
+      ESCq: globalThis.Buffer.from([27, 113]),
       //Select character style
-      ESCk: Buffer.from([27, 107]),
+      ESCk: globalThis.Buffer.from([27, 107]),
       //Select font
-      ESCt: Buffer.from([27, 116]),
+      ESCt: globalThis.Buffer.from([27, 116]),
       //Select character code set
       // Text printing commands
-      ESC4: Buffer.from([27, 52]),
+      ESC4: globalThis.Buffer.from([27, 52]),
       //	Apply italic style
-      ESC5: Buffer.from([27, 53, 0]),
+      ESC5: globalThis.Buffer.from([27, 53, 0]),
       //	Cancel italic style
-      ESCE: Buffer.from([27, 69, 0]),
+      ESCE: globalThis.Buffer.from([27, 69, 0]),
       //Apply bold style
-      ESCF: Buffer.from([27, 70, 0]),
+      ESCF: globalThis.Buffer.from([27, 70, 0]),
       //	Cancel bold style
-      ESCG: Buffer.from([27, 71, 0]),
+      ESCG: globalThis.Buffer.from([27, 71, 0]),
       //	Apply double-strike printing
-      ESCH: Buffer.from([27, 72, 0]),
+      ESCH: globalThis.Buffer.from([27, 72, 0]),
       //	Cancel double-strike printing
-      ESCP: Buffer.from([27, 80, 0]),
+      ESCP: globalThis.Buffer.from([27, 80, 0]),
       //	Apply pica pitch (10 cpi)
-      ESCM: Buffer.from([27, 77, 0]),
+      ESCM: globalThis.Buffer.from([27, 77, 0]),
       //	Apply elite pitch (12 cpi)
-      ESCq: Buffer.from([27, 103, 0]),
+      ESCq: globalThis.Buffer.from([27, 103, 0]),
       //	Apply micron pitch (15 cpi)
-      ESCp: Buffer.from([27, 112, 0]),
+      ESCp: globalThis.Buffer.from([27, 112, 0]),
       //	Specify proportional characters
-      ESCW: Buffer.from([27, 87, 0]),
+      ESCW: globalThis.Buffer.from([27, 87, 0]),
       //	Specify double-width characters
-      SO: Buffer.from([14]),
+      SO: globalThis.Buffer.from([14]),
       //	"Specify  auto-canceling   stretched characters"
-      ESCSO: Buffer.from([27, 14, 0]),
+      ESCSO: globalThis.Buffer.from([27, 14, 0]),
       //	"Specify  auto-canceling   stretched characters"
-      SI: Buffer.from([15]),
+      SI: globalThis.Buffer.from([15]),
       //	Specify compressed characters
-      ESCSI: Buffer.from([27, 15]),
+      ESCSI: globalThis.Buffer.from([27, 15]),
       //	Specify compressed characters
-      DC2: Buffer.from([18]),
+      DC2: globalThis.Buffer.from([18]),
       //	Cancel compressed characters
-      DC4: Buffer.from([20]),
+      DC4: globalThis.Buffer.from([20]),
       //Cancel auto-canceling double-width characters
-      ESC_UNDER: Buffer.from([27, 45]),
+      ESC_UNDER: globalThis.Buffer.from([27, 45]),
       //Apply/cancel underlining
-      ESC_GFOR: Buffer.from([27, 33]),
+      ESC_GFOR: globalThis.Buffer.from([27, 33]),
       //	Global formatting
-      ESCSP: Buffer.from([27, 32]),
+      ESCSP: globalThis.Buffer.from([27, 32]),
       //	Specify character spacing
-      ESCX: Buffer.from([27, 88]),
+      ESCX: globalThis.Buffer.from([27, 88]),
       //Specify character size
       // Line feed commands
-      ESC0: Buffer.from([27, 48]),
+      ESC0: globalThis.Buffer.from([27, 48]),
       //Specify line feed of 1/8 inch
-      ESC2: Buffer.from([27, 50]),
+      ESC2: globalThis.Buffer.from([27, 50]),
       //Specify line feed of 1/6 inch
-      ESC3: Buffer.from([27, 51]),
+      ESC3: globalThis.Buffer.from([27, 51]),
       //	Specify minimum line feed
-      ESCA: Buffer.from([27, 65]),
+      ESCA: globalThis.Buffer.from([27, 65]),
       //Specify line feed of n/60 inch
       // Horizontal movement commands
-      ESCl: Buffer.from([27, 108]),
+      ESCl: globalThis.Buffer.from([27, 108]),
       //Specify left margin
-      ESCQ: Buffer.from([27, 81]),
+      ESCQ: globalThis.Buffer.from([27, 81]),
       //Specify right margin
-      CR: Buffer.from([13]),
+      CR: globalThis.Buffer.from([13]),
       //	Carriage return
-      ESCD: Buffer.from([27, 68]),
+      ESCD: globalThis.Buffer.from([27, 68]),
       //	Specify horizontal tab position
-      HT: Buffer.from([9]),
+      HT: globalThis.Buffer.from([9]),
       //	Perform horizontal tab
-      ESC$: Buffer.from([27, 36]),
+      ESC$: globalThis.Buffer.from([27, 36]),
       //	"Specify absolutehorizontal position"
-      ESC_RHP: Buffer.from([27, 92]),
+      ESC_RHP: globalThis.Buffer.from([27, 92]),
       //	Specify relative horizontal position
-      ESCa: Buffer.from([27, 97]),
+      ESCa: globalThis.Buffer.from([27, 97]),
       //Specify alignment
       // Vertical movement commands
-      LF: Buffer.from([10]),
+      LF: globalThis.Buffer.from([10]),
       //	Line feed
-      FF: Buffer.from([12]),
+      FF: globalThis.Buffer.from([12]),
       //	Page feed
-      ESCJ: Buffer.from([27, 74]),
+      ESCJ: globalThis.Buffer.from([27, 74]),
       //Forward paper feed
-      ESCB: Buffer.from([27, 66]),
+      ESCB: globalThis.Buffer.from([27, 66]),
       //	Specify vertical tab position
-      VT: Buffer.from([11]),
+      VT: globalThis.Buffer.from([11]),
       //	Perform vertical tab
-      ESC_ABSV: Buffer.from([27, 40, 86]),
+      ESC_ABSV: globalThis.Buffer.from([27, 40, 86]),
       //	Specify absolute vertical position
-      ESC_RELV: Buffer.from([27, 40, 118]),
+      ESC_RELV: globalThis.Buffer.from([27, 40, 118]),
       //Specify relative vertical position
       // Paper formatting commands
-      ESC_PF: Buffer.from([27, 40, 99]),
+      ESC_PF: globalThis.Buffer.from([27, 40, 99]),
       //Specify page format
-      ESC_PL: Buffer.from([27, 40, 67]),
+      ESC_PL: globalThis.Buffer.from([27, 40, 67]),
       //Specify page length
       // Printer control commands
-      ESC_INIT: Buffer.from([27, 64]),
+      ESC_INIT: globalThis.Buffer.from([27, 64]),
       //Initialize (defaults)
       // Graphics commands
-      ESC_BIT_IMG: Buffer.from([27, 42]),
+      ESC_BIT_IMG: globalThis.Buffer.from([27, 42]),
       //Select bit image.
-      ESCK: Buffer.from([27, 75]),
+      ESCK: globalThis.Buffer.from([27, 75]),
       //8-dot single-density bit image
-      ESCL: Buffer.from([27, 76]),
+      ESCL: globalThis.Buffer.from([27, 76]),
       //8-dot double-density bit image
-      ESCY: Buffer.from([27, 89]),
+      ESCY: globalThis.Buffer.from([27, 89]),
       //"8-dot double-speeddouble-density bit image"
-      ESCZ: Buffer.from([27, 90]),
+      ESCZ: globalThis.Buffer.from([27, 90]),
       //8-dot quadruple-density bit image
       // Advanced commands
-      ESCiB: Buffer.from([27, 105, 66]),
+      ESCiB: globalThis.Buffer.from([27, 105, 66]),
       //Barcode
-      ESCiQ: Buffer.from([27, 105, 81]),
+      ESCiQ: globalThis.Buffer.from([27, 105, 81]),
       //2D barcode (QR Code)
-      ESCiP: Buffer.from([27, 105, 80]),
+      ESCiP: globalThis.Buffer.from([27, 105, 80]),
       //Specify QR Code version
-      ESCiV: Buffer.from([27, 105, 86]),
+      ESCiV: globalThis.Buffer.from([27, 105, 86]),
       //	2D barcode (PDF417)
-      ESCiD: Buffer.from([27, 105, 68]),
+      ESCiD: globalThis.Buffer.from([27, 105, 68]),
       //2D barcode (DataMatrix)
-      ESCiM: Buffer.from([27, 105, 77]),
+      ESCiM: globalThis.Buffer.from([27, 105, 77]),
       //2D barcode (MaxiCode)
-      ESCiJ: Buffer.from([27, 105, 106]),
+      ESCiJ: globalThis.Buffer.from([27, 105, 106]),
       //2D barcode (Aztec)
-      ESCiG: Buffer.from([27, 105, 71]),
+      ESCiG: globalThis.Buffer.from([27, 105, 71]),
       //Specify font setting
-      ESCiFP: Buffer.from([27, 105, 70, 80]),
+      ESCiFP: globalThis.Buffer.from([27, 105, 70, 80]),
       //Print downloaded data
-      ESCia: Buffer.from([27, 105, 97]),
+      ESCia: globalThis.Buffer.from([27, 105, 97]),
       //Switch command mode
-      ESCiS: Buffer.from([27, 105, 83]),
+      ESCiS: globalThis.Buffer.from([27, 105, 83]),
       //Status information request
-      ESCiL: Buffer.from([27, 105, 76]),
+      ESCiL: globalThis.Buffer.from([27, 105, 76]),
       //Specify landscape orientation
-      ESCiC: Buffer.from([27, 105, 67]),
+      ESCiC: globalThis.Buffer.from([27, 105, 67]),
       //Specify cutting
-      ESCiH: Buffer.from([27, 124, 72]),
+      ESCiH: globalThis.Buffer.from([27, 124, 72]),
       //Specify recovery setting
       // Advanced static commands
-      ESCiXQ2: Buffer.from([27, 105, 88, 81, 50]),
+      ESCiXQ2: globalThis.Buffer.from([27, 105, 88, 81, 50]),
       //Select default character style
-      ESCiXQ1: Buffer.from([27, 105, 88, 81, 49]),
+      ESCiXQ1: globalThis.Buffer.from([27, 105, 88, 81, 49]),
       //Retrieve default character style
-      ESCiXk2: Buffer.from([27, 105, 88, 107, 50]),
+      ESCiXk2: globalThis.Buffer.from([27, 105, 88, 107, 50]),
       //Select default font
-      ESCiXk1: Buffer.from([27, 105, 88, 107, 49]),
+      ESCiXk1: globalThis.Buffer.from([27, 105, 88, 107, 49]),
       //Retrieve default font
-      ESCiXX2: Buffer.from([27, 105, 88, 88, 50]),
+      ESCiXX2: globalThis.Buffer.from([27, 105, 88, 88, 50]),
       //Specify default character size
-      ESCiXX1: Buffer.from([27, 105, 88, 88, 49]),
+      ESCiXX1: globalThis.Buffer.from([27, 105, 88, 88, 49]),
       //Retrieve default character size
-      ESCiX32: Buffer.from([27, 105, 88, 51, 50]),
+      ESCiX32: globalThis.Buffer.from([27, 105, 88, 51, 50]),
       //Specify default line feed
-      ESCiX31: Buffer.from([27, 105, 88, 51, 49]),
+      ESCiX31: globalThis.Buffer.from([27, 105, 88, 51, 49]),
       //Retrieve default line feed
-      ESCiXA2: Buffer.from([27, 105, 88, 65, 50]),
+      ESCiXA2: globalThis.Buffer.from([27, 105, 88, 65, 50]),
       //Select default alignment
-      ESCiXA1: Buffer.from([27, 105, 88, 65, 49]),
+      ESCiXA1: globalThis.Buffer.from([27, 105, 88, 65, 49]),
       //Retrieve default alignment
-      ESCiXL2: Buffer.from([27, 105, 88, 76, 50]),
+      ESCiXL2: globalThis.Buffer.from([27, 105, 88, 76, 50]),
       //"Select default landscape orientation"
-      ESCiXL1: Buffer.from([27, 105, 88, 76, 49]),
+      ESCiXL1: globalThis.Buffer.from([27, 105, 88, 76, 49]),
       //"Retrieve default landscapeorientation"
-      ESCiXj2: Buffer.from([27, 105, 88, 106, 50]),
+      ESCiXj2: globalThis.Buffer.from([27, 105, 88, 106, 50]),
       //Select default international character set
-      ESCiXj1: Buffer.from([27, 105, 88, 106, 49]),
+      ESCiXj1: globalThis.Buffer.from([27, 105, 88, 106, 49]),
       //"Retrieve default internationalcharacter set"
-      ESCiXm2: Buffer.from([27, 105, 88, 109, 50]),
+      ESCiXm2: globalThis.Buffer.from([27, 105, 88, 109, 50]),
       //Select default character code set
-      ESCiXm1: Buffer.from([27, 105, 88, 109, 49]),
+      ESCiXm1: globalThis.Buffer.from([27, 105, 88, 109, 49]),
       //"Retrieve   default   character   codeset"
-      ESCiXd2: Buffer.from([27, 105, 88, 100, 50]),
+      ESCiXd2: globalThis.Buffer.from([27, 105, 88, 100, 50]),
       //Specify recovery setting
-      ESCiXd1: Buffer.from([27, 105, 88, 100, 49]),
+      ESCiXd1: globalThis.Buffer.from([27, 105, 88, 100, 49]),
       //Retrieve recovery setting
-      ESCiXE2: Buffer.from([27, 105, 88, 69, 50]),
+      ESCiXE2: globalThis.Buffer.from([27, 105, 88, 69, 50]),
       //Specify barcode margin setting
-      ESCiXE1: Buffer.from([27, 105, 88, 69, 49])
+      ESCiXE1: globalThis.Buffer.from([27, 105, 88, 69, 49])
       //Retrieve barcode margin setting
     };
   }
@@ -21904,6 +22266,7 @@ var require_brother_config = __commonJS({
 // node_modules/node-thermal-printer/lib/types/brother.js
 var require_brother = __commonJS({
   "node_modules/node-thermal-printer/lib/types/brother.js"(exports, module) {
+    init_globals();
     var PrinterType = require_printer_type();
     var Brother = class extends PrinterType {
       constructor() {
@@ -21913,7 +22276,7 @@ var require_brother = __commonJS({
       // ------------------------------ Append ------------------------------
       append(appendBuffer) {
         if (this.buffer) {
-          this.buffer = Buffer.concat([this.buffer, appendBuffer]);
+          this.buffer = globalThis.Buffer.concat([this.buffer, appendBuffer]);
         } else {
           this.buffer = appendBuffer;
         }
@@ -21923,70 +22286,70 @@ var require_brother = __commonJS({
         this.buffer = null;
         if (height > 144 || height < 0)
           throw new Error("setTextSize: Height must be between 0 and 7");
-        let x = Buffer.from([height]);
-        this.append(Buffer.from([27, 88, 0]));
+        let x = globalThis.Buffer.from([height]);
+        this.append(globalThis.Buffer.from([27, 88, 0]));
         this.append(x);
-        this.append(Buffer.from([0]));
+        this.append(globalThis.Buffer.from([0]));
         return this.buffer;
       }
       // ------------------------------ BARCODE ------------------------------
       printBarcode(data, type, settings) {
         this.buffer = null;
         settings = settings || {};
-        this.append(Buffer.from([27, 105]));
-        this.append(Buffer.from(type));
-        this.append(Buffer.from(settings.hri));
-        this.append(Buffer.from(settings.width));
-        this.append(Buffer.from("h"));
+        this.append(globalThis.Buffer.from([27, 105]));
+        this.append(globalThis.Buffer.from(type));
+        this.append(globalThis.Buffer.from(settings.hri));
+        this.append(globalThis.Buffer.from(settings.width));
+        this.append(globalThis.Buffer.from("h"));
         if (settings.height < 255) {
           this.append(
-            Buffer.from(
+            globalThis.Buffer.from(
               (settings.height.toString(16) + "").length < 2 ? "0" + settings.height.toString(16) : settings.height.toString(16),
               "hex"
             )
           );
-          this.append(Buffer.from([0]));
+          this.append(globalThis.Buffer.from([0]));
         } else {
           const h = settings.height - 256;
           this.append(
-            Buffer.from(
+            globalThis.Buffer.from(
               (h.toString(16) + "").length < 2 ? "0" + h.toString(16) : h.toString(16),
               "hex"
             )
           );
-          this.append(Buffer.from([1]));
+          this.append(globalThis.Buffer.from([1]));
         }
         if (type === "tb" || type === "tc") {
-          this.append(Buffer.from(settings.o));
-          this.append(Buffer.from(settings.c));
+          this.append(globalThis.Buffer.from(settings.o));
+          this.append(globalThis.Buffer.from(settings.c));
         }
-        this.append(Buffer.from(settings.e));
-        this.append(Buffer.from(settings.z));
-        this.append(Buffer.from(settings.f));
-        this.append(Buffer.from([66]));
-        this.append(Buffer.from(data));
-        this.append(Buffer.from([92]));
+        this.append(globalThis.Buffer.from(settings.e));
+        this.append(globalThis.Buffer.from(settings.z));
+        this.append(globalThis.Buffer.from(settings.f));
+        this.append(globalThis.Buffer.from([66]));
+        this.append(globalThis.Buffer.from(data));
+        this.append(globalThis.Buffer.from([92]));
         return this.buffer;
       }
       printQR(str, settings) {
         this.buffer = null;
         settings = settings || {};
-        this.append(Buffer.from([27, 105, 81]));
+        this.append(globalThis.Buffer.from([27, 105, 81]));
         this.append(
-          Buffer.from(
+          globalThis.Buffer.from(
             (settings.cellSize.toString(16) + "").length < 2 ? "0" + settings.cellSize.toString(16) : settings.cellSize.toString(16),
             "hex"
           )
         );
-        this.append(Buffer.from([2]));
-        this.append(Buffer.from([0]));
-        this.append(Buffer.from([0]));
-        this.append(Buffer.from([0]));
-        this.append(Buffer.from([0]));
-        this.append(Buffer.from([2]));
-        this.append(Buffer.from([0]));
-        this.append(Buffer.from(str));
-        this.append(Buffer.from([92, 92, 92]));
+        this.append(globalThis.Buffer.from([2]));
+        this.append(globalThis.Buffer.from([0]));
+        this.append(globalThis.Buffer.from([0]));
+        this.append(globalThis.Buffer.from([0]));
+        this.append(globalThis.Buffer.from([0]));
+        this.append(globalThis.Buffer.from([2]));
+        this.append(globalThis.Buffer.from([0]));
+        this.append(globalThis.Buffer.from(str));
+        this.append(globalThis.Buffer.from([92, 92, 92]));
         return this.buffer;
       }
       // ----------------------------------------------------- PRINT IMAGE -----------------------------------------------------
@@ -22005,7 +22368,7 @@ var require_brother = __commonJS({
       }
       printImageBuffer(width, height, data) {
         this.buffer = null;
-        this.append(Buffer.from([27, 33, 16]));
+        this.append(globalThis.Buffer.from([27, 33, 16]));
         let pixels = [];
         for (let i = 0; i < width; i++) {
           let line = [];
@@ -22048,10 +22411,10 @@ var require_brother = __commonJS({
               imageBuffer_array.push(byte);
             }
           }
-          this.append(Buffer.from([27, 42, 72, width, 0]));
-          let imageBuffer = Buffer.from(imageBuffer_array);
+          this.append(globalThis.Buffer.from([27, 42, 72, width, 0]));
+          let imageBuffer = globalThis.Buffer.from(imageBuffer_array);
           this.append(imageBuffer);
-          this.append(Buffer.from([10]));
+          this.append(globalThis.Buffer.from([10]));
         }
         if (width % 8 != 0) {
           width += 8;
@@ -22059,7 +22422,7 @@ var require_brother = __commonJS({
         return this.buffer;
       }
       SetInternationalCharacterSet(n) {
-        this.append(Buffer.from([27, 82, n]));
+        this.append(globalThis.Buffer.from([27, 82, n]));
         return this.buffer;
       }
       // Methods to be implemented
@@ -22089,128 +22452,129 @@ var require_brother = __commonJS({
 // node_modules/node-thermal-printer/lib/types/custom-config.js
 var require_custom_config = __commonJS({
   "node_modules/node-thermal-printer/lib/types/custom-config.js"(exports, module) {
+    init_globals();
     module.exports = {
       // Feed control sequences
-      CTL_LF: Buffer.from([10]),
+      CTL_LF: globalThis.Buffer.from([10]),
       // Print and line feed
-      CTL_FF: Buffer.from([12]),
+      CTL_FF: globalThis.Buffer.from([12]),
       // Form feed
-      CTL_CR: Buffer.from([13]),
+      CTL_CR: globalThis.Buffer.from([13]),
       // Carriage return
-      CTL_HT: Buffer.from([9]),
+      CTL_HT: globalThis.Buffer.from([9]),
       // Horizontal tab
-      CTL_SET_HT: Buffer.from([27, 68]),
+      CTL_SET_HT: globalThis.Buffer.from([27, 68]),
       // Set horizontal tab positions
-      CTL_VT: Buffer.from([27, 100, 4]),
+      CTL_VT: globalThis.Buffer.from([27, 100, 4]),
       // Vertical tab
       // Printer hardware
-      HW_INIT: Buffer.from([27, 64]),
+      HW_INIT: globalThis.Buffer.from([27, 64]),
       // Clear data in buffer and reset modes
-      HW_SELECT: Buffer.from([27, 61, 1]),
+      HW_SELECT: globalThis.Buffer.from([27, 61, 1]),
       // Printer select
-      HW_RESET: Buffer.from([27, 63, 10, 0]),
+      HW_RESET: globalThis.Buffer.from([27, 63, 10, 0]),
       // Reset printer hardware
-      TRANSMIT_PAPER_STATUS: Buffer.from([29, 114, 1]),
+      TRANSMIT_PAPER_STATUS: globalThis.Buffer.from([29, 114, 1]),
       // Transmit printer paper status
-      BEEP: Buffer.from([27, 66]),
+      BEEP: globalThis.Buffer.from([27, 66]),
       // Sounds built-in buzzer (if equipped)
-      UPSIDE_DOWN_ON: Buffer.from([27, 123, 1]),
+      UPSIDE_DOWN_ON: globalThis.Buffer.from([27, 123, 1]),
       // Upside down printing ON (rotated 180 degrees).
-      UPSIDE_DOWN_OFF: Buffer.from([27, 123, 0]),
+      UPSIDE_DOWN_OFF: globalThis.Buffer.from([27, 123, 0]),
       // Upside down printing OFF (default).
       // Cash Drawer
-      CD_KICK_2: Buffer.from([27, 112, 0]),
+      CD_KICK_2: globalThis.Buffer.from([27, 112, 0]),
       // Sends a pulse to pin 2 []
-      CD_KICK_5: Buffer.from([27, 112, 1]),
+      CD_KICK_5: globalThis.Buffer.from([27, 112, 1]),
       // Sends a pulse to pin 5 []
       // Paper
-      PAPER_FULL_CUT: Buffer.from([27, 105]),
+      PAPER_FULL_CUT: globalThis.Buffer.from([27, 105]),
       // Full cut paper
-      PAPER_PART_CUT: Buffer.from([27, 105]),
+      PAPER_PART_CUT: globalThis.Buffer.from([27, 105]),
       // Partial cut paper
       // Text format
-      TXT_NORMAL: Buffer.from([27, 33, 0]),
+      TXT_NORMAL: globalThis.Buffer.from([27, 33, 0]),
       // Normal text
-      TXT_2HEIGHT: Buffer.from([27, 33, 16]),
+      TXT_2HEIGHT: globalThis.Buffer.from([27, 33, 16]),
       // Double height text
-      TXT_2WIDTH: Buffer.from([27, 33, 32]),
+      TXT_2WIDTH: globalThis.Buffer.from([27, 33, 32]),
       // Double width text
-      TXT_4SQUARE: Buffer.from([27, 33, 48]),
+      TXT_4SQUARE: globalThis.Buffer.from([27, 33, 48]),
       // Quad area text
-      TXT_UNDERL_OFF: Buffer.from([27, 45, 0]),
+      TXT_UNDERL_OFF: globalThis.Buffer.from([27, 45, 0]),
       // Underline font OFF
-      TXT_UNDERL_ON: Buffer.from([27, 45, 1]),
+      TXT_UNDERL_ON: globalThis.Buffer.from([27, 45, 1]),
       // Underline font 1-dot ON
-      TXT_UNDERL2_ON: Buffer.from([27, 45, 2]),
+      TXT_UNDERL2_ON: globalThis.Buffer.from([27, 45, 2]),
       // Underline font 2-dot ON
-      TXT_BOLD_OFF: Buffer.from([27, 69, 0]),
+      TXT_BOLD_OFF: globalThis.Buffer.from([27, 69, 0]),
       // Bold font OFF
-      TXT_BOLD_ON: Buffer.from([27, 69, 1]),
+      TXT_BOLD_ON: globalThis.Buffer.from([27, 69, 1]),
       // Bold font ON
-      TXT_INVERT_OFF: Buffer.from([29, 66, 0]),
+      TXT_INVERT_OFF: globalThis.Buffer.from([29, 66, 0]),
       // Invert font OFF (eg. white background)
-      TXT_INVERT_ON: Buffer.from([29, 66, 1]),
+      TXT_INVERT_ON: globalThis.Buffer.from([29, 66, 1]),
       // Invert font ON (eg. black background)
-      TXT_FONT_A: Buffer.from([27, 77, 0]),
+      TXT_FONT_A: globalThis.Buffer.from([27, 77, 0]),
       // Font type A
-      TXT_FONT_B: Buffer.from([27, 77, 1]),
+      TXT_FONT_B: globalThis.Buffer.from([27, 77, 1]),
       // Font type B
-      TXT_ALIGN_LT: Buffer.from([27, 97, 0]),
+      TXT_ALIGN_LT: globalThis.Buffer.from([27, 97, 0]),
       // Left justification
-      TXT_ALIGN_CT: Buffer.from([27, 97, 1]),
+      TXT_ALIGN_CT: globalThis.Buffer.from([27, 97, 1]),
       // Centering
-      TXT_ALIGN_RT: Buffer.from([27, 97, 2]),
+      TXT_ALIGN_RT: globalThis.Buffer.from([27, 97, 2]),
       // Right justification
       // All code pages supported by printer.
-      CODE_PAGE_PC437_USA: Buffer.from([27, 116, 0]),
-      CODE_PAGE_KATAKANA: Buffer.from([27, 116, 1]),
-      CODE_PAGE_PC850_MULTILINGUAL: Buffer.from([27, 116, 2]),
-      CODE_PAGE_PC860_PORTUGUESE: Buffer.from([27, 116, 3]),
-      CODE_PAGE_PC863_CANADIAN_FRENCH: Buffer.from([27, 116, 4]),
-      CODE_PAGE_PC865_NORDIC: Buffer.from([27, 116, 5]),
-      CODE_PAGE_PC851_GREEK: Buffer.from([27, 116, 11]),
-      CODE_PAGE_PC853_TURKISH: Buffer.from([27, 116, 12]),
-      CODE_PAGE_PC857_TURKISH: Buffer.from([27, 116, 13]),
-      CODE_PAGE_PC737_GREEK: Buffer.from([27, 116, 14]),
-      CODE_PAGE_ISO8859_7_GREEK: Buffer.from([27, 116, 15]),
-      CODE_PAGE_WPC1252: Buffer.from([27, 116, 16]),
-      CODE_PAGE_PC866_CYRILLIC2: Buffer.from([27, 116, 17]),
-      CODE_PAGE_PC852_LATIN2: Buffer.from([27, 116, 18]),
-      CODE_PAGE_SLOVENIA: Buffer.from([27, 116, 18]),
-      CODE_PAGE_PC858_EURO: Buffer.from([27, 116, 19]),
-      CODE_PAGE_KU42_THAI: Buffer.from([27, 116, 20]),
-      CODE_PAGE_TIS11_THAI: Buffer.from([27, 116, 21]),
-      CODE_PAGE_TIS18_THAI: Buffer.from([27, 116, 26]),
-      CODE_PAGE_TCVN3_VIETNAMESE_L: Buffer.from([27, 116, 30]),
-      CODE_PAGE_TCVN3_VIETNAMESE_U: Buffer.from([27, 116, 31]),
-      CODE_PAGE_PC720_ARABIC: Buffer.from([27, 116, 32]),
-      CODE_PAGE_WPC775_BALTIC_RIM: Buffer.from([27, 116, 33]),
-      CODE_PAGE_PC855_CYRILLIC: Buffer.from([27, 116, 34]),
-      CODE_PAGE_PC861_ICELANDIC: Buffer.from([27, 116, 35]),
-      CODE_PAGE_PC862_HEBREW: Buffer.from([27, 116, 36]),
-      CODE_PAGE_PC864_ARABIC: Buffer.from([27, 116, 37]),
-      CODE_PAGE_PC869_GREEK: Buffer.from([27, 116, 38]),
-      CODE_PAGE_ISO8859_2_LATIN2: Buffer.from([27, 116, 39]),
-      CODE_PAGE_ISO8859_15_LATIN9: Buffer.from([27, 116, 40]),
-      CODE_PAGE_PC1098_FARCI: Buffer.from([27, 116, 41]),
-      CODE_PAGE_PC1118_LITHUANIAN: Buffer.from([27, 116, 42]),
-      CODE_PAGE_PC1119_LITHUANIAN: Buffer.from([27, 116, 43]),
-      CODE_PAGE_PC1125_UKRANIAN: Buffer.from([27, 116, 44]),
-      CODE_PAGE_WPC1250_LATIN2: Buffer.from([27, 116, 45]),
-      CODE_PAGE_WPC1251_CYRILLIC: Buffer.from([27, 116, 46]),
-      CODE_PAGE_WPC1253_GREEK: Buffer.from([27, 116, 47]),
-      CODE_PAGE_WPC1254_TURKISH: Buffer.from([27, 116, 48]),
-      CODE_PAGE_WPC1255_HEBREW: Buffer.from([27, 116, 49]),
-      CODE_PAGE_WPC1256_ARABIC: Buffer.from([27, 116, 50]),
-      CODE_PAGE_WPC1257_BALTIC_RIM: Buffer.from([27, 116, 51]),
-      CODE_PAGE_WPC1258_VIETNAMESE: Buffer.from([27, 116, 52]),
-      CODE_PAGE_KZ1048_KAZAKHSTAN: Buffer.from([27, 116, 53]),
-      CODE_PAGE_JAPAN: Buffer.from([27, 82, 8]),
-      CODE_PAGE_KOREA: Buffer.from([27, 82, 13]),
-      CODE_PAGE_CHINA: Buffer.from([27, 82, 15]),
-      CODE_PAGE_HK_TW: Buffer.from([27, 82, 0]),
-      CODE_PAGE_TCVN_VIETNAMESE: Buffer.from([27, 116, 52]),
-      CODE_PAGE_VISCII: Buffer.from([27, 116, 52]),
+      CODE_PAGE_PC437_USA: globalThis.Buffer.from([27, 116, 0]),
+      CODE_PAGE_KATAKANA: globalThis.Buffer.from([27, 116, 1]),
+      CODE_PAGE_PC850_MULTILINGUAL: globalThis.Buffer.from([27, 116, 2]),
+      CODE_PAGE_PC860_PORTUGUESE: globalThis.Buffer.from([27, 116, 3]),
+      CODE_PAGE_PC863_CANADIAN_FRENCH: globalThis.Buffer.from([27, 116, 4]),
+      CODE_PAGE_PC865_NORDIC: globalThis.Buffer.from([27, 116, 5]),
+      CODE_PAGE_PC851_GREEK: globalThis.Buffer.from([27, 116, 11]),
+      CODE_PAGE_PC853_TURKISH: globalThis.Buffer.from([27, 116, 12]),
+      CODE_PAGE_PC857_TURKISH: globalThis.Buffer.from([27, 116, 13]),
+      CODE_PAGE_PC737_GREEK: globalThis.Buffer.from([27, 116, 14]),
+      CODE_PAGE_ISO8859_7_GREEK: globalThis.Buffer.from([27, 116, 15]),
+      CODE_PAGE_WPC1252: globalThis.Buffer.from([27, 116, 16]),
+      CODE_PAGE_PC866_CYRILLIC2: globalThis.Buffer.from([27, 116, 17]),
+      CODE_PAGE_PC852_LATIN2: globalThis.Buffer.from([27, 116, 18]),
+      CODE_PAGE_SLOVENIA: globalThis.Buffer.from([27, 116, 18]),
+      CODE_PAGE_PC858_EURO: globalThis.Buffer.from([27, 116, 19]),
+      CODE_PAGE_KU42_THAI: globalThis.Buffer.from([27, 116, 20]),
+      CODE_PAGE_TIS11_THAI: globalThis.Buffer.from([27, 116, 21]),
+      CODE_PAGE_TIS18_THAI: globalThis.Buffer.from([27, 116, 26]),
+      CODE_PAGE_TCVN3_VIETNAMESE_L: globalThis.Buffer.from([27, 116, 30]),
+      CODE_PAGE_TCVN3_VIETNAMESE_U: globalThis.Buffer.from([27, 116, 31]),
+      CODE_PAGE_PC720_ARABIC: globalThis.Buffer.from([27, 116, 32]),
+      CODE_PAGE_WPC775_BALTIC_RIM: globalThis.Buffer.from([27, 116, 33]),
+      CODE_PAGE_PC855_CYRILLIC: globalThis.Buffer.from([27, 116, 34]),
+      CODE_PAGE_PC861_ICELANDIC: globalThis.Buffer.from([27, 116, 35]),
+      CODE_PAGE_PC862_HEBREW: globalThis.Buffer.from([27, 116, 36]),
+      CODE_PAGE_PC864_ARABIC: globalThis.Buffer.from([27, 116, 37]),
+      CODE_PAGE_PC869_GREEK: globalThis.Buffer.from([27, 116, 38]),
+      CODE_PAGE_ISO8859_2_LATIN2: globalThis.Buffer.from([27, 116, 39]),
+      CODE_PAGE_ISO8859_15_LATIN9: globalThis.Buffer.from([27, 116, 40]),
+      CODE_PAGE_PC1098_FARCI: globalThis.Buffer.from([27, 116, 41]),
+      CODE_PAGE_PC1118_LITHUANIAN: globalThis.Buffer.from([27, 116, 42]),
+      CODE_PAGE_PC1119_LITHUANIAN: globalThis.Buffer.from([27, 116, 43]),
+      CODE_PAGE_PC1125_UKRANIAN: globalThis.Buffer.from([27, 116, 44]),
+      CODE_PAGE_WPC1250_LATIN2: globalThis.Buffer.from([27, 116, 45]),
+      CODE_PAGE_WPC1251_CYRILLIC: globalThis.Buffer.from([27, 116, 46]),
+      CODE_PAGE_WPC1253_GREEK: globalThis.Buffer.from([27, 116, 47]),
+      CODE_PAGE_WPC1254_TURKISH: globalThis.Buffer.from([27, 116, 48]),
+      CODE_PAGE_WPC1255_HEBREW: globalThis.Buffer.from([27, 116, 49]),
+      CODE_PAGE_WPC1256_ARABIC: globalThis.Buffer.from([27, 116, 50]),
+      CODE_PAGE_WPC1257_BALTIC_RIM: globalThis.Buffer.from([27, 116, 51]),
+      CODE_PAGE_WPC1258_VIETNAMESE: globalThis.Buffer.from([27, 116, 52]),
+      CODE_PAGE_KZ1048_KAZAKHSTAN: globalThis.Buffer.from([27, 116, 53]),
+      CODE_PAGE_JAPAN: globalThis.Buffer.from([27, 82, 8]),
+      CODE_PAGE_KOREA: globalThis.Buffer.from([27, 82, 13]),
+      CODE_PAGE_CHINA: globalThis.Buffer.from([27, 82, 15]),
+      CODE_PAGE_HK_TW: globalThis.Buffer.from([27, 82, 0]),
+      CODE_PAGE_TCVN_VIETNAMESE: globalThis.Buffer.from([27, 116, 52]),
+      CODE_PAGE_VISCII: globalThis.Buffer.from([27, 116, 52]),
       // Character code pages / iconv name of code table.
       // Only code pages supported by iconv-lite:
       // https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings
@@ -22257,121 +22621,121 @@ var require_custom_config = __commonJS({
         VISCII: "viscii"
       },
       // Barcode format
-      BARCODE_TXT_OFF: Buffer.from([29, 72, 0]),
+      BARCODE_TXT_OFF: globalThis.Buffer.from([29, 72, 0]),
       // HRI barcode chars OFF
-      BARCODE_TXT_ABV: Buffer.from([29, 72, 1]),
+      BARCODE_TXT_ABV: globalThis.Buffer.from([29, 72, 1]),
       // HRI barcode chars above
-      BARCODE_TXT_BLW: Buffer.from([29, 72, 2]),
+      BARCODE_TXT_BLW: globalThis.Buffer.from([29, 72, 2]),
       // HRI barcode chars below
-      BARCODE_TXT_BTH: Buffer.from([29, 72, 3]),
+      BARCODE_TXT_BTH: globalThis.Buffer.from([29, 72, 3]),
       // HRI barcode chars both above and below
-      BARCODE_FONT_A: Buffer.from([29, 102, 0]),
+      BARCODE_FONT_A: globalThis.Buffer.from([29, 102, 0]),
       // Font type A for HRI barcode chars
-      BARCODE_FONT_B: Buffer.from([29, 102, 1]),
+      BARCODE_FONT_B: globalThis.Buffer.from([29, 102, 1]),
       // Font type B for HRI barcode chars
-      BARCODE_HEIGHT: Buffer.from([29, 104, 100]),
+      BARCODE_HEIGHT: globalThis.Buffer.from([29, 104, 100]),
       // Barcode Height [1-255]
-      BARCODE_WIDTH: Buffer.from([29, 119, 3]),
+      BARCODE_WIDTH: globalThis.Buffer.from([29, 119, 3]),
       // Barcode Width  [2-6]
-      BARCODE_UPC_A: Buffer.from([29, 107, 0]),
+      BARCODE_UPC_A: globalThis.Buffer.from([29, 107, 0]),
       // Barcode type UPC-A
-      BARCODE_UPC_E: Buffer.from([29, 107, 1]),
+      BARCODE_UPC_E: globalThis.Buffer.from([29, 107, 1]),
       // Barcode type UPC-E
-      BARCODE_EAN13: Buffer.from([29, 107, 2]),
+      BARCODE_EAN13: globalThis.Buffer.from([29, 107, 2]),
       // Barcode type EAN13
-      BARCODE_EAN8: Buffer.from([29, 107, 3]),
+      BARCODE_EAN8: globalThis.Buffer.from([29, 107, 3]),
       // Barcode type EAN8
-      BARCODE_CODE39: Buffer.from([29, 107, 4]),
+      BARCODE_CODE39: globalThis.Buffer.from([29, 107, 4]),
       // Barcode type CODE39
-      BARCODE_CODE128: Buffer.from([29, 107, 73]),
+      BARCODE_CODE128: globalThis.Buffer.from([29, 107, 73]),
       // Barcode type CODE128
-      BARCODE_ITF: Buffer.from([29, 107, 5]),
+      BARCODE_ITF: globalThis.Buffer.from([29, 107, 5]),
       // Barcode type ITF
-      BARCODE_NW7: Buffer.from([29, 107, 6]),
+      BARCODE_NW7: globalThis.Buffer.from([29, 107, 6]),
       // Barcode type NW7
       // QR Code
-      QRCODE_MODEL1: Buffer.from([29, 40, 107, 4, 0, 49, 65, 49, 0]),
+      QRCODE_MODEL1: globalThis.Buffer.from([29, 40, 107, 4, 0, 49, 65, 49, 0]),
       // Model 1
-      QRCODE_MODEL2: Buffer.from([29, 40, 107, 4, 0, 49, 65, 50, 0]),
+      QRCODE_MODEL2: globalThis.Buffer.from([29, 40, 107, 4, 0, 49, 65, 50, 0]),
       // Model 2
-      QRCODE_MODEL3: Buffer.from([29, 40, 107, 4, 0, 49, 65, 51, 0]),
+      QRCODE_MODEL3: globalThis.Buffer.from([29, 40, 107, 4, 0, 49, 65, 51, 0]),
       // Model 3
-      QRCODE_CORRECTION_L: Buffer.from([29, 40, 107, 3, 0, 49, 69, 48]),
+      QRCODE_CORRECTION_L: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 69, 48]),
       // Correction level: L - 7%
-      QRCODE_CORRECTION_M: Buffer.from([29, 40, 107, 3, 0, 49, 69, 49]),
+      QRCODE_CORRECTION_M: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 69, 49]),
       // Correction level: M - 15%
-      QRCODE_CORRECTION_Q: Buffer.from([29, 40, 107, 3, 0, 49, 69, 50]),
+      QRCODE_CORRECTION_Q: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 69, 50]),
       // Correction level: Q - 25%
-      QRCODE_CORRECTION_H: Buffer.from([29, 40, 107, 3, 0, 49, 69, 51]),
+      QRCODE_CORRECTION_H: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 69, 51]),
       // Correction level: H - 30%
-      QRCODE_CELLSIZE_1: Buffer.from([29, 40, 107, 3, 0, 49, 67, 1]),
+      QRCODE_CELLSIZE_1: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 1]),
       // Cell size 1
-      QRCODE_CELLSIZE_2: Buffer.from([29, 40, 107, 3, 0, 49, 67, 2]),
+      QRCODE_CELLSIZE_2: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 2]),
       // Cell size 2
-      QRCODE_CELLSIZE_3: Buffer.from([29, 40, 107, 3, 0, 49, 67, 3]),
+      QRCODE_CELLSIZE_3: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 3]),
       // Cell size 3
-      QRCODE_CELLSIZE_4: Buffer.from([29, 40, 107, 3, 0, 49, 67, 4]),
+      QRCODE_CELLSIZE_4: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 4]),
       // Cell size 4
-      QRCODE_CELLSIZE_5: Buffer.from([29, 40, 107, 3, 0, 49, 67, 5]),
+      QRCODE_CELLSIZE_5: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 5]),
       // Cell size 5
-      QRCODE_CELLSIZE_6: Buffer.from([29, 40, 107, 3, 0, 49, 67, 6]),
+      QRCODE_CELLSIZE_6: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 6]),
       // Cell size 6
-      QRCODE_CELLSIZE_7: Buffer.from([29, 40, 107, 3, 0, 49, 67, 7]),
+      QRCODE_CELLSIZE_7: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 7]),
       // Cell size 7
-      QRCODE_CELLSIZE_8: Buffer.from([29, 40, 107, 3, 0, 49, 67, 8]),
+      QRCODE_CELLSIZE_8: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 67, 8]),
       // Cell size 8
-      QRCODE_PRINT: Buffer.from([29, 40, 107, 3, 0, 49, 81, 48]),
+      QRCODE_PRINT: globalThis.Buffer.from([29, 40, 107, 3, 0, 49, 81, 48]),
       // Print QR code
       // PDF417
-      PDF417_CORRECTION: Buffer.from([29, 40, 107, 4, 0, 48, 69, 49]),
+      PDF417_CORRECTION: globalThis.Buffer.from([29, 40, 107, 4, 0, 48, 69, 49]),
       // Append 1-40 for ratio
-      PDF417_ROW_HEIGHT: Buffer.from([29, 40, 107, 3, 0, 48, 68]),
+      PDF417_ROW_HEIGHT: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 68]),
       // Append 2-8 for height
-      PDF417_WIDTH: Buffer.from([29, 40, 107, 3, 0, 48, 67]),
+      PDF417_WIDTH: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 67]),
       // Append 2-8 for width
-      PDF417_COLUMNS: Buffer.from([29, 40, 107, 3, 0, 48, 65]),
-      PDF417_OPTION_STANDARD: Buffer.from([29, 40, 107, 3, 0, 48, 70, 0]),
+      PDF417_COLUMNS: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 65]),
+      PDF417_OPTION_STANDARD: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 70, 0]),
       // Standard barcode
-      PDF417_OPTION_TRUNCATED: Buffer.from([29, 40, 107, 3, 0, 48, 70, 1]),
+      PDF417_OPTION_TRUNCATED: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 70, 1]),
       // Truncated barcode
-      PDF417_PRINT: Buffer.from([29, 40, 107, 3, 0, 48, 81, 48]),
+      PDF417_PRINT: globalThis.Buffer.from([29, 40, 107, 3, 0, 48, 81, 48]),
       // MaxiCode
       // Formatted data containing a structured Carrier Message with a numeric postal code. (US)
-      MAXI_MODE2: Buffer.from([29, 40, 107, 3, 0, 50, 65, 50]),
+      MAXI_MODE2: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 50]),
       // Formatted data containing a structured Carrier Message with an alphanumeric postal code. (International)
-      MAXI_MODE3: Buffer.from([29, 40, 107, 3, 0, 50, 65, 51]),
-      MAXI_MODE4: Buffer.from([29, 40, 107, 3, 0, 50, 65, 52]),
+      MAXI_MODE3: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 51]),
+      MAXI_MODE4: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 52]),
       // Unformatted data with Standard Error Correction.
-      MAXI_MODE5: Buffer.from([29, 40, 107, 3, 0, 50, 65, 53]),
+      MAXI_MODE5: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 53]),
       // Unformatted data with Enhanced Error Correction.
-      MAXI_MODE6: Buffer.from([29, 40, 107, 3, 0, 50, 65, 54]),
+      MAXI_MODE6: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 65, 54]),
       // For programming hardware devices.
-      MAXI_PRINT: Buffer.from([29, 40, 107, 3, 0, 50, 81, 48]),
+      MAXI_PRINT: globalThis.Buffer.from([29, 40, 107, 3, 0, 50, 81, 48]),
       // Image format
-      S_RASTER_N: Buffer.from([29, 118, 48, 0]),
+      S_RASTER_N: globalThis.Buffer.from([29, 118, 48, 0]),
       // Set raster image normal size
-      S_RASTER_2W: Buffer.from([29, 118, 48, 1]),
+      S_RASTER_2W: globalThis.Buffer.from([29, 118, 48, 1]),
       // Set raster image double width
-      S_RASTER_2H: Buffer.from([29, 118, 48, 2]),
+      S_RASTER_2H: globalThis.Buffer.from([29, 118, 48, 2]),
       // Set raster image double height
-      S_RASTER_Q: Buffer.from([29, 118, 48, 3]),
+      S_RASTER_Q: globalThis.Buffer.from([29, 118, 48, 3]),
       // Set raster image quadruple
       // Printing Density
-      PD_N50: Buffer.from([29, 124, 0]),
+      PD_N50: globalThis.Buffer.from([29, 124, 0]),
       // Printing Density -50%
-      PD_N37: Buffer.from([29, 124, 1]),
+      PD_N37: globalThis.Buffer.from([29, 124, 1]),
       // Printing Density -37.5%
-      PD_N25: Buffer.from([29, 124, 2]),
+      PD_N25: globalThis.Buffer.from([29, 124, 2]),
       // Printing Density -25%
-      PD_N12: Buffer.from([29, 124, 3]),
+      PD_N12: globalThis.Buffer.from([29, 124, 3]),
       // Printing Density -12.5%
-      PD_0: Buffer.from([29, 124, 4]),
+      PD_0: globalThis.Buffer.from([29, 124, 4]),
       // Printing Density  0%
-      PD_P50: Buffer.from([29, 124, 8]),
+      PD_P50: globalThis.Buffer.from([29, 124, 8]),
       // Printing Density +50%
-      PD_P37: Buffer.from([29, 124, 7]),
+      PD_P37: globalThis.Buffer.from([29, 124, 7]),
       // Printing Density +37.5%
-      PD_P25: Buffer.from([29, 124, 6])
+      PD_P25: globalThis.Buffer.from([29, 124, 6])
       // Printing Density +25%
     };
   }
@@ -22380,6 +22744,7 @@ var require_custom_config = __commonJS({
 // node_modules/node-thermal-printer/lib/types/custom.js
 var require_custom = __commonJS({
   "node_modules/node-thermal-printer/lib/types/custom.js"(exports, module) {
+    init_globals();
     var PrinterType = require_printer_type();
     var Custom = class extends PrinterType {
       constructor() {
@@ -22393,7 +22758,7 @@ var require_custom = __commonJS({
       // ------------------------------ Append ------------------------------
       append(appendBuffer) {
         if (this.buffer) {
-          this.buffer = Buffer.concat([this.buffer, appendBuffer]);
+          this.buffer = globalThis.Buffer.concat([this.buffer, appendBuffer]);
         } else {
           this.buffer = appendBuffer;
         }
@@ -22406,7 +22771,7 @@ var require_custom = __commonJS({
         if (lengthOfTheSound < 1 || lengthOfTheSound > 9) throw new Error("lengthOfTheSound: Value must be between 1 and 9");
         this.buffer = null;
         this.append(this.config.BEEP);
-        this.append(Buffer.from([numberOfBeeps, lengthOfTheSound]));
+        this.append(globalThis.Buffer.from([numberOfBeeps, lengthOfTheSound]));
         return this.buffer;
       }
       // ------------------------------ Set text size ------------------------------
@@ -22414,8 +22779,8 @@ var require_custom = __commonJS({
         this.buffer = null;
         if (height > 7 || height < 0) throw new Error("setTextSize: Height must be between 0 and 7");
         if (width > 7 || width < 0) throw new Error("setTextSize: Width must be between 0 and 7");
-        const x = Buffer.from(`${height}${width}`, "hex");
-        this.append(Buffer.from([29, 33]));
+        const x = globalThis.Buffer.from(`${height}${width}`, "hex");
+        this.append(globalThis.Buffer.from([29, 33]));
         this.append(x);
         return this.buffer;
       }
@@ -22429,18 +22794,18 @@ var require_custom = __commonJS({
           height: 162,
           ...settings
         };
-        this.append(Buffer.from([29, 72]));
-        this.append(Buffer.from([settings.hriPos]));
-        this.append(Buffer.from([29, 102]));
-        this.append(Buffer.from([settings.hriFont]));
-        this.append(Buffer.from([29, 119]));
-        this.append(Buffer.from([settings.width]));
-        this.append(Buffer.from([29, 104]));
-        this.append(Buffer.from([settings.height]));
+        this.append(globalThis.Buffer.from([29, 72]));
+        this.append(globalThis.Buffer.from([settings.hriPos]));
+        this.append(globalThis.Buffer.from([29, 102]));
+        this.append(globalThis.Buffer.from([settings.hriFont]));
+        this.append(globalThis.Buffer.from([29, 119]));
+        this.append(globalThis.Buffer.from([settings.width]));
+        this.append(globalThis.Buffer.from([29, 104]));
+        this.append(globalThis.Buffer.from([settings.height]));
         this.append(this.config.BARCODE_CODE128);
-        this.append(Buffer.from([data.length + 2]));
-        this.append(Buffer.from([123, 66]));
-        this.append(Buffer.from(data));
+        this.append(globalThis.Buffer.from([data.length + 2]));
+        this.append(globalThis.Buffer.from([123, 66]));
+        this.append(globalThis.Buffer.from(data));
         return this.buffer;
       }
       // ------------------------------ QR ------------------------------
@@ -22462,8 +22827,8 @@ var require_custom = __commonJS({
         const s = str.length + 3;
         const lsb = parseInt(s % 256);
         const msb = parseInt(s / 256);
-        this.append(Buffer.from([29, 40, 107, lsb, msb, 49, 80, 48]));
-        this.append(Buffer.from(str));
+        this.append(globalThis.Buffer.from([29, 40, 107, lsb, msb, 49, 80, 48]));
+        this.append(globalThis.Buffer.from(str));
         this.append(this.config.QRCODE_PRINT);
         return this.buffer;
       }
@@ -22479,21 +22844,21 @@ var require_custom = __commonJS({
           ...settings
         };
         this.append(this.config.PDF417_CORRECTION);
-        this.append(Buffer.from([settings.correction]));
+        this.append(globalThis.Buffer.from([settings.correction]));
         this.append(this.config.PDF417_ROW_HEIGHT);
-        this.append(Buffer.from([settings.rowHeight]));
+        this.append(globalThis.Buffer.from([settings.rowHeight]));
         this.append(this.config.PDF417_WIDTH);
-        this.append(Buffer.from([settings.width]));
+        this.append(globalThis.Buffer.from([settings.width]));
         this.append(this.config.PDF417_COLUMNS);
-        this.append(Buffer.from([settings.columns]));
+        this.append(globalThis.Buffer.from([settings.columns]));
         if (settings.truncated) this.append(this.config.PDF417_OPTION_TRUNCATED);
         else this.append(this.config.PDF417_OPTION_STANDARD);
         const s = data.length + 3;
         const lsb = parseInt(s % 256);
         const msb = parseInt(s / 256);
-        this.append(Buffer.from([29, 40, 107, lsb, msb, 48, 80, 48]));
-        this.append(Buffer.from(data.toString()));
-        this.append(Buffer.from(this.config.PDF417_PRINT));
+        this.append(globalThis.Buffer.from([29, 40, 107, lsb, msb, 48, 80, 48]));
+        this.append(globalThis.Buffer.from(data.toString()));
+        this.append(globalThis.Buffer.from(this.config.PDF417_PRINT));
         return this.buffer;
       }
       // ------------------------------ MAXI CODE ------------------------------
@@ -22511,8 +22876,8 @@ var require_custom = __commonJS({
         const s = data.length + 3;
         const lsb = parseInt(s % 256);
         const msb = parseInt(s / 256);
-        this.append(Buffer.from([29, 40, 107, lsb, msb, 50, 80, 48]));
-        this.append(Buffer.from(data.toString()));
+        this.append(globalThis.Buffer.from([29, 40, 107, lsb, msb, 50, 80, 48]));
+        this.append(globalThis.Buffer.from(data.toString()));
         this.append(this.config.MAXI_PRINT);
         return this.buffer;
       }
@@ -22526,22 +22891,22 @@ var require_custom = __commonJS({
           height: 162,
           ...settings
         };
-        this.append(Buffer.from([29, 72]));
-        this.append(Buffer.from([settings.hriPos]));
-        this.append(Buffer.from([29, 102]));
-        this.append(Buffer.from([settings.hriFont]));
-        this.append(Buffer.from([29, 119]));
-        this.append(Buffer.from([settings.width]));
-        this.append(Buffer.from([29, 104]));
-        this.append(Buffer.from([settings.height]));
-        this.append(Buffer.from([29, 107]));
+        this.append(globalThis.Buffer.from([29, 72]));
+        this.append(globalThis.Buffer.from([settings.hriPos]));
+        this.append(globalThis.Buffer.from([29, 102]));
+        this.append(globalThis.Buffer.from([settings.hriFont]));
+        this.append(globalThis.Buffer.from([29, 119]));
+        this.append(globalThis.Buffer.from([settings.width]));
+        this.append(globalThis.Buffer.from([29, 104]));
+        this.append(globalThis.Buffer.from([settings.height]));
+        this.append(globalThis.Buffer.from([29, 107]));
         if (type == 73) {
-          this.append(Buffer.from([type, data.length + 2]));
-          this.append(Buffer.from([123, 66]));
+          this.append(globalThis.Buffer.from([type, data.length + 2]));
+          this.append(globalThis.Buffer.from([123, 66]));
         } else {
-          this.append(Buffer.from([type, data.length]));
+          this.append(globalThis.Buffer.from([type, data.length]));
         }
-        this.append(Buffer.from(data));
+        this.append(globalThis.Buffer.from(data));
         return this.buffer;
       }
       // ----------------------------------------------------- PRINT IMAGE -----------------------------------------------------
@@ -22592,9 +22957,9 @@ var require_custom = __commonJS({
             }
           }
           line.push(27, 51, 0, 10);
-          this.append(Buffer.from(line));
+          this.append(globalThis.Buffer.from(line));
         }
-        this.append(Buffer.from([27, 50]));
+        this.append(globalThis.Buffer.from([27, 50]));
         return this.buffer;
       }
     };
@@ -22605,6 +22970,7 @@ var require_custom = __commonJS({
 // node_modules/unorm/lib/unorm.js
 var require_unorm = __commonJS({
   "node_modules/unorm/lib/unorm.js"(exports, module) {
+    init_globals();
     (function(root) {
       var DEFAULT_FEATURE = [null, 0, {}];
       var CACHE_THRESHOLD = 10;
@@ -22985,6 +23351,7 @@ var require_unorm = __commonJS({
 // node_modules/node-thermal-printer/lib/core.js
 var require_core = __commonJS({
   "node_modules/node-thermal-printer/lib/core.js"(exports, module) {
+    init_globals();
     var { PNG } = require_png();
     var iconv = require_lib2();
     var PrinterTypes = {
@@ -23040,7 +23407,7 @@ var require_core = __commonJS({
       TCVN_VIETNAMESE: "TCVN_VIETNAMESE",
       VISCII: "VISCII"
     };
-    var ThermalPrinter = class {
+    var ThermalPrinter2 = class {
       constructor(initConfig) {
         if (initConfig.interface) {
           const getInterface = require_interfaces();
@@ -23134,7 +23501,7 @@ var require_core = __commonJS({
         return this.buffer;
       }
       setBuffer(newBuffer) {
-        this.buffer = Buffer.from(newBuffer);
+        this.buffer = globalThis.Buffer.from(newBuffer);
       }
       clear() {
         this.buffer = null;
@@ -23247,7 +23614,7 @@ var require_core = __commonJS({
       // ----------------------------------------------------- DRAW LINE -----------------------------------------------------
       drawLine(character = this.config.lineCharacter) {
         for (let i = 0; i < this.config.width; i++) {
-          this.append(Buffer.from(character));
+          this.append(globalThis.Buffer.from(character));
         }
         this.newLine();
       }
@@ -23256,7 +23623,7 @@ var require_core = __commonJS({
         this.append(left.toString());
         const width = this.config.width - left.toString().length - right.toString().length;
         for (let i = 0; i < width; i++) {
-          this.append(Buffer.from(" "));
+          this.append(globalThis.Buffer.from(" "));
         }
         this.append(right.toString());
         this.newLine();
@@ -23268,7 +23635,7 @@ var require_core = __commonJS({
           this.append(data[i].toString());
           const spaces = cellWidth - data[i].toString().length;
           for (let j = 0; j < spaces; j++) {
-            this.append(Buffer.from(" "));
+            this.append(globalThis.Buffer.from(" "));
           }
         }
         this.newLine();
@@ -23299,23 +23666,23 @@ var require_core = __commonJS({
           if (obj.align == "CENTER") {
             const spaces = (cellWidth - obj.text.toString().length) / 2;
             for (let j = 0; j < spaces; j++) {
-              this.append(Buffer.from(" "));
+              this.append(globalThis.Buffer.from(" "));
             }
             if (obj.text != "") this.append(obj.text);
             for (let j = 0; j < spaces - 1; j++) {
-              this.append(Buffer.from(" "));
+              this.append(globalThis.Buffer.from(" "));
             }
           } else if (obj.align == "RIGHT") {
             const spaces = cellWidth - obj.text.toString().length;
             for (let j = 0; j < spaces; j++) {
-              this.append(Buffer.from(" "));
+              this.append(globalThis.Buffer.from(" "));
             }
             if (obj.text != "") this.append(obj.text);
           } else {
             if (obj.text != "") this.append(obj.text);
             const spaces = cellWidth - obj.text.toString().length;
             for (let j = 0; j < spaces; j++) {
-              this.append(Buffer.from(" "));
+              this.append(globalThis.Buffer.from(" "));
             }
           }
           if (obj.bold) {
@@ -23455,19 +23822,19 @@ var require_core = __commonJS({
                   }
                   if (code.toString() !== "?") {
                     this.config.codePage = tmpCodePageKey;
-                    code = Buffer.concat([this.printer.config[`CODE_PAGE_${tmpCodePageKey}`], code]);
+                    code = globalThis.Buffer.concat([this.printer.config[`CODE_PAGE_${tmpCodePageKey}`], code]);
                     break;
                   }
                 }
               }
             }
-            endBuff = endBuff ? Buffer.concat([endBuff, Buffer.from(code)]) : Buffer.from(code);
+            endBuff = endBuff ? globalThis.Buffer.concat([endBuff, globalThis.Buffer.from(code)]) : globalThis.Buffer.from(code);
           }
           text = endBuff;
         }
         if (text) {
           if (this.buffer) {
-            this.buffer = Buffer.concat([this.buffer, text]);
+            this.buffer = globalThis.Buffer.concat([this.buffer, text]);
           } else {
             this.buffer = text;
           }
@@ -23512,12 +23879,12 @@ var require_core = __commonJS({
       }
     };
     module.exports = {
-      printer: ThermalPrinter,
+      printer: ThermalPrinter2,
       types: PrinterTypes,
       printerTypes: PrinterTypes,
       breakLine: BreakLine,
       characterSet: CharacterSet,
-      ThermalPrinter,
+      ThermalPrinter: ThermalPrinter2,
       PrinterTypes,
       BreakLine,
       CharacterSet
@@ -23528,19 +23895,21 @@ var require_core = __commonJS({
 // node_modules/node-thermal-printer/node-thermal-printer.js
 var require_node_thermal_printer = __commonJS({
   "node_modules/node-thermal-printer/node-thermal-printer.js"(exports, module) {
+    init_globals();
     module.exports = require_core();
   }
 });
 
 // src/encoder/bundle-entry.js
-var require_bundle_entry = __commonJS({
-  "src/encoder/bundle-entry.js"(exports, module) {
-    var nodeThermalPrinter = require_node_thermal_printer();
-    module.exports = nodeThermalPrinter;
-    module.exports.default = nodeThermalPrinter;
-  }
-});
-var encoder = require_bundle_entry();
+init_globals();
+var import_buffer2 = __toESM(require_buffer());
+var import_browser2 = __toESM(require_browser());
+var import_node_thermal_printer = __toESM(require_node_thermal_printer());
+globalThis.Buffer = globalThis.Buffer || import_buffer2.Buffer;
+globalThis.process = globalThis.process || import_browser2.default;
+var bundle_entry_default = import_node_thermal_printer.default;
+var printer = import_node_thermal_printer.default;
+var ThermalPrinter = import_node_thermal_printer.default;
 /*! Bundled license information:
 
 ieee754/index.js:
@@ -23566,9 +23935,11 @@ assert/build/internal/util/comparisons.js:
    *)
 */
 
-var encoder$1 = /*#__PURE__*/Object.freeze({
+var encoder = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    default: encoder
+    ThermalPrinter: ThermalPrinter,
+    default: bundle_entry_default,
+    printer: printer
 });
 
 exports.CapacitorNetworkInterface = CapacitorNetworkInterface;

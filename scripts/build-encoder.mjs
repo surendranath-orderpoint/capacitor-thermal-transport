@@ -26,8 +26,11 @@ await esbuild.build({
     assert: 'assert/',
     events: 'events/',
   },
+  inject: [globalsInject],
   define: {
     'process.env.NODE_DEBUG': 'false',
+    Buffer: 'globalThis.Buffer',
+    process: 'globalThis.process',
   },
   logLevel: 'info',
 });
