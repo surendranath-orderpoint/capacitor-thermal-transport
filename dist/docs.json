@@ -1,0 +1,136 @@
+{
+  "api": {
+    "name": "ThermalTransportPlugin",
+    "slug": "thermaltransportplugin",
+    "docs": "",
+    "tags": [],
+    "methods": [
+      {
+        "name": "sendRaw",
+        "signature": "(options: SendRawOptions) => Promise<void>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "SendRawOptions"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "Send raw ESC/POS bytes to a network printer over TCP.",
+        "complexTypes": [
+          "SendRawOptions"
+        ],
+        "slug": "sendraw"
+      },
+      {
+        "name": "ping",
+        "signature": "(options: PingOptions) => Promise<PingResult>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "PingOptions"
+          }
+        ],
+        "returns": "Promise<PingResult>",
+        "tags": [],
+        "docs": "Check whether a TCP connection can be opened to the printer.",
+        "complexTypes": [
+          "PingResult",
+          "PingOptions"
+        ],
+        "slug": "ping"
+      }
+    ],
+    "properties": []
+  },
+  "interfaces": [
+    {
+      "name": "SendRawOptions",
+      "slug": "sendrawoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "host",
+          "tags": [],
+          "docs": "Printer IP address or hostname on the local network",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "port",
+          "tags": [],
+          "docs": "Raw port, defaults to 9100",
+          "complexTypes": [],
+          "type": "number | undefined"
+        },
+        {
+          "name": "data",
+          "tags": [],
+          "docs": "Base64-encoded ESC/POS bytes",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "timeout",
+          "tags": [],
+          "docs": "Connection timeout in milliseconds, defaults to 5000",
+          "complexTypes": [],
+          "type": "number | undefined"
+        }
+      ]
+    },
+    {
+      "name": "PingResult",
+      "slug": "pingresult",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "connected",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "PingOptions",
+      "slug": "pingoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "host",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "port",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "number | undefined"
+        },
+        {
+          "name": "timeout",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "number | undefined"
+        }
+      ]
+    }
+  ],
+  "enums": [],
+  "typeAliases": [],
+  "pluginConfigs": []
+}

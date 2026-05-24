@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../src/index.ts"],"names":[],"mappings":"AAAA,cAAc,eAAe,CAAC;AAC9B,OAAO,EAAE,yBAAyB,EAAE,MAAM,qBAAqB,CAAC;AAChE,OAAO,EAAE,gBAAgB,EAAE,MAAM,UAAU,CAAC","sourcesContent":["export * from './definitions';\nexport { CapacitorNetworkInterface } from './network-interface';\nexport { ThermalTransport } from './plugin';\n"]}
