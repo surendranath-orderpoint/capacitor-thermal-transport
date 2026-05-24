@@ -1,103 +1,3 @@
-'use strict';
-
-var core = require('@capacitor/core');
-
-const ThermalTransport = core.registerPlugin('ThermalTransport', {
-    web: () => Promise.resolve().then(function () { return web; }).then((m) => new m.ThermalTransportWeb()),
-});
-
-/**
- * Drop-in replacement for node-thermal-printer's network interface.
- * Pass this object as `interface` when constructing ThermalPrinter.
- */
-class CapacitorNetworkInterface {
-    constructor(host, port = 9100, options = {}) {
-        var _a;
-        this.host = host;
-        this.port = port;
-        this.timeout = (_a = options.timeout) !== null && _a !== void 0 ? _a : 5000;
-    }
-    async isPrinterConnected() {
-        const { connected } = await ThermalTransport.ping({
-            host: this.host,
-            port: this.port,
-            timeout: this.timeout,
-        });
-        return connected;
-    }
-    async execute(buffer, options = {}) {
-        if (options.waitForResponse) {
-            throw new Error('waitForResponse is not supported on mobile');
-        }
-        await ThermalTransport.sendRaw({
-            host: this.host,
-            port: this.port,
-            data: uint8ArrayToBase64(buffer),
-            timeout: this.timeout,
-        });
-    }
-}
-function uint8ArrayToBase64(bytes) {
-    let binary = '';
-    const chunkSize = 0x8000;
-    for (let i = 0; i < bytes.length; i += chunkSize) {
-        binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
-    }
-    return btoa(binary);
-}
-
-let thermalPrinterClassPromise = null;
-function resolveThermalPrinterClass(module) {
-    var _a, _b;
-    const root = (_a = module.default) !== null && _a !== void 0 ? _a : module;
-    const ThermalPrinter = (_b = root['printer']) !== null && _b !== void 0 ? _b : root['ThermalPrinter'];
-    if (typeof ThermalPrinter !== 'function') {
-        throw new Error('Failed to load thermal printer encoder.');
-    }
-    return ThermalPrinter;
-}
-function loadThermalPrinterClass() {
-    if (!thermalPrinterClassPromise) {
-        thermalPrinterClassPromise = Promise.resolve().then(function () { return encoder$1; }).then(resolveThermalPrinterClass);
-    }
-    return thermalPrinterClassPromise;
-}
-async function createEpsonThermalPrinter(ip, layout) {
-    if (!core.Capacitor.isNativePlatform()) {
-        throw new Error('Thermal printing requires the native iOS or Android app.');
-    }
-    const host = ip.trim();
-    if (!host) {
-        throw new Error('Printer IP address is required.');
-    }
-    if (core.Capacitor.getPlatform() === 'ios') {
-        await ThermalTransport.requestLocalNetworkAccess();
-    }
-    const ThermalPrinter = await loadThermalPrinterClass();
-    return new ThermalPrinter({
-        type: 'epson',
-        interface: new CapacitorNetworkInterface(host, 9100, { timeout: 15000 }),
-        characterSet: layout.charset,
-    });
-}
-
-class ThermalTransportWeb extends core.WebPlugin {
-    async requestLocalNetworkAccess() {
-        return;
-    }
-    async sendRaw(_options) {
-        throw this.unavailable('Thermal printing requires the native iOS or Android app');
-    }
-    async ping(_options) {
-        throw this.unavailable('Thermal printing requires the native iOS or Android app');
-    }
-}
-
-var web = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    ThermalTransportWeb: ThermalTransportWeb
-});
-
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
@@ -106,6 +6,7 @@ var __commonJS = (cb, mod) => function __require() {
 // node_modules/has-symbols/shams.js
 var require_shams = __commonJS({
   "node_modules/has-symbols/shams.js"(exports, module) {
+    "use strict";
     module.exports = function hasSymbols() {
       if (typeof Symbol !== "function" || typeof Object.getOwnPropertySymbols !== "function") {
         return false;
@@ -160,6 +61,7 @@ var require_shams = __commonJS({
 // node_modules/has-tostringtag/shams.js
 var require_shams2 = __commonJS({
   "node_modules/has-tostringtag/shams.js"(exports, module) {
+    "use strict";
     var hasSymbols = require_shams();
     module.exports = function hasToStringTagShams() {
       return hasSymbols() && !!Symbol.toStringTag;
@@ -170,6 +72,7 @@ var require_shams2 = __commonJS({
 // node_modules/es-object-atoms/index.js
 var require_es_object_atoms = __commonJS({
   "node_modules/es-object-atoms/index.js"(exports, module) {
+    "use strict";
     module.exports = Object;
   }
 });
@@ -177,6 +80,7 @@ var require_es_object_atoms = __commonJS({
 // node_modules/es-errors/index.js
 var require_es_errors = __commonJS({
   "node_modules/es-errors/index.js"(exports, module) {
+    "use strict";
     module.exports = Error;
   }
 });
@@ -184,6 +88,7 @@ var require_es_errors = __commonJS({
 // node_modules/es-errors/eval.js
 var require_eval = __commonJS({
   "node_modules/es-errors/eval.js"(exports, module) {
+    "use strict";
     module.exports = EvalError;
   }
 });
@@ -191,6 +96,7 @@ var require_eval = __commonJS({
 // node_modules/es-errors/range.js
 var require_range = __commonJS({
   "node_modules/es-errors/range.js"(exports, module) {
+    "use strict";
     module.exports = RangeError;
   }
 });
@@ -198,6 +104,7 @@ var require_range = __commonJS({
 // node_modules/es-errors/ref.js
 var require_ref = __commonJS({
   "node_modules/es-errors/ref.js"(exports, module) {
+    "use strict";
     module.exports = ReferenceError;
   }
 });
@@ -205,6 +112,7 @@ var require_ref = __commonJS({
 // node_modules/es-errors/syntax.js
 var require_syntax = __commonJS({
   "node_modules/es-errors/syntax.js"(exports, module) {
+    "use strict";
     module.exports = SyntaxError;
   }
 });
@@ -212,6 +120,7 @@ var require_syntax = __commonJS({
 // node_modules/es-errors/type.js
 var require_type = __commonJS({
   "node_modules/es-errors/type.js"(exports, module) {
+    "use strict";
     module.exports = TypeError;
   }
 });
@@ -219,6 +128,7 @@ var require_type = __commonJS({
 // node_modules/es-errors/uri.js
 var require_uri = __commonJS({
   "node_modules/es-errors/uri.js"(exports, module) {
+    "use strict";
     module.exports = URIError;
   }
 });
@@ -226,6 +136,7 @@ var require_uri = __commonJS({
 // node_modules/math-intrinsics/abs.js
 var require_abs = __commonJS({
   "node_modules/math-intrinsics/abs.js"(exports, module) {
+    "use strict";
     module.exports = Math.abs;
   }
 });
@@ -233,6 +144,7 @@ var require_abs = __commonJS({
 // node_modules/math-intrinsics/floor.js
 var require_floor = __commonJS({
   "node_modules/math-intrinsics/floor.js"(exports, module) {
+    "use strict";
     module.exports = Math.floor;
   }
 });
@@ -240,6 +152,7 @@ var require_floor = __commonJS({
 // node_modules/math-intrinsics/max.js
 var require_max = __commonJS({
   "node_modules/math-intrinsics/max.js"(exports, module) {
+    "use strict";
     module.exports = Math.max;
   }
 });
@@ -247,6 +160,7 @@ var require_max = __commonJS({
 // node_modules/math-intrinsics/min.js
 var require_min = __commonJS({
   "node_modules/math-intrinsics/min.js"(exports, module) {
+    "use strict";
     module.exports = Math.min;
   }
 });
@@ -254,6 +168,7 @@ var require_min = __commonJS({
 // node_modules/math-intrinsics/pow.js
 var require_pow = __commonJS({
   "node_modules/math-intrinsics/pow.js"(exports, module) {
+    "use strict";
     module.exports = Math.pow;
   }
 });
@@ -261,6 +176,7 @@ var require_pow = __commonJS({
 // node_modules/math-intrinsics/round.js
 var require_round = __commonJS({
   "node_modules/math-intrinsics/round.js"(exports, module) {
+    "use strict";
     module.exports = Math.round;
   }
 });
@@ -268,6 +184,7 @@ var require_round = __commonJS({
 // node_modules/math-intrinsics/isNaN.js
 var require_isNaN = __commonJS({
   "node_modules/math-intrinsics/isNaN.js"(exports, module) {
+    "use strict";
     module.exports = Number.isNaN || function isNaN2(a) {
       return a !== a;
     };
@@ -277,6 +194,7 @@ var require_isNaN = __commonJS({
 // node_modules/math-intrinsics/sign.js
 var require_sign = __commonJS({
   "node_modules/math-intrinsics/sign.js"(exports, module) {
+    "use strict";
     var $isNaN = require_isNaN();
     module.exports = function sign(number) {
       if ($isNaN(number) || number === 0) {
@@ -290,6 +208,7 @@ var require_sign = __commonJS({
 // node_modules/gopd/gOPD.js
 var require_gOPD = __commonJS({
   "node_modules/gopd/gOPD.js"(exports, module) {
+    "use strict";
     module.exports = Object.getOwnPropertyDescriptor;
   }
 });
@@ -297,6 +216,7 @@ var require_gOPD = __commonJS({
 // node_modules/gopd/index.js
 var require_gopd = __commonJS({
   "node_modules/gopd/index.js"(exports, module) {
+    "use strict";
     var $gOPD = require_gOPD();
     if ($gOPD) {
       try {
@@ -312,6 +232,7 @@ var require_gopd = __commonJS({
 // node_modules/es-define-property/index.js
 var require_es_define_property = __commonJS({
   "node_modules/es-define-property/index.js"(exports, module) {
+    "use strict";
     var $defineProperty = Object.defineProperty || false;
     if ($defineProperty) {
       try {
@@ -327,6 +248,7 @@ var require_es_define_property = __commonJS({
 // node_modules/has-symbols/index.js
 var require_has_symbols = __commonJS({
   "node_modules/has-symbols/index.js"(exports, module) {
+    "use strict";
     var origSymbol = typeof Symbol !== "undefined" && Symbol;
     var hasSymbolSham = require_shams();
     module.exports = function hasNativeSymbols() {
@@ -350,6 +272,7 @@ var require_has_symbols = __commonJS({
 // node_modules/get-proto/Reflect.getPrototypeOf.js
 var require_Reflect_getPrototypeOf = __commonJS({
   "node_modules/get-proto/Reflect.getPrototypeOf.js"(exports, module) {
+    "use strict";
     module.exports = typeof Reflect !== "undefined" && Reflect.getPrototypeOf || null;
   }
 });
@@ -357,6 +280,7 @@ var require_Reflect_getPrototypeOf = __commonJS({
 // node_modules/get-proto/Object.getPrototypeOf.js
 var require_Object_getPrototypeOf = __commonJS({
   "node_modules/get-proto/Object.getPrototypeOf.js"(exports, module) {
+    "use strict";
     var $Object = require_es_object_atoms();
     module.exports = $Object.getPrototypeOf || null;
   }
@@ -365,6 +289,7 @@ var require_Object_getPrototypeOf = __commonJS({
 // node_modules/function-bind/implementation.js
 var require_implementation = __commonJS({
   "node_modules/function-bind/implementation.js"(exports, module) {
+    "use strict";
     var ERROR_MESSAGE = "Function.prototype.bind called on incompatible ";
     var toStr = Object.prototype.toString;
     var max = Math.max;
@@ -381,7 +306,7 @@ var require_implementation = __commonJS({
     };
     var slicy = function slicy2(arrLike, offset) {
       var arr = [];
-      for (var i = offset, j = 0; i < arrLike.length; i += 1, j += 1) {
+      for (var i = offset || 0, j = 0; i < arrLike.length; i += 1, j += 1) {
         arr[j] = arrLike[i];
       }
       return arr;
@@ -440,6 +365,7 @@ var require_implementation = __commonJS({
 // node_modules/function-bind/index.js
 var require_function_bind = __commonJS({
   "node_modules/function-bind/index.js"(exports, module) {
+    "use strict";
     var implementation = require_implementation();
     module.exports = Function.prototype.bind || implementation;
   }
@@ -448,6 +374,7 @@ var require_function_bind = __commonJS({
 // node_modules/call-bind-apply-helpers/functionCall.js
 var require_functionCall = __commonJS({
   "node_modules/call-bind-apply-helpers/functionCall.js"(exports, module) {
+    "use strict";
     module.exports = Function.prototype.call;
   }
 });
@@ -455,6 +382,7 @@ var require_functionCall = __commonJS({
 // node_modules/call-bind-apply-helpers/functionApply.js
 var require_functionApply = __commonJS({
   "node_modules/call-bind-apply-helpers/functionApply.js"(exports, module) {
+    "use strict";
     module.exports = Function.prototype.apply;
   }
 });
@@ -462,6 +390,7 @@ var require_functionApply = __commonJS({
 // node_modules/call-bind-apply-helpers/reflectApply.js
 var require_reflectApply = __commonJS({
   "node_modules/call-bind-apply-helpers/reflectApply.js"(exports, module) {
+    "use strict";
     module.exports = typeof Reflect !== "undefined" && Reflect && Reflect.apply;
   }
 });
@@ -469,6 +398,7 @@ var require_reflectApply = __commonJS({
 // node_modules/call-bind-apply-helpers/actualApply.js
 var require_actualApply = __commonJS({
   "node_modules/call-bind-apply-helpers/actualApply.js"(exports, module) {
+    "use strict";
     var bind = require_function_bind();
     var $apply = require_functionApply();
     var $call = require_functionCall();
@@ -480,6 +410,7 @@ var require_actualApply = __commonJS({
 // node_modules/call-bind-apply-helpers/index.js
 var require_call_bind_apply_helpers = __commonJS({
   "node_modules/call-bind-apply-helpers/index.js"(exports, module) {
+    "use strict";
     var bind = require_function_bind();
     var $TypeError = require_type();
     var $call = require_functionCall();
@@ -496,6 +427,7 @@ var require_call_bind_apply_helpers = __commonJS({
 // node_modules/dunder-proto/get.js
 var require_get = __commonJS({
   "node_modules/dunder-proto/get.js"(exports, module) {
+    "use strict";
     var callBind = require_call_bind_apply_helpers();
     var gOPD = require_gopd();
     var hasProtoAccessor;
@@ -526,6 +458,7 @@ var require_get = __commonJS({
 // node_modules/get-proto/index.js
 var require_get_proto = __commonJS({
   "node_modules/get-proto/index.js"(exports, module) {
+    "use strict";
     var reflectGetProto = require_Reflect_getPrototypeOf();
     var originalGetProto = require_Object_getPrototypeOf();
     var getDunderProto = require_get();
@@ -545,6 +478,7 @@ var require_get_proto = __commonJS({
 // node_modules/hasown/index.js
 var require_hasown = __commonJS({
   "node_modules/hasown/index.js"(exports, module) {
+    "use strict";
     var call = Function.prototype.call;
     var $hasOwn = Object.prototype.hasOwnProperty;
     var bind = require_function_bind();
@@ -555,6 +489,7 @@ var require_hasown = __commonJS({
 // node_modules/get-intrinsic/index.js
 var require_get_intrinsic = __commonJS({
   "node_modules/get-intrinsic/index.js"(exports, module) {
+    "use strict";
     var undefined2;
     var $Object = require_es_object_atoms();
     var $Error = require_es_errors();
@@ -885,6 +820,7 @@ var require_get_intrinsic = __commonJS({
 // node_modules/call-bound/index.js
 var require_call_bound = __commonJS({
   "node_modules/call-bound/index.js"(exports, module) {
+    "use strict";
     var GetIntrinsic = require_get_intrinsic();
     var callBindBasic = require_call_bind_apply_helpers();
     var $indexOf = callBindBasic([GetIntrinsic("%String.prototype.indexOf%")]);
@@ -907,6 +843,7 @@ var require_call_bound = __commonJS({
 // node_modules/is-arguments/index.js
 var require_is_arguments = __commonJS({
   "node_modules/is-arguments/index.js"(exports, module) {
+    "use strict";
     var hasToStringTag = require_shams2()();
     var callBound = require_call_bound();
     var $toString = callBound("Object.prototype.toString");
@@ -933,6 +870,7 @@ var require_is_arguments = __commonJS({
 // node_modules/is-regex/index.js
 var require_is_regex = __commonJS({
   "node_modules/is-regex/index.js"(exports, module) {
+    "use strict";
     var callBound = require_call_bound();
     var hasToStringTag = require_shams2()();
     var hasOwn = require_hasown();
@@ -1001,6 +939,7 @@ var require_is_regex = __commonJS({
 // node_modules/safe-regex-test/index.js
 var require_safe_regex_test = __commonJS({
   "node_modules/safe-regex-test/index.js"(exports, module) {
+    "use strict";
     var callBound = require_call_bound();
     var isRegex = require_is_regex();
     var $exec = callBound("RegExp.prototype.exec");
@@ -1019,6 +958,7 @@ var require_safe_regex_test = __commonJS({
 // node_modules/generator-function/index.js
 var require_generator_function = __commonJS({
   "node_modules/generator-function/index.js"(exports, module) {
+    "use strict";
     var cached = (
       /** @type {GeneratorFunctionConstructor} */
       function* () {
@@ -1031,6 +971,7 @@ var require_generator_function = __commonJS({
 // node_modules/is-generator-function/index.js
 var require_is_generator_function = __commonJS({
   "node_modules/is-generator-function/index.js"(exports, module) {
+    "use strict";
     var callBound = require_call_bound();
     var safeRegexTest = require_safe_regex_test();
     var isFnRegex = safeRegexTest(/^\s*(?:function)?\*/);
@@ -1062,6 +1003,7 @@ var require_is_generator_function = __commonJS({
 // node_modules/is-callable/index.js
 var require_is_callable = __commonJS({
   "node_modules/is-callable/index.js"(exports, module) {
+    "use strict";
     var fnToStr = Function.prototype.toString;
     var reflectApply = typeof Reflect === "object" && Reflect !== null && Reflect.apply;
     var badArrayLike;
@@ -1179,6 +1121,7 @@ var require_is_callable = __commonJS({
 // node_modules/for-each/index.js
 var require_for_each = __commonJS({
   "node_modules/for-each/index.js"(exports, module) {
+    "use strict";
     var isCallable = require_is_callable();
     var toStr = Object.prototype.toString;
     var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -1238,6 +1181,7 @@ var require_for_each = __commonJS({
 // node_modules/possible-typed-array-names/index.js
 var require_possible_typed_array_names = __commonJS({
   "node_modules/possible-typed-array-names/index.js"(exports, module) {
+    "use strict";
     module.exports = [
       "Float16Array",
       "Float32Array",
@@ -1258,6 +1202,7 @@ var require_possible_typed_array_names = __commonJS({
 // node_modules/available-typed-arrays/index.js
 var require_available_typed_arrays = __commonJS({
   "node_modules/available-typed-arrays/index.js"(exports, module) {
+    "use strict";
     var possibleNames = require_possible_typed_array_names();
     var g = typeof globalThis === "undefined" ? global : globalThis;
     module.exports = function availableTypedArrays() {
@@ -1275,6 +1220,7 @@ var require_available_typed_arrays = __commonJS({
 // node_modules/define-data-property/index.js
 var require_define_data_property = __commonJS({
   "node_modules/define-data-property/index.js"(exports, module) {
+    "use strict";
     var $defineProperty = require_es_define_property();
     var $SyntaxError = require_syntax();
     var $TypeError = require_type();
@@ -1322,6 +1268,7 @@ var require_define_data_property = __commonJS({
 // node_modules/has-property-descriptors/index.js
 var require_has_property_descriptors = __commonJS({
   "node_modules/has-property-descriptors/index.js"(exports, module) {
+    "use strict";
     var $defineProperty = require_es_define_property();
     var hasPropertyDescriptors = function hasPropertyDescriptors2() {
       return !!$defineProperty;
@@ -1343,6 +1290,7 @@ var require_has_property_descriptors = __commonJS({
 // node_modules/set-function-length/index.js
 var require_set_function_length = __commonJS({
   "node_modules/set-function-length/index.js"(exports, module) {
+    "use strict";
     var GetIntrinsic = require_get_intrinsic();
     var define2 = require_define_data_property();
     var hasDescriptors = require_has_property_descriptors()();
@@ -1395,6 +1343,7 @@ var require_set_function_length = __commonJS({
 // node_modules/call-bind-apply-helpers/applyBind.js
 var require_applyBind = __commonJS({
   "node_modules/call-bind-apply-helpers/applyBind.js"(exports, module) {
+    "use strict";
     var bind = require_function_bind();
     var $apply = require_functionApply();
     var actualApply = require_actualApply();
@@ -1407,6 +1356,7 @@ var require_applyBind = __commonJS({
 // node_modules/call-bind/index.js
 var require_call_bind = __commonJS({
   "node_modules/call-bind/index.js"(exports, module) {
+    "use strict";
     var setFunctionLength = require_set_function_length();
     var $defineProperty = require_es_define_property();
     var callBindBasic = require_call_bind_apply_helpers();
@@ -1431,6 +1381,7 @@ var require_call_bind = __commonJS({
 // node_modules/which-typed-array/index.js
 var require_which_typed_array = __commonJS({
   "node_modules/which-typed-array/index.js"(exports, module) {
+    "use strict";
     var forEach = require_for_each();
     var availableTypedArrays = require_available_typed_arrays();
     var callBind = require_call_bind();
@@ -1551,6 +1502,7 @@ var require_which_typed_array = __commonJS({
 // node_modules/is-typed-array/index.js
 var require_is_typed_array = __commonJS({
   "node_modules/is-typed-array/index.js"(exports, module) {
+    "use strict";
     var whichTypedArray = require_which_typed_array();
     module.exports = function isTypedArray(value) {
       return !!whichTypedArray(value);
@@ -1561,6 +1513,7 @@ var require_is_typed_array = __commonJS({
 // node_modules/util/support/types.js
 var require_types = __commonJS({
   "node_modules/util/support/types.js"(exports) {
+    "use strict";
     var isArgumentsObject = require_is_arguments();
     var isGeneratorFunction = require_is_generator_function();
     var whichTypedArray = require_which_typed_array();
@@ -1905,6 +1858,12 @@ var require_util = __commonJS({
     };
     var debugs = {};
     var debugEnvRegex = /^$/;
+    if (false) {
+      debugEnv = false;
+      debugEnv = debugEnv.replace(/[|\\{}()[\]^$+?.]/g, "\\$&").replace(/\*/g, ".*").replace(/,/g, "$|^").toUpperCase();
+      debugEnvRegex = new RegExp("^" + debugEnv + "$", "i");
+    }
+    var debugEnv;
     exports.debuglog = function(set) {
       set = set.toUpperCase();
       if (!debugs[set]) {
@@ -2164,8 +2123,10 @@ var require_util = __commonJS({
       return name + ": " + str;
     }
     function reduceToSingleString(output, base, braces) {
+      var numLinesEst = 0;
       var length = output.reduce(function(prev, cur) {
-        if (cur.indexOf("\n") >= 0) ;
+        numLinesEst++;
+        if (cur.indexOf("\n") >= 0) numLinesEst++;
         return prev + cur.replace(/\u001b\[\d\d?m/g, "").length + 1;
       }, 0);
       if (length > 60) {
@@ -2382,6 +2343,7 @@ var require_util = __commonJS({
 // node_modules/events/events.js
 var require_events = __commonJS({
   "node_modules/events/events.js"(exports, module) {
+    "use strict";
     var R = typeof Reflect === "object" ? Reflect : null;
     var ReflectApply = R && typeof R.apply === "function" ? R.apply : function ReflectApply2(target, receiver, args) {
       return Function.prototype.apply.call(target, receiver, args);
@@ -2714,6 +2676,7 @@ var require_events = __commonJS({
           }
           resolve([].slice.call(arguments));
         }
+        ;
         eventTargetAgnosticAddListener(emitter, name, resolver, { once: true });
         if (name !== "error") {
           addErrorHandlerIfEventEmitter(emitter, errorListener, { once: true });
@@ -2756,6 +2719,7 @@ var require_stream_browser = __commonJS({
 // node_modules/base64-js/index.js
 var require_base64_js = __commonJS({
   "node_modules/base64-js/index.js"(exports) {
+    "use strict";
     exports.byteLength = byteLength;
     exports.toByteArray = toByteArray;
     exports.fromByteArray = fromByteArray;
@@ -2939,6 +2903,7 @@ var require_ieee754 = __commonJS({
 // node_modules/buffer/index.js
 var require_buffer = __commonJS({
   "node_modules/buffer/index.js"(exports) {
+    "use strict";
     var base64 = require_base64_js();
     var ieee754 = require_ieee754();
     var customInspectSymbol = typeof Symbol === "function" && typeof Symbol["for"] === "function" ? Symbol["for"]("nodejs.util.inspect.custom") : null;
@@ -4174,7 +4139,7 @@ var require_buffer = __commonJS({
       value = +value;
       offset = offset >>> 0;
       if (!noAssert) {
-        checkIEEE754(buf, value, offset, 4);
+        checkIEEE754(buf, value, offset, 4, 34028234663852886e22, -34028234663852886e22);
       }
       ieee754.write(buf, value, offset, littleEndian, 23, 4);
       return offset + 4;
@@ -4189,7 +4154,7 @@ var require_buffer = __commonJS({
       value = +value;
       offset = offset >>> 0;
       if (!noAssert) {
-        checkIEEE754(buf, value, offset, 8);
+        checkIEEE754(buf, value, offset, 8, 17976931348623157e292, -17976931348623157e292);
       }
       ieee754.write(buf, value, offset, littleEndian, 52, 8);
       return offset + 8;
@@ -4368,12 +4333,14 @@ var require_buffer = __commonJS({
       if (value > max || value < min) {
         const n = typeof min === "bigint" ? "n" : "";
         let range;
-        {
+        if (byteLength2 > 3) {
           if (min === 0 || min === BigInt(0)) {
             range = `>= 0${n} and < 2${n} ** ${(byteLength2 + 1) * 8}${n}`;
           } else {
             range = `>= -(2${n} ** ${(byteLength2 + 1) * 8 - 1}${n}) and < 2 ** ${(byteLength2 + 1) * 8 - 1}${n}`;
           }
+        } else {
+          range = `>= ${min}${n} and <= ${max}${n}`;
         }
         throw new errors.ERR_OUT_OF_RANGE("value", range, value);
       }
@@ -4387,14 +4354,14 @@ var require_buffer = __commonJS({
     function boundsError(value, length, type) {
       if (Math.floor(value) !== value) {
         validateNumber(value, type);
-        throw new errors.ERR_OUT_OF_RANGE("offset", "an integer", value);
+        throw new errors.ERR_OUT_OF_RANGE(type || "offset", "an integer", value);
       }
       if (length < 0) {
         throw new errors.ERR_BUFFER_OUT_OF_BOUNDS();
       }
       throw new errors.ERR_OUT_OF_RANGE(
-        "offset",
-        `>= ${0} and <= ${length}`,
+        type || "offset",
+        `>= ${type ? 1 : 0} and <= ${length}`,
         value
       );
     }
@@ -4528,6 +4495,7 @@ var require_buffer = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/buffer_list.js
 var require_buffer_list = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/buffer_list.js"(exports, module) {
+    "use strict";
     function ownKeys(object, enumerableOnly) {
       var keys = Object.keys(object);
       if (Object.getOwnPropertySymbols) {
@@ -4574,6 +4542,7 @@ var require_buffer_list = __commonJS({
     }
     function _createClass(Constructor, protoProps, staticProps) {
       if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) _defineProperties(Constructor, staticProps);
       Object.defineProperty(Constructor, "prototype", { writable: false });
       return Constructor;
     }
@@ -4585,11 +4554,11 @@ var require_buffer_list = __commonJS({
       if (typeof input !== "object" || input === null) return input;
       var prim = input[Symbol.toPrimitive];
       if (prim !== void 0) {
-        var res = prim.call(input, hint);
+        var res = prim.call(input, hint || "default");
         if (typeof res !== "object") return res;
         throw new TypeError("@@toPrimitive must return a primitive value.");
       }
-      return (String )(input);
+      return (hint === "string" ? String : Number)(input);
     }
     var _require = require_buffer();
     var Buffer2 = _require.Buffer;
@@ -4768,6 +4737,7 @@ var require_buffer_list = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/destroy.js
 var require_destroy = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/destroy.js"(exports, module) {
+    "use strict";
     function destroy(err, cb) {
       var _this = this;
       var readableDestroyed = this._readableState && this._readableState.destroyed;
@@ -4856,6 +4826,7 @@ var require_destroy = __commonJS({
 // node_modules/readable-stream/errors-browser.js
 var require_errors_browser = __commonJS({
   "node_modules/readable-stream/errors-browser.js"(exports, module) {
+    "use strict";
     function _inheritsLoose(subClass, superClass) {
       subClass.prototype = Object.create(superClass.prototype);
       subClass.prototype.constructor = subClass;
@@ -4902,7 +4873,7 @@ var require_errors_browser = __commonJS({
       }
     }
     function startsWith(str, search, pos) {
-      return str.substr(0 , search.length) === search;
+      return str.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
     }
     function endsWith(str, search, this_len) {
       if (this_len === void 0 || this_len > str.length) {
@@ -4964,6 +4935,7 @@ var require_errors_browser = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/state.js
 var require_state = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/state.js"(exports, module) {
+    "use strict";
     var ERR_INVALID_OPT_VALUE = require_errors_browser().codes.ERR_INVALID_OPT_VALUE;
     function highWaterMarkFrom(options, isDuplex, duplexKey) {
       return options.highWaterMark != null ? options.highWaterMark : isDuplex ? options[duplexKey] : null;
@@ -5025,6 +4997,7 @@ var require_browser = __commonJS({
 // node_modules/readable-stream/lib/_stream_writable.js
 var require_stream_writable = __commonJS({
   "node_modules/readable-stream/lib/_stream_writable.js"(exports, module) {
+    "use strict";
     module.exports = Writable;
     function CorkedRequest(state) {
       var _this = this;
@@ -5495,6 +5468,7 @@ var require_stream_writable = __commonJS({
 // node_modules/readable-stream/lib/_stream_duplex.js
 var require_stream_duplex = __commonJS({
   "node_modules/readable-stream/lib/_stream_duplex.js"(exports, module) {
+    "use strict";
     var objectKeys = Object.keys || function(obj) {
       var keys2 = [];
       for (var key in obj) keys2.push(key);
@@ -5645,6 +5619,7 @@ var require_safe_buffer = __commonJS({
 // node_modules/string_decoder/lib/string_decoder.js
 var require_string_decoder = __commonJS({
   "node_modules/string_decoder/lib/string_decoder.js"(exports) {
+    "use strict";
     var Buffer2 = require_safe_buffer().Buffer;
     var isEncoding = Buffer2.isEncoding || function(encoding) {
       encoding = "" + encoding;
@@ -5802,7 +5777,7 @@ var require_string_decoder = __commonJS({
     }
     function utf8FillLast(buf) {
       var p = this.lastTotal - this.lastNeed;
-      var r = utf8CheckExtraBytes(this, buf);
+      var r = utf8CheckExtraBytes(this, buf, p);
       if (r !== void 0) return r;
       if (this.lastNeed <= buf.length) {
         buf.copy(this.lastChar, p, 0, this.lastNeed);
@@ -5882,6 +5857,7 @@ var require_string_decoder = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/end-of-stream.js
 var require_end_of_stream = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/end-of-stream.js"(exports, module) {
+    "use strict";
     var ERR_STREAM_PREMATURE_CLOSE = require_errors_browser().codes.ERR_STREAM_PREMATURE_CLOSE;
     function once(callback) {
       var called = false;
@@ -5970,6 +5946,7 @@ var require_end_of_stream = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/async_iterator.js
 var require_async_iterator = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/async_iterator.js"(exports, module) {
+    "use strict";
     var _Object$setPrototypeO;
     function _defineProperty(obj, key, value) {
       key = _toPropertyKey(key);
@@ -5988,7 +5965,7 @@ var require_async_iterator = __commonJS({
       if (typeof input !== "object" || input === null) return input;
       var prim = input[Symbol.toPrimitive];
       if (prim !== void 0) {
-        var res = prim.call(input, hint);
+        var res = prim.call(input, hint || "default");
         if (typeof res !== "object") return res;
         throw new TypeError("@@toPrimitive must return a primitive value.");
       }
@@ -6161,10 +6138,11 @@ var require_from_browser = __commonJS({
 // node_modules/readable-stream/lib/_stream_readable.js
 var require_stream_readable = __commonJS({
   "node_modules/readable-stream/lib/_stream_readable.js"(exports, module) {
+    "use strict";
     module.exports = Readable;
     var Duplex;
     Readable.ReadableState = ReadableState;
-    require_events().EventEmitter;
+    var EE = require_events().EventEmitter;
     var EElistenerCount = function EElistenerCount2(emitter, type) {
       return emitter.listeners(type).length;
     };
@@ -6893,6 +6871,7 @@ var require_stream_readable = __commonJS({
 // node_modules/readable-stream/lib/_stream_transform.js
 var require_stream_transform = __commonJS({
   "node_modules/readable-stream/lib/_stream_transform.js"(exports, module) {
+    "use strict";
     module.exports = Transform;
     var _require$codes = require_errors_browser().codes;
     var ERR_METHOD_NOT_IMPLEMENTED = _require$codes.ERR_METHOD_NOT_IMPLEMENTED;
@@ -6993,6 +6972,7 @@ var require_stream_transform = __commonJS({
 // node_modules/readable-stream/lib/_stream_passthrough.js
 var require_stream_passthrough = __commonJS({
   "node_modules/readable-stream/lib/_stream_passthrough.js"(exports, module) {
+    "use strict";
     module.exports = PassThrough;
     var Transform = require_stream_transform();
     require_inherits_browser()(PassThrough, Transform);
@@ -7009,6 +6989,7 @@ var require_stream_passthrough = __commonJS({
 // node_modules/readable-stream/lib/internal/streams/pipeline.js
 var require_pipeline = __commonJS({
   "node_modules/readable-stream/lib/internal/streams/pipeline.js"(exports, module) {
+    "use strict";
     var eos;
     function once(callback) {
       var called = false;
@@ -7170,6 +7151,7 @@ var require_stream_browserify = __commonJS({
 // node_modules/assert/build/internal/errors.js
 var require_errors = __commonJS({
   "node_modules/assert/build/internal/errors.js"(exports, module) {
+    "use strict";
     function _typeof(o) {
       "@babel/helpers - typeof";
       return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
@@ -7178,9 +7160,34 @@ var require_errors = __commonJS({
         return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
       }, _typeof(o);
     }
+    function _defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+      }
+    }
     function _createClass(Constructor, protoProps, staticProps) {
+      if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) _defineProperties(Constructor, staticProps);
       Object.defineProperty(Constructor, "prototype", { writable: false });
       return Constructor;
+    }
+    function _toPropertyKey(arg) {
+      var key = _toPrimitive(arg, "string");
+      return _typeof(key) === "symbol" ? key : String(key);
+    }
+    function _toPrimitive(input, hint) {
+      if (_typeof(input) !== "object" || input === null) return input;
+      var prim = input[Symbol.toPrimitive];
+      if (prim !== void 0) {
+        var res = prim.call(input, hint || "default");
+        if (_typeof(res) !== "object") return res;
+        throw new TypeError("@@toPrimitive must return a primitive value.");
+      }
+      return (hint === "string" ? String : Number)(input);
     }
     function _classCallCheck(instance, Constructor) {
       if (!(instance instanceof Constructor)) {
@@ -7293,7 +7300,7 @@ var require_errors = __commonJS({
       }
     }
     function startsWith(str, search, pos) {
-      return str.substr(0 , search.length) === search;
+      return str.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
     }
     function endsWith(str, search, this_len) {
       if (this_len === void 0 || this_len > str.length) {
@@ -7340,7 +7347,7 @@ var require_errors = __commonJS({
         inspected = "".concat(inspected.slice(0, 128), "...");
       }
       return "The argument '".concat(name, "' ").concat(reason, ". Received ").concat(inspected);
-    }, TypeError);
+    }, TypeError, RangeError);
     createErrorType("ERR_INVALID_RETURN_VALUE", function(input, name, value) {
       var type;
       if (value && value.constructor && value.constructor.name) {
@@ -7382,6 +7389,7 @@ var require_errors = __commonJS({
 // node_modules/assert/build/internal/assert/assertion_error.js
 var require_assertion_error = __commonJS({
   "node_modules/assert/build/internal/assert/assertion_error.js"(exports, module) {
+    "use strict";
     function ownKeys(e, r) {
       var t = Object.keys(e);
       if (Object.getOwnPropertySymbols) {
@@ -7428,6 +7436,7 @@ var require_assertion_error = __commonJS({
     }
     function _createClass(Constructor, protoProps, staticProps) {
       if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) _defineProperties(Constructor, staticProps);
       Object.defineProperty(Constructor, "prototype", { writable: false });
       return Constructor;
     }
@@ -7439,11 +7448,11 @@ var require_assertion_error = __commonJS({
       if (_typeof(input) !== "object" || input === null) return input;
       var prim = input[Symbol.toPrimitive];
       if (prim !== void 0) {
-        var res = prim.call(input, hint);
+        var res = prim.call(input, hint || "default");
         if (_typeof(res) !== "object") return res;
         throw new TypeError("@@toPrimitive must return a primitive value.");
       }
-      return (String )(input);
+      return (hint === "string" ? String : Number)(input);
     }
     function _inherits(subClass, superClass) {
       if (typeof superClass !== "function" && superClass !== null) {
@@ -7882,6 +7891,7 @@ var require_assertion_error = __commonJS({
 // node_modules/object-keys/isArguments.js
 var require_isArguments = __commonJS({
   "node_modules/object-keys/isArguments.js"(exports, module) {
+    "use strict";
     var toStr = Object.prototype.toString;
     module.exports = function isArguments(value) {
       var str = toStr.call(value);
@@ -7897,6 +7907,7 @@ var require_isArguments = __commonJS({
 // node_modules/object-keys/implementation.js
 var require_implementation2 = __commonJS({
   "node_modules/object-keys/implementation.js"(exports, module) {
+    "use strict";
     var keysShim;
     if (!Object.keys) {
       has = Object.prototype.hasOwnProperty;
@@ -8028,6 +8039,7 @@ var require_implementation2 = __commonJS({
 // node_modules/object-keys/index.js
 var require_object_keys = __commonJS({
   "node_modules/object-keys/index.js"(exports, module) {
+    "use strict";
     var slice = Array.prototype.slice;
     var isArgs = require_isArguments();
     var origKeys = Object.keys;
@@ -8061,6 +8073,7 @@ var require_object_keys = __commonJS({
 // node_modules/object.assign/implementation.js
 var require_implementation3 = __commonJS({
   "node_modules/object.assign/implementation.js"(exports, module) {
+    "use strict";
     var objectKeys = require_object_keys();
     var hasSymbols = require_shams()();
     var callBound = require_call_bound();
@@ -8105,6 +8118,7 @@ var require_implementation3 = __commonJS({
 // node_modules/object.assign/polyfill.js
 var require_polyfill = __commonJS({
   "node_modules/object.assign/polyfill.js"(exports, module) {
+    "use strict";
     var implementation = require_implementation3();
     var lacksProperEnumerationOrder = function() {
       if (!Object.assign) {
@@ -8153,6 +8167,7 @@ var require_polyfill = __commonJS({
 // node_modules/object-is/implementation.js
 var require_implementation4 = __commonJS({
   "node_modules/object-is/implementation.js"(exports, module) {
+    "use strict";
     var numberIsNaN = function(value) {
       return value !== value;
     };
@@ -8174,6 +8189,7 @@ var require_implementation4 = __commonJS({
 // node_modules/object-is/polyfill.js
 var require_polyfill2 = __commonJS({
   "node_modules/object-is/polyfill.js"(exports, module) {
+    "use strict";
     var implementation = require_implementation4();
     module.exports = function getPolyfill() {
       return typeof Object.is === "function" ? Object.is : implementation;
@@ -8184,6 +8200,7 @@ var require_polyfill2 = __commonJS({
 // node_modules/call-bind/callBound.js
 var require_callBound = __commonJS({
   "node_modules/call-bind/callBound.js"(exports, module) {
+    "use strict";
     var GetIntrinsic = require_get_intrinsic();
     var callBind = require_call_bind();
     var $indexOf = callBind(GetIntrinsic("String.prototype.indexOf"));
@@ -8200,6 +8217,7 @@ var require_callBound = __commonJS({
 // node_modules/define-properties/index.js
 var require_define_properties = __commonJS({
   "node_modules/define-properties/index.js"(exports, module) {
+    "use strict";
     var keys = require_object_keys();
     var hasSymbols = typeof Symbol === "function" && typeof Symbol("foo") === "symbol";
     var toStr = Object.prototype.toString;
@@ -8243,6 +8261,7 @@ var require_define_properties = __commonJS({
 // node_modules/object-is/shim.js
 var require_shim = __commonJS({
   "node_modules/object-is/shim.js"(exports, module) {
+    "use strict";
     var getPolyfill = require_polyfill2();
     var define2 = require_define_properties();
     module.exports = function shimObjectIs() {
@@ -8260,6 +8279,7 @@ var require_shim = __commonJS({
 // node_modules/object-is/index.js
 var require_object_is = __commonJS({
   "node_modules/object-is/index.js"(exports, module) {
+    "use strict";
     var define2 = require_define_properties();
     var callBind = require_call_bind();
     var implementation = require_implementation4();
@@ -8278,6 +8298,7 @@ var require_object_is = __commonJS({
 // node_modules/is-nan/implementation.js
 var require_implementation5 = __commonJS({
   "node_modules/is-nan/implementation.js"(exports, module) {
+    "use strict";
     module.exports = function isNaN2(value) {
       return value !== value;
     };
@@ -8287,6 +8308,7 @@ var require_implementation5 = __commonJS({
 // node_modules/is-nan/polyfill.js
 var require_polyfill3 = __commonJS({
   "node_modules/is-nan/polyfill.js"(exports, module) {
+    "use strict";
     var implementation = require_implementation5();
     module.exports = function getPolyfill() {
       if (Number.isNaN && Number.isNaN(NaN) && !Number.isNaN("a")) {
@@ -8300,6 +8322,7 @@ var require_polyfill3 = __commonJS({
 // node_modules/is-nan/shim.js
 var require_shim2 = __commonJS({
   "node_modules/is-nan/shim.js"(exports, module) {
+    "use strict";
     var define2 = require_define_properties();
     var getPolyfill = require_polyfill3();
     module.exports = function shimNumberIsNaN() {
@@ -8317,6 +8340,7 @@ var require_shim2 = __commonJS({
 // node_modules/is-nan/index.js
 var require_is_nan = __commonJS({
   "node_modules/is-nan/index.js"(exports, module) {
+    "use strict";
     var callBind = require_call_bind();
     var define2 = require_define_properties();
     var implementation = require_implementation5();
@@ -8335,6 +8359,7 @@ var require_is_nan = __commonJS({
 // node_modules/assert/build/internal/util/comparisons.js
 var require_comparisons = __commonJS({
   "node_modules/assert/build/internal/util/comparisons.js"(exports, module) {
+    "use strict";
     function _slicedToArray(arr, i) {
       return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
     }
@@ -8359,7 +8384,10 @@ var require_comparisons = __commonJS({
       if (null != t) {
         var e, n, i, u, a = [], f = true, o = false;
         try {
-          if (i = (t = t.call(r)).next, 0 === l) ; else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = true) ;
+          if (i = (t = t.call(r)).next, 0 === l) {
+            if (Object(t) !== t) return;
+            f = false;
+          } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = true) ;
         } catch (r2) {
           o = true, n = r2;
         } finally {
@@ -8457,6 +8485,7 @@ var require_comparisons = __commonJS({
       }
       return 0;
     }
+    var ONLY_ENUMERABLE = void 0;
     var kStrict = true;
     var kLoose = false;
     var kNoIterator = 0;
@@ -8536,8 +8565,8 @@ var require_comparisons = __commonJS({
         if (val1.length !== val2.length) {
           return false;
         }
-        var keys1 = getOwnNonIndexProperties(val1);
-        var keys2 = getOwnNonIndexProperties(val2);
+        var keys1 = getOwnNonIndexProperties(val1, ONLY_ENUMERABLE);
+        var keys2 = getOwnNonIndexProperties(val2, ONLY_ENUMERABLE);
         if (keys1.length !== keys2.length) {
           return false;
         }
@@ -8568,8 +8597,8 @@ var require_comparisons = __commonJS({
         } else if (!areSimilarTypedArrays(val1, val2)) {
           return false;
         }
-        var _keys = getOwnNonIndexProperties(val1);
-        var _keys2 = getOwnNonIndexProperties(val2);
+        var _keys = getOwnNonIndexProperties(val1, ONLY_ENUMERABLE);
+        var _keys2 = getOwnNonIndexProperties(val2, ONLY_ENUMERABLE);
         if (_keys.length !== _keys2.length) {
           return false;
         }
@@ -8851,6 +8880,7 @@ var require_comparisons = __commonJS({
 // node_modules/assert/build/assert.js
 var require_assert = __commonJS({
   "node_modules/assert/build/assert.js"(exports, module) {
+    "use strict";
     function _typeof(o) {
       "@babel/helpers - typeof";
       return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
@@ -8859,9 +8889,34 @@ var require_assert = __commonJS({
         return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
       }, _typeof(o);
     }
+    function _defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+      }
+    }
     function _createClass(Constructor, protoProps, staticProps) {
+      if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) _defineProperties(Constructor, staticProps);
       Object.defineProperty(Constructor, "prototype", { writable: false });
       return Constructor;
+    }
+    function _toPropertyKey(arg) {
+      var key = _toPrimitive(arg, "string");
+      return _typeof(key) === "symbol" ? key : String(key);
+    }
+    function _toPrimitive(input, hint) {
+      if (_typeof(input) !== "object" || input === null) return input;
+      var prim = input[Symbol.toPrimitive];
+      if (prim !== void 0) {
+        var res = prim.call(input, hint || "default");
+        if (_typeof(res) !== "object") return res;
+        throw new TypeError("@@toPrimitive must return a primitive value.");
+      }
+      return (hint === "string" ? String : Number)(input);
     }
     function _classCallCheck(instance, Constructor) {
       if (!(instance instanceof Constructor)) {
@@ -9357,6 +9412,7 @@ var require_assert = __commonJS({
 // node_modules/pako/lib/zlib/zstream.js
 var require_zstream = __commonJS({
   "node_modules/pako/lib/zlib/zstream.js"(exports, module) {
+    "use strict";
     function ZStream() {
       this.input = null;
       this.next_in = 0;
@@ -9378,6 +9434,7 @@ var require_zstream = __commonJS({
 // node_modules/pako/lib/utils/common.js
 var require_common = __commonJS({
   "node_modules/pako/lib/utils/common.js"(exports) {
+    "use strict";
     var TYPED_OK = typeof Uint8Array !== "undefined" && typeof Uint16Array !== "undefined" && typeof Int32Array !== "undefined";
     function _has(obj, key) {
       return Object.prototype.hasOwnProperty.call(obj, key);
@@ -9468,6 +9525,7 @@ var require_common = __commonJS({
 // node_modules/pako/lib/zlib/trees.js
 var require_trees = __commonJS({
   "node_modules/pako/lib/zlib/trees.js"(exports) {
+    "use strict";
     var utils = require_common();
     var Z_FIXED = 4;
     var Z_BINARY = 0;
@@ -9757,7 +9815,7 @@ var require_trees = __commonJS({
     }
     function copy_block(s, buf, len, header) {
       bi_windup(s);
-      {
+      if (header) {
         put_short(s, len);
         put_short(s, ~len);
       }
@@ -10043,7 +10101,7 @@ var require_trees = __commonJS({
     }
     function _tr_stored_block(s, buf, stored_len, last) {
       send_bits(s, (STORED_BLOCK << 1) + (last ? 1 : 0), 3);
-      copy_block(s, buf, stored_len);
+      copy_block(s, buf, stored_len, true);
     }
     function _tr_align(s) {
       send_bits(s, STATIC_TREES << 1, 3);
@@ -10109,6 +10167,7 @@ var require_trees = __commonJS({
 // node_modules/pako/lib/zlib/adler32.js
 var require_adler32 = __commonJS({
   "node_modules/pako/lib/zlib/adler32.js"(exports, module) {
+    "use strict";
     function adler32(adler, buf, len, pos) {
       var s1 = adler & 65535 | 0, s2 = adler >>> 16 & 65535 | 0, n = 0;
       while (len !== 0) {
@@ -10130,6 +10189,7 @@ var require_adler32 = __commonJS({
 // node_modules/pako/lib/zlib/crc32.js
 var require_crc32 = __commonJS({
   "node_modules/pako/lib/zlib/crc32.js"(exports, module) {
+    "use strict";
     function makeTable() {
       var c, table = [];
       for (var n = 0; n < 256; n++) {
@@ -10157,6 +10217,7 @@ var require_crc32 = __commonJS({
 // node_modules/pako/lib/zlib/messages.js
 var require_messages = __commonJS({
   "node_modules/pako/lib/zlib/messages.js"(exports, module) {
+    "use strict";
     module.exports = {
       2: "need dictionary",
       /* Z_NEED_DICT       2  */
@@ -10183,6 +10244,7 @@ var require_messages = __commonJS({
 // node_modules/pako/lib/zlib/deflate.js
 var require_deflate = __commonJS({
   "node_modules/pako/lib/zlib/deflate.js"(exports) {
+    "use strict";
     var utils = require_common();
     var trees = require_trees();
     var adler32 = require_adler32();
@@ -11231,6 +11293,7 @@ var require_deflate = __commonJS({
 // node_modules/pako/lib/zlib/inffast.js
 var require_inffast = __commonJS({
   "node_modules/pako/lib/zlib/inffast.js"(exports, module) {
+    "use strict";
     var BAD = 30;
     var TYPE = 12;
     module.exports = function inflate_fast(strm, start) {
@@ -11459,6 +11522,7 @@ var require_inffast = __commonJS({
 // node_modules/pako/lib/zlib/inftrees.js
 var require_inftrees = __commonJS({
   "node_modules/pako/lib/zlib/inftrees.js"(exports, module) {
+    "use strict";
     var utils = require_common();
     var MAXBITS = 15;
     var ENOUGH_LENS = 852;
@@ -11774,6 +11838,7 @@ var require_inftrees = __commonJS({
 // node_modules/pako/lib/zlib/inflate.js
 var require_inflate = __commonJS({
   "node_modules/pako/lib/zlib/inflate.js"(exports) {
+    "use strict";
     var utils = require_common();
     var adler32 = require_adler32();
     var crc32 = require_crc32();
@@ -12925,7 +12990,10 @@ var require_inflate = __commonJS({
       state.hold = hold;
       state.bits = bits;
       if (state.wsize || _out !== strm.avail_out && state.mode < BAD && (state.mode < CHECK || flush !== Z_FINISH)) {
-        if (updatewindow(strm, strm.output, strm.next_out, _out - strm.avail_out)) ;
+        if (updatewindow(strm, strm.output, strm.next_out, _out - strm.avail_out)) {
+          state.mode = MEM;
+          return Z_MEM_ERROR;
+        }
       }
       _in -= strm.avail_in;
       _out -= strm.avail_out;
@@ -13009,6 +13077,7 @@ var require_inflate = __commonJS({
 // node_modules/pako/lib/zlib/constants.js
 var require_constants = __commonJS({
   "node_modules/pako/lib/zlib/constants.js"(exports, module) {
+    "use strict";
     module.exports = {
       /* Allowed flush values; see deflate() and inflate() below for details */
       Z_NO_FLUSH: 0,
@@ -13055,6 +13124,7 @@ var require_constants = __commonJS({
 // node_modules/browserify-zlib/lib/binding.js
 var require_binding = __commonJS({
   "node_modules/browserify-zlib/lib/binding.js"(exports) {
+    "use strict";
     var assert = require_assert();
     var Zstream = require_zstream();
     var zlib_deflate = require_deflate();
@@ -13340,6 +13410,8 @@ var require_binding = __commonJS({
         case exports.DEFLATERAW:
           this.err = zlib_deflate.deflateSetDictionary(this.strm, this.dictionary);
           break;
+        default:
+          break;
       }
       if (this.err !== exports.Z_OK) {
         this._error("Failed to set dictionary");
@@ -13358,6 +13430,8 @@ var require_binding = __commonJS({
         case exports.GUNZIP:
           this.err = zlib_inflate.inflateReset(this.strm);
           break;
+        default:
+          break;
       }
       if (this.err !== exports.Z_OK) {
         this._error("Failed to reset stream");
@@ -13370,6 +13444,7 @@ var require_binding = __commonJS({
 // node_modules/browserify-zlib/lib/index.js
 var require_lib = __commonJS({
   "node_modules/browserify-zlib/lib/index.js"(exports) {
+    "use strict";
     var Buffer2 = require_buffer().Buffer;
     var Transform = require_stream_browserify().Transform;
     var binding = require_binding();
@@ -13853,6 +13928,7 @@ var require_lib = __commonJS({
 // node_modules/pngjs/lib/chunkstream.js
 var require_chunkstream = __commonJS({
   "node_modules/pngjs/lib/chunkstream.js"(exports, module) {
+    "use strict";
     var util = require_util();
     var Stream = require_stream_browserify();
     var ChunkStream = module.exports = function() {
@@ -13990,6 +14066,7 @@ var require_chunkstream = __commonJS({
 // node_modules/pngjs/lib/interlace.js
 var require_interlace = __commonJS({
   "node_modules/pngjs/lib/interlace.js"(exports) {
+    "use strict";
     var imagePasses = [
       {
         // pass 1 - 1px
@@ -14072,6 +14149,7 @@ var require_interlace = __commonJS({
 // node_modules/pngjs/lib/paeth-predictor.js
 var require_paeth_predictor = __commonJS({
   "node_modules/pngjs/lib/paeth-predictor.js"(exports, module) {
+    "use strict";
     module.exports = function paethPredictor(left, above, upLeft) {
       let paeth = left + above - upLeft;
       let pLeft = Math.abs(paeth - left);
@@ -14091,6 +14169,7 @@ var require_paeth_predictor = __commonJS({
 // node_modules/pngjs/lib/filter-parse.js
 var require_filter_parse = __commonJS({
   "node_modules/pngjs/lib/filter-parse.js"(exports, module) {
+    "use strict";
     var interlaceUtils = require_interlace();
     var paethPredictor = require_paeth_predictor();
     function getByteWidth(width, bpp, depth) {
@@ -14231,6 +14310,7 @@ var require_filter_parse = __commonJS({
 // node_modules/pngjs/lib/filter-parse-async.js
 var require_filter_parse_async = __commonJS({
   "node_modules/pngjs/lib/filter-parse-async.js"(exports, module) {
+    "use strict";
     var util = require_util();
     var ChunkStream = require_chunkstream();
     var Filter = require_filter_parse();
@@ -14256,6 +14336,7 @@ var require_filter_parse_async = __commonJS({
 // node_modules/pngjs/lib/constants.js
 var require_constants2 = __commonJS({
   "node_modules/pngjs/lib/constants.js"(exports, module) {
+    "use strict";
     module.exports = {
       PNG_SIGNATURE: [137, 80, 78, 71, 13, 10, 26, 10],
       TYPE_IHDR: 1229472850,
@@ -14290,6 +14371,7 @@ var require_constants2 = __commonJS({
 // node_modules/pngjs/lib/crc.js
 var require_crc = __commonJS({
   "node_modules/pngjs/lib/crc.js"(exports, module) {
+    "use strict";
     var crcTable = [];
     (function() {
       for (let i = 0; i < 256; i++) {
@@ -14329,6 +14411,7 @@ var require_crc = __commonJS({
 // node_modules/pngjs/lib/parser.js
 var require_parser = __commonJS({
   "node_modules/pngjs/lib/parser.js"(exports, module) {
+    "use strict";
     var constants = require_constants2();
     var CrcCalculator = require_crc();
     var Parser = module.exports = function(options, dependencies) {
@@ -14549,6 +14632,7 @@ var require_parser = __commonJS({
 // node_modules/pngjs/lib/bitmapper.js
 var require_bitmapper = __commonJS({
   "node_modules/pngjs/lib/bitmapper.js"(exports) {
+    "use strict";
     var interlaceUtils = require_interlace();
     var pixelBppMapper = [
       // 0 - dummy entry
@@ -14796,6 +14880,7 @@ var require_bitmapper = __commonJS({
 // node_modules/pngjs/lib/format-normaliser.js
 var require_format_normaliser = __commonJS({
   "node_modules/pngjs/lib/format-normaliser.js"(exports, module) {
+    "use strict";
     function dePalette(indata, outdata, width, height, palette) {
       let pxPos = 0;
       for (let y = 0; y < height; y++) {
@@ -14876,6 +14961,7 @@ var require_format_normaliser = __commonJS({
 // node_modules/pngjs/lib/parser-async.js
 var require_parser_async = __commonJS({
   "node_modules/pngjs/lib/parser-async.js"(exports, module) {
+    "use strict";
     var util = require_util();
     var zlib = require_lib();
     var ChunkStream = require_chunkstream();
@@ -15005,6 +15091,7 @@ var require_parser_async = __commonJS({
 // node_modules/pngjs/lib/bitpacker.js
 var require_bitpacker = __commonJS({
   "node_modules/pngjs/lib/bitpacker.js"(exports, module) {
+    "use strict";
     var constants = require_constants2();
     module.exports = function(dataIn, width, height, options) {
       let outHasAlpha = [constants.COLORTYPE_COLOR_ALPHA, constants.COLORTYPE_ALPHA].indexOf(
@@ -15103,7 +15190,7 @@ var require_bitpacker = __commonJS({
       }
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-          let rgba = getRGBA();
+          let rgba = getRGBA(data, inIndex);
           switch (options.colorType) {
             case constants.COLORTYPE_COLOR_ALPHA:
             case constants.COLORTYPE_COLOR:
@@ -15154,6 +15241,7 @@ var require_bitpacker = __commonJS({
 // node_modules/pngjs/lib/filter-pack.js
 var require_filter_pack = __commonJS({
   "node_modules/pngjs/lib/filter-pack.js"(exports, module) {
+    "use strict";
     var paethPredictor = require_paeth_predictor();
     function filterNone(pxData, pxPos, byteWidth, rawData, rawPos) {
       for (let x = 0; x < byteWidth; x++) {
@@ -15295,6 +15383,7 @@ var require_filter_pack = __commonJS({
 // node_modules/pngjs/lib/packer.js
 var require_packer = __commonJS({
   "node_modules/pngjs/lib/packer.js"(exports, module) {
+    "use strict";
     var constants = require_constants2();
     var CrcStream = require_crc();
     var bitPacker = require_bitpacker();
@@ -15394,6 +15483,7 @@ var require_packer = __commonJS({
 // node_modules/pngjs/lib/packer-async.js
 var require_packer_async = __commonJS({
   "node_modules/pngjs/lib/packer-async.js"(exports, module) {
+    "use strict";
     var util = require_util();
     var Stream = require_stream_browserify();
     var constants = require_constants2();
@@ -15435,6 +15525,7 @@ var require_packer_async = __commonJS({
 // node_modules/pngjs/lib/sync-inflate.js
 var require_sync_inflate = __commonJS({
   "node_modules/pngjs/lib/sync-inflate.js"(exports, module) {
+    "use strict";
     var assert = require_assert().ok;
     var zlib = require_lib();
     var util = require_util();
@@ -15457,6 +15548,9 @@ var require_sync_inflate = __commonJS({
       return new Inflate(opts);
     }
     function _close(engine, callback) {
+      if (callback) {
+        process.nextTick(callback);
+      }
       if (!engine._handle) {
         return;
       }
@@ -15568,6 +15662,7 @@ var require_sync_inflate = __commonJS({
 // node_modules/pngjs/lib/sync-reader.js
 var require_sync_reader = __commonJS({
   "node_modules/pngjs/lib/sync-reader.js"(exports, module) {
+    "use strict";
     var SyncReader = module.exports = function(buffer) {
       this._buffer = buffer;
       this._reads = [];
@@ -15605,6 +15700,7 @@ var require_sync_reader = __commonJS({
 // node_modules/pngjs/lib/filter-parse-sync.js
 var require_filter_parse_sync = __commonJS({
   "node_modules/pngjs/lib/filter-parse-sync.js"(exports) {
+    "use strict";
     var SyncReader = require_sync_reader();
     var Filter = require_filter_parse();
     exports.process = function(inBuffer, bitmapInfo) {
@@ -15628,6 +15724,7 @@ var require_filter_parse_sync = __commonJS({
 // node_modules/pngjs/lib/parser-sync.js
 var require_parser_sync = __commonJS({
   "node_modules/pngjs/lib/parser-sync.js"(exports, module) {
+    "use strict";
     var hasSyncZlib = true;
     var zlib = require_lib();
     var inflateSync = require_sync_inflate();
@@ -15722,6 +15819,7 @@ var require_parser_sync = __commonJS({
 // node_modules/pngjs/lib/packer-sync.js
 var require_packer_sync = __commonJS({
   "node_modules/pngjs/lib/packer-sync.js"(exports, module) {
+    "use strict";
     var hasSyncZlib = true;
     var zlib = require_lib();
     if (!zlib.deflateSync) {
@@ -15766,6 +15864,7 @@ var require_packer_sync = __commonJS({
 // node_modules/pngjs/lib/png-sync.js
 var require_png_sync = __commonJS({
   "node_modules/pngjs/lib/png-sync.js"(exports) {
+    "use strict";
     var parse = require_parser_sync();
     var pack = require_packer_sync();
     exports.read = function(buffer, options) {
@@ -15780,6 +15879,7 @@ var require_png_sync = __commonJS({
 // node_modules/pngjs/lib/png.js
 var require_png = __commonJS({
   "node_modules/pngjs/lib/png.js"(exports) {
+    "use strict";
     var util = require_util();
     var Stream = require_stream_browserify();
     var Parser = require_parser_async();
@@ -15916,6 +16016,7 @@ var require_png = __commonJS({
 // node_modules/safer-buffer/safer.js
 var require_safer = __commonJS({
   "node_modules/safer-buffer/safer.js"(exports, module) {
+    "use strict";
     var buffer = require_buffer();
     var Buffer2 = buffer.Buffer;
     var safer = {};
@@ -15983,6 +16084,7 @@ var require_safer = __commonJS({
 // node_modules/iconv-lite/lib/bom-handling.js
 var require_bom_handling = __commonJS({
   "node_modules/iconv-lite/lib/bom-handling.js"(exports) {
+    "use strict";
     var BOMChar = "\uFEFF";
     exports.PrependBOM = PrependBOMWrapper;
     function PrependBOMWrapper(encoder, options) {
@@ -16026,6 +16128,7 @@ var require_bom_handling = __commonJS({
 // node_modules/iconv-lite/encodings/internal.js
 var require_internal = __commonJS({
   "node_modules/iconv-lite/encodings/internal.js"(exports, module) {
+    "use strict";
     var Buffer2 = require_safer().Buffer;
     module.exports = {
       // Encodings
@@ -16177,6 +16280,7 @@ var require_internal = __commonJS({
 // node_modules/iconv-lite/encodings/utf32.js
 var require_utf32 = __commonJS({
   "node_modules/iconv-lite/encodings/utf32.js"(exports) {
+    "use strict";
     var Buffer2 = require_safer().Buffer;
     exports._utf32 = Utf32Codec;
     function Utf32Codec(codecOptions, iconv) {
@@ -16395,6 +16499,7 @@ var require_utf32 = __commonJS({
 // node_modules/iconv-lite/encodings/utf16.js
 var require_utf16 = __commonJS({
   "node_modules/iconv-lite/encodings/utf16.js"(exports) {
+    "use strict";
     var Buffer2 = require_safer().Buffer;
     exports.utf16be = Utf16BECodec;
     function Utf16BECodec() {
@@ -16528,6 +16633,7 @@ var require_utf16 = __commonJS({
 // node_modules/iconv-lite/encodings/utf7.js
 var require_utf7 = __commonJS({
   "node_modules/iconv-lite/encodings/utf7.js"(exports) {
+    "use strict";
     var Buffer2 = require_safer().Buffer;
     exports.utf7 = Utf7Codec;
     exports.unicode11utf7 = "utf7";
@@ -16728,6 +16834,7 @@ var require_utf7 = __commonJS({
 // node_modules/iconv-lite/encodings/sbcs-codec.js
 var require_sbcs_codec = __commonJS({
   "node_modules/iconv-lite/encodings/sbcs-codec.js"(exports) {
+    "use strict";
     var Buffer2 = require_safer().Buffer;
     exports._sbcs = SBCSCodec;
     function SBCSCodec(codecOptions, iconv) {
@@ -16783,6 +16890,7 @@ var require_sbcs_codec = __commonJS({
 // node_modules/iconv-lite/encodings/sbcs-data.js
 var require_sbcs_data = __commonJS({
   "node_modules/iconv-lite/encodings/sbcs-data.js"(exports, module) {
+    "use strict";
     module.exports = {
       // Not supported by iconv, not sure why.
       "10029": "maccenteuro",
@@ -16935,6 +17043,7 @@ var require_sbcs_data = __commonJS({
 // node_modules/iconv-lite/encodings/sbcs-data-generated.js
 var require_sbcs_data_generated = __commonJS({
   "node_modules/iconv-lite/encodings/sbcs-data-generated.js"(exports, module) {
+    "use strict";
     module.exports = {
       "437": "cp437",
       "737": "cp737",
@@ -17389,6 +17498,7 @@ var require_sbcs_data_generated = __commonJS({
 // node_modules/iconv-lite/encodings/dbcs-codec.js
 var require_dbcs_codec = __commonJS({
   "node_modules/iconv-lite/encodings/dbcs-codec.js"(exports) {
+    "use strict";
     var Buffer2 = require_safer().Buffer;
     exports._dbcs = DBCSCodec;
     var UNASSIGNED = -1;
@@ -17645,6 +17755,7 @@ var require_dbcs_codec = __commonJS({
             if (resCode !== void 0) {
               dbcsCode = resCode;
               nextChar = uCode;
+            } else {
             }
           }
           seqObj = void 0;
@@ -17706,6 +17817,7 @@ var require_dbcs_codec = __commonJS({
             newBuf[j++] = dbcsCode >> 8;
             newBuf[j++] = dbcsCode & 255;
           }
+        } else {
         }
         this.seqObj = void 0;
       }
@@ -17729,7 +17841,8 @@ var require_dbcs_codec = __commonJS({
       for (var i2 = 0, j = 0; i2 < buf.length; i2++) {
         var curByte = i2 >= 0 ? buf[i2] : prevBytes[i2 + prevOffset];
         var uCode = this.decodeTables[nodeIdx][curByte];
-        if (uCode >= 0) ; else if (uCode === UNASSIGNED) {
+        if (uCode >= 0) {
+        } else if (uCode === UNASSIGNED) {
           uCode = this.defaultCharUnicode.charCodeAt(0);
           i2 = seqStart;
         } else if (uCode === GB18030_CODE) {
@@ -19050,6 +19163,7 @@ var require_big5_added = __commonJS({
 // node_modules/iconv-lite/encodings/dbcs-data.js
 var require_dbcs_data = __commonJS({
   "node_modules/iconv-lite/encodings/dbcs-data.js"(exports, module) {
+    "use strict";
     module.exports = {
       // == Japanese/ShiftJIS ====================================================
       // All japanese encodings are based on JIS X set of standards:
@@ -19296,6 +19410,7 @@ var require_dbcs_data = __commonJS({
 // node_modules/iconv-lite/encodings/index.js
 var require_encodings = __commonJS({
   "node_modules/iconv-lite/encodings/index.js"(exports, module) {
+    "use strict";
     var modules = [
       require_internal(),
       require_utf32(),
@@ -19322,6 +19437,7 @@ var require_encodings = __commonJS({
 // node_modules/iconv-lite/lib/streams.js
 var require_streams = __commonJS({
   "node_modules/iconv-lite/lib/streams.js"(exports, module) {
+    "use strict";
     var Buffer2 = require_safer().Buffer;
     module.exports = function(stream_module) {
       var Transform = stream_module.Transform;
@@ -19416,6 +19532,7 @@ var require_streams = __commonJS({
 // node_modules/iconv-lite/lib/index.js
 var require_lib2 = __commonJS({
   "node_modules/iconv-lite/lib/index.js"(exports, module) {
+    "use strict";
     var Buffer2 = require_safer().Buffer;
     var bomHandling = require_bom_handling();
     var iconv = module.exports;
@@ -19526,12 +19643,16 @@ var require_lib2 = __commonJS({
         throw new Error("iconv-lite Streaming API is not enabled. Use iconv.enableStreamingAPI(require('stream')); to enable it.");
       };
     }
+    if (false) {
+      console.error("iconv-lite warning: js files use non-utf8 encoding. See https://github.com/ashtuchkin/iconv-lite/wiki/Javascript-source-file-encodings for more info.");
+    }
   }
 });
 
 // src/encoder/shims/empty.js
 var require_empty = __commonJS({
   "src/encoder/shims/empty.js"(exports, module) {
+    "use strict";
     module.exports = {};
   }
 });
@@ -22606,6 +22727,7 @@ var require_custom = __commonJS({
 var require_unorm = __commonJS({
   "node_modules/unorm/lib/unorm.js"(exports, module) {
     (function(root) {
+      "use strict";
       var DEFAULT_FEATURE = [null, 0, {}];
       var CACHE_THRESHOLD = 10;
       var SBase = 44032, LBase = 4352, VBase = 4449, TBase = 4519, LCount = 19, VCount = 21, TCount = 28;
@@ -23540,7 +23662,7 @@ var require_bundle_entry = __commonJS({
     module.exports.default = nodeThermalPrinter;
   }
 });
-var encoder = require_bundle_entry();
+export default require_bundle_entry();
 /*! Bundled license information:
 
 ieee754/index.js:
@@ -23565,13 +23687,3 @@ assert/build/internal/util/comparisons.js:
    * @license  MIT
    *)
 */
-
-var encoder$1 = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    default: encoder
-});
-
-exports.CapacitorNetworkInterface = CapacitorNetworkInterface;
-exports.ThermalTransport = ThermalTransport;
-exports.createEpsonThermalPrinter = createEpsonThermalPrinter;
-//# sourceMappingURL=plugin.cjs.js.map

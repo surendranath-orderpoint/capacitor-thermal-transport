@@ -40,7 +40,8 @@
     "prettier": "prettier \"**/*.{css,html,ts,js,java}\" --plugin=prettier-plugin-java",
     "swiftlint": "node-swiftlint",
     "docgen": "docgen --api ThermalTransportPlugin --output-readme README.md --output-json dist/docs.json",
-    "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.mjs",
+    "build:encoder": "node scripts/build-encoder.mjs",
+    "build": "npm run clean && npm run build:encoder && npm run docgen && tsc && node scripts/copy-encoder.mjs && rollup -c rollup.config.mjs",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
     "prepublishOnly": "npm run build"
@@ -56,13 +57,21 @@
     "@ionic/eslint-config": "^0.4.0",
     "@ionic/prettier-config": "^4.0.0",
     "@ionic/swiftlint-config": "^2.0.0",
+    "assert": "^2.1.0",
+    "browserify-zlib": "^0.2.0",
+    "buffer": "^6.0.3",
+    "esbuild": "^0.25.0",
+    "events": "^3.3.0",
     "eslint": "^8.57.1",
     "prettier": "^3.6.2",
     "prettier-plugin-java": "^2.7.7",
+    "process": "^0.11.10",
     "rimraf": "^6.1.0",
     "rollup": "^4.53.2",
+    "stream-browserify": "^3.0.0",
     "swiftlint": "^2.0.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "util": "^0.12.5"
   },
   "peerDependencies": {
     "@capacitor/core": ">=7.0.0"
