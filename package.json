@@ -15,15 +15,8 @@
     "Package.swift",
     "CapacitorThermalTransport.podspec"
   ],
-  "author": "Barter Technologies <dev@orderpoint.com>",
+  "author": "Surendranath <gsr.gsr7@gmail.com>",
   "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bartertech/orderpoint.git"
-  },
-  "bugs": {
-    "url": "https://github.com/bartertech/orderpoint/issues"
-  },
   "keywords": [
     "capacitor",
     "plugin",
