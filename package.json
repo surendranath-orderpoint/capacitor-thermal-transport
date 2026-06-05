@@ -24,6 +24,10 @@
     "CapacitorThermalTransport.podspec"
   ],
   "author": "Surendranath <gsr.gsr7@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/surendranath-orderpoint/capacitor-thermal-transport.git"
+  },
   "license": "ISC",
   "keywords": [
     "capacitor",

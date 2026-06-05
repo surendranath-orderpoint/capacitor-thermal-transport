@@ -16,7 +16,7 @@ import com.getcapacitor.annotation.PermissionCallback
     permissions = [
         Permission(
             strings = [Manifest.permission.BLUETOOTH_CONNECT],
-            alias = BLUETOOTH_PERMISSION,
+            alias = "bluetooth",
         ),
     ],
 )
@@ -43,8 +43,8 @@ class ThermalTransportPlugin : Plugin() {
             return
         }
 
-        val port = call.getInt("port", DEFAULT_PORT)
-        val timeout = call.getInt("timeout", DEFAULT_TIMEOUT)
+        val port = call.getInt("port") ?: DEFAULT_PORT
+        val timeout = call.getInt("timeout") ?: DEFAULT_TIMEOUT
 
         Thread {
             try {
@@ -65,8 +65,8 @@ class ThermalTransportPlugin : Plugin() {
             return
         }
 
-        val port = call.getInt("port", DEFAULT_PORT)
-        val timeout = call.getInt("timeout", DEFAULT_TIMEOUT)
+        val port = call.getInt("port") ?: DEFAULT_PORT
+        val timeout = call.getInt("timeout") ?: DEFAULT_TIMEOUT
 
         Thread {
             val connected = implementation.ping(host, port, timeout)

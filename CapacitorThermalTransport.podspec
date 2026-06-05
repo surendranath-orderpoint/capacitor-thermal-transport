@@ -1,15 +1,16 @@
 require 'json'
 
 package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
+repo_url = package.dig('repository', 'url') || 'https://github.com/surendranath-orderpoint/capacitor-thermal-transport'
 
 Pod::Spec.new do |s|
   s.name = 'CapacitorThermalTransport'
   s.version = package['version']
   s.summary = package['description']
   s.license = package['license']
-  s.homepage = package['repository']['url']
+  s.homepage = repo_url
   s.author = package['author']
-  s.source = { :git => package['repository']['url'], :tag => s.version.to_s }
+  s.source = { :git => repo_url, :tag => s.version.to_s }
   s.source_files = 'ios/Sources/**/*.{swift,h,m,c,cc,mm,cpp}'
   s.ios.deployment_target = '14.0'
   s.dependency 'Capacitor'
