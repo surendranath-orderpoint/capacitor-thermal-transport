@@ -2,6 +2,7 @@ package com.orderpoint.thermaltransport
 
 import android.Manifest
 import android.os.Build
+import com.getcapacitor.JSArray
 import com.getcapacitor.JSObject
 import com.getcapacitor.PermissionState
 import com.getcapacitor.Plugin
@@ -124,16 +125,18 @@ class ThermalTransportPlugin : Plugin() {
 
     private fun resolveBluetoothDevices(call: PluginCall) {
         val devices = implementation.getPairedBluetoothDevices(context)
-        val result = JSObject().apply {
-            put(
-                "devices",
-                devices.map { device ->
-                    JSObject().apply {
-                        put("name", device.name)
-                        put("address", device.address)
-                    }
-                }.toTypedArray(),
+        val deviceArray = JSArray()
+        for (device in devices) {
+            deviceArray.put(
+                JSObject().apply {
+                    put("name", device.name)
+                    put("address", device.address)
+                },
             )
+        }
+
+        val result = JSObject().apply {
+            put("devices", deviceArray)
         }
         call.resolve(result)
     }
