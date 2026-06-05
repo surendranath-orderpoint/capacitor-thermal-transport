@@ -8,6 +8,14 @@ export interface SendRawOptions {
     /** Connection timeout in milliseconds, defaults to 5000 */
     timeout?: number;
 }
+export interface SendRawBluetoothOptions {
+    /** Bluetooth MAC address on Android */
+    address: string;
+    /** Base64-encoded ESC/POS bytes */
+    data: string;
+    /** Connection timeout in milliseconds, defaults to 15000 */
+    timeout?: number;
+}
 export interface PingOptions {
     host: string;
     port?: number;
@@ -37,6 +45,10 @@ export interface ThermalTransportPlugin {
      * Send raw ESC/POS bytes to a network printer over TCP.
      */
     sendRaw(options: SendRawOptions): Promise<void>;
+    /**
+     * Send raw ESC/POS bytes to a paired Bluetooth thermal printer over SPP.
+     */
+    sendRawBluetooth(options: SendRawBluetoothOptions): Promise<void>;
     /**
      * Check whether a TCP connection can be opened to the printer.
      */

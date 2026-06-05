@@ -4,6 +4,7 @@ import type {
   GetBluetoothDevicesResult,
   PingOptions,
   PingResult,
+  SendRawBluetoothOptions,
   SendRawOptions,
   ThermalTransportPlugin,
 } from './definitions';
@@ -15,6 +16,10 @@ export class ThermalTransportWeb extends WebPlugin implements ThermalTransportPl
 
   async sendRaw(_options: SendRawOptions): Promise<void> {
     throw this.unavailable('Thermal printing requires the native iOS or Android app');
+  }
+
+  async sendRawBluetooth(_options: SendRawBluetoothOptions): Promise<void> {
+    throw this.unavailable('Bluetooth thermal printing requires the native iOS or Android app');
   }
 
   async ping(_options: PingOptions): Promise<PingResult> {

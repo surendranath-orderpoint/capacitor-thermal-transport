@@ -24,3 +24,4 @@ export interface ThermalPrinterLayout {
     charset: string;
 }
 export declare function createEpsonThermalPrinter(ip: string, layout: ThermalPrinterLayout): Promise<ThermalPrinterInstance>;
+export declare function createEpsonThermalPrinterBluetooth(address: string, layout: ThermalPrinterLayout): Promise<ThermalPrinterInstance>;

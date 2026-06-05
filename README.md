@@ -49,6 +49,7 @@ Add to the merchant app `Info.plist`:
 
 * [`requestLocalNetworkAccess()`](#requestlocalnetworkaccess)
 * [`sendRaw(...)`](#sendraw)
+* [`sendRawBluetooth(...)`](#sendrawbluetooth)
 * [`ping(...)`](#ping)
 * [`requestBluetoothAccess()`](#requestbluetoothaccess)
 * [`getBluetoothDevices()`](#getbluetoothdevices)
@@ -81,6 +82,21 @@ Send raw ESC/POS bytes to a network printer over TCP.
 | Param         | Type                                                      |
 | ------------- | --------------------------------------------------------- |
 | **`options`** | <code><a href="#sendrawoptions">SendRawOptions</a></code> |
+
+--------------------
+
+
+### sendRawBluetooth(...)
+
+```typescript
+sendRawBluetooth(options: SendRawBluetoothOptions) => Promise<void>
+```
+
+Send raw ESC/POS bytes to a paired Bluetooth thermal printer over SPP.
+
+| Param         | Type                                                                        |
+| ------------- | --------------------------------------------------------------------------- |
+| **`options`** | <code><a href="#sendrawbluetoothoptions">SendRawBluetoothOptions</a></code> |
 
 --------------------
 
@@ -138,6 +154,15 @@ List Bluetooth printers available for printing on the native app.
 | **`port`**    | <code>number</code> | Raw port, defaults to 9100                           |
 | **`data`**    | <code>string</code> | Base64-encoded ESC/POS bytes                         |
 | **`timeout`** | <code>number</code> | Connection timeout in milliseconds, defaults to 5000 |
+
+
+#### SendRawBluetoothOptions
+
+| Prop          | Type                | Description                                           |
+| ------------- | ------------------- | ----------------------------------------------------- |
+| **`address`** | <code>string</code> | Bluetooth MAC address on Android                      |
+| **`data`**    | <code>string</code> | Base64-encoded ESC/POS bytes                          |
+| **`timeout`** | <code>number</code> | Connection timeout in milliseconds, defaults to 15000 |
 
 
 #### PingResult

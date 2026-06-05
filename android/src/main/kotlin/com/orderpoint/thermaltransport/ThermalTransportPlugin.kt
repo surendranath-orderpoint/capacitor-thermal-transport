@@ -16,7 +16,10 @@ import com.getcapacitor.annotation.PermissionCallback
     name = "ThermalTransport",
     permissions = [
         Permission(
-            strings = [Manifest.permission.BLUETOOTH_CONNECT],
+            strings = [
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.BLUETOOTH_SCAN,
+            ],
             alias = "bluetooth",
         ),
     ],
@@ -54,6 +57,67 @@ class ThermalTransportPlugin : Plugin() {
                 call.resolve()
             } catch (error: Exception) {
                 call.reject(error.message ?: "Failed to send data to printer", error)
+            }
+        }.start()
+    }
+
+    @PluginMethod
+    fun sendRawBluetooth(call: PluginCall) {
+        val address = call.getString("address")
+        if (address.isNullOrBlank()) {
+            call.reject("address is required")
+            return
+        }
+
+        val data = call.getString("data")
+        if (data.isNullOrBlank()) {
+            call.reject("data is required")
+            return
+        }
+
+        val timeout = call.getInt("timeout") ?: DEFAULT_BLUETOOTH_TIMEOUT
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+            getPermissionState(BLUETOOTH_PERMISSION) != PermissionState.GRANTED
+        ) {
+            requestPermissionForAlias(BLUETOOTH_PERMISSION, call, "sendRawBluetoothCallback")
+            return
+        }
+
+        executeSendRawBluetooth(call, address, data, timeout)
+    }
+
+    @PermissionCallback
+    private fun sendRawBluetoothCallback(call: PluginCall) {
+        if (getPermissionState(BLUETOOTH_PERMISSION) != PermissionState.GRANTED) {
+            call.reject("Bluetooth permission denied")
+            return
+        }
+
+        val address = call.getString("address")
+        val data = call.getString("data")
+        if (address.isNullOrBlank() || data.isNullOrBlank()) {
+            call.reject("address and data are required")
+            return
+        }
+
+        val timeout = call.getInt("timeout") ?: DEFAULT_BLUETOOTH_TIMEOUT
+        executeSendRawBluetooth(call, address, data, timeout)
+    }
+
+    private fun executeSendRawBluetooth(
+        call: PluginCall,
+        address: String,
+        data: String,
+        timeout: Int,
+    ) {
+        Thread {
+            try {
+                val bytes = implementation.decodeBase64(data)
+                implementation.sendRawBluetooth(address, bytes, timeout)
+                call.resolve()
+            } catch (error: Exception) {
+                call.reject(error.message ?: "Failed to send data to Bluetooth printer", error)
             }
         }.start()
     }
@@ -145,5 +209,6 @@ class ThermalTransportPlugin : Plugin() {
         private const val BLUETOOTH_PERMISSION = "bluetooth"
         private const val DEFAULT_PORT = 9100
         private const val DEFAULT_TIMEOUT = 5000
+        private const val DEFAULT_BLUETOOTH_TIMEOUT = 15000
     }
 }

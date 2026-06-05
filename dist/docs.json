@@ -34,6 +34,24 @@
         "slug": "sendraw"
       },
       {
+        "name": "sendRawBluetooth",
+        "signature": "(options: SendRawBluetoothOptions) => Promise<void>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "SendRawBluetoothOptions"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "Send raw ESC/POS bytes to a paired Bluetooth thermal printer over SPP.",
+        "complexTypes": [
+          "SendRawBluetoothOptions"
+        ],
+        "slug": "sendrawbluetooth"
+      },
+      {
         "name": "ping",
         "signature": "(options: PingOptions) => Promise<PingResult>",
         "parameters": [
@@ -110,6 +128,36 @@
           "name": "timeout",
           "tags": [],
           "docs": "Connection timeout in milliseconds, defaults to 5000",
+          "complexTypes": [],
+          "type": "number | undefined"
+        }
+      ]
+    },
+    {
+      "name": "SendRawBluetoothOptions",
+      "slug": "sendrawbluetoothoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "address",
+          "tags": [],
+          "docs": "Bluetooth MAC address on Android",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "data",
+          "tags": [],
+          "docs": "Base64-encoded ESC/POS bytes",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "timeout",
+          "tags": [],
+          "docs": "Connection timeout in milliseconds, defaults to 15000",
           "complexTypes": [],
           "type": "number | undefined"
         }

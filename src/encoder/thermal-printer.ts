@@ -1,5 +1,6 @@
 import { Capacitor } from '@capacitor/core';
 
+import { CapacitorBluetoothInterface } from '../bluetooth-interface';
 import { CapacitorNetworkInterface } from '../network-interface';
 import { ThermalTransport } from '../plugin';
 
@@ -80,6 +81,30 @@ export async function createEpsonThermalPrinter(
   return new ThermalPrinter({
     type: 'epson',
     interface: new CapacitorNetworkInterface(host, 9100, { timeout: 15000 }),
+    characterSet: layout.charset,
+  });
+}
+
+export async function createEpsonThermalPrinterBluetooth(
+  address: string,
+  layout: ThermalPrinterLayout
+): Promise<ThermalPrinterInstance> {
+  if (!Capacitor.isNativePlatform()) {
+    throw new Error('Bluetooth thermal printing requires the native iOS or Android app.');
+  }
+
+  const deviceAddress = address.trim();
+  if (!deviceAddress) {
+    throw new Error('Bluetooth printer address is required.');
+  }
+
+  await ThermalTransport.requestBluetoothAccess();
+
+  const ThermalPrinter = await loadThermalPrinterClass();
+
+  return new ThermalPrinter({
+    type: 'epson',
+    interface: new CapacitorBluetoothInterface(deviceAddress, { timeout: 15000 }),
     characterSet: layout.charset,
   });
 }

@@ -8,6 +8,7 @@ public class ThermalTransportPlugin: CAPPlugin, CAPBridgedPlugin {
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "requestLocalNetworkAccess", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "sendRaw", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "sendRawBluetooth", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "ping", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "requestBluetoothAccess", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "getBluetoothDevices", returnType: CAPPluginReturnPromise)
@@ -53,6 +54,10 @@ public class ThermalTransportPlugin: CAPPlugin, CAPBridgedPlugin {
 
             call.resolve()
         }
+    }
+
+    @objc func sendRawBluetooth(_ call: CAPPluginCall) {
+        call.reject("Bluetooth printing is not yet supported on iOS")
     }
 
     @objc func ping(_ call: CAPPluginCall) {

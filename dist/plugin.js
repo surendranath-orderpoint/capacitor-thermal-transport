@@ -6,6 +6,38 @@ var capacitorThermalTransport = (function (exports, core) {
     });
 
     /**
+     * Bluetooth SPP transport for node-thermal-printer's interface slot.
+     */
+    class CapacitorBluetoothInterface {
+        constructor(address, options = {}) {
+            var _a;
+            this.address = address;
+            this.timeout = (_a = options.timeout) !== null && _a !== void 0 ? _a : 15000;
+        }
+        async isPrinterConnected() {
+            return true;
+        }
+        async execute(buffer, options = {}) {
+            if (options.waitForResponse) {
+                throw new Error('waitForResponse is not supported on mobile');
+            }
+            await ThermalTransport.sendRawBluetooth({
+                address: this.address,
+                data: uint8ArrayToBase64$1(buffer),
+                timeout: this.timeout,
+            });
+        }
+    }
+    function uint8ArrayToBase64$1(bytes) {
+        let binary = '';
+        const chunkSize = 0x8000;
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+            binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+        }
+        return btoa(binary);
+    }
+
+    /**
      * Drop-in replacement for node-thermal-printer's network interface.
      * Pass this object as `interface` when constructing ThermalPrinter.
      */
@@ -79,6 +111,22 @@ var capacitorThermalTransport = (function (exports, core) {
             characterSet: layout.charset,
         });
     }
+    async function createEpsonThermalPrinterBluetooth(address, layout) {
+        if (!core.Capacitor.isNativePlatform()) {
+            throw new Error('Bluetooth thermal printing requires the native iOS or Android app.');
+        }
+        const deviceAddress = address.trim();
+        if (!deviceAddress) {
+            throw new Error('Bluetooth printer address is required.');
+        }
+        await ThermalTransport.requestBluetoothAccess();
+        const ThermalPrinter = await loadThermalPrinterClass();
+        return new ThermalPrinter({
+            type: 'epson',
+            interface: new CapacitorBluetoothInterface(deviceAddress, { timeout: 15000 }),
+            characterSet: layout.charset,
+        });
+    }
 
     class ThermalTransportWeb extends core.WebPlugin {
         async requestLocalNetworkAccess() {
@@ -86,6 +134,9 @@ var capacitorThermalTransport = (function (exports, core) {
         }
         async sendRaw(_options) {
             throw this.unavailable('Thermal printing requires the native iOS or Android app');
+        }
+        async sendRawBluetooth(_options) {
+            throw this.unavailable('Bluetooth thermal printing requires the native iOS or Android app');
         }
         async ping(_options) {
             throw this.unavailable('Thermal printing requires the native iOS or Android app');
@@ -23947,9 +23998,11 @@ var capacitorThermalTransport = (function (exports, core) {
         printer: printer
     });
 
+    exports.CapacitorBluetoothInterface = CapacitorBluetoothInterface;
     exports.CapacitorNetworkInterface = CapacitorNetworkInterface;
     exports.ThermalTransport = ThermalTransport;
     exports.createEpsonThermalPrinter = createEpsonThermalPrinter;
+    exports.createEpsonThermalPrinterBluetooth = createEpsonThermalPrinterBluetooth;
 
     return exports;
 
