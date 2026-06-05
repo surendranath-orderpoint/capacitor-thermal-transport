@@ -19,6 +19,15 @@ export interface PingResult {
 export interface ExecuteOptions {
     waitForResponse?: boolean;
 }
+export interface BluetoothDevice {
+    /** Bluetooth MAC address on Android, peripheral UUID on iOS */
+    address: string;
+    /** Human-readable device name from the OS */
+    name: string;
+}
+export interface GetBluetoothDevicesResult {
+    devices: BluetoothDevice[];
+}
 export interface ThermalTransportPlugin {
     /**
      * iOS only: trigger the local network permission prompt before printing.
@@ -32,4 +41,13 @@ export interface ThermalTransportPlugin {
      * Check whether a TCP connection can be opened to the printer.
      */
     ping(options: PingOptions): Promise<PingResult>;
+    /**
+     * Request Bluetooth access. On Android this requests runtime permission; on iOS it
+     * triggers the Bluetooth permission prompt.
+     */
+    requestBluetoothAccess(): Promise<void>;
+    /**
+     * List Bluetooth printers available for printing on the native app.
+     */
+    getBluetoothDevices(): Promise<GetBluetoothDevicesResult>;
 }

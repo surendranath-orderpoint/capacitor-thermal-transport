@@ -50,6 +50,8 @@ Add to the merchant app `Info.plist`:
 * [`requestLocalNetworkAccess()`](#requestlocalnetworkaccess)
 * [`sendRaw(...)`](#sendraw)
 * [`ping(...)`](#ping)
+* [`requestBluetoothAccess()`](#requestbluetoothaccess)
+* [`getBluetoothDevices()`](#getbluetoothdevices)
 * [Interfaces](#interfaces)
 
 </docgen-index>
@@ -100,6 +102,31 @@ Check whether a TCP connection can be opened to the printer.
 --------------------
 
 
+### requestBluetoothAccess()
+
+```typescript
+requestBluetoothAccess() => Promise<void>
+```
+
+Request Bluetooth access. On Android this requests runtime permission; on iOS it
+triggers the Bluetooth permission prompt.
+
+--------------------
+
+
+### getBluetoothDevices()
+
+```typescript
+getBluetoothDevices() => Promise<GetBluetoothDevicesResult>
+```
+
+List Bluetooth printers available for printing on the native app.
+
+**Returns:** <code>Promise&lt;<a href="#getbluetoothdevicesresult">GetBluetoothDevicesResult</a>&gt;</code>
+
+--------------------
+
+
 ### Interfaces
 
 
@@ -127,5 +154,20 @@ Check whether a TCP connection can be opened to the printer.
 | **`host`**    | <code>string</code> |
 | **`port`**    | <code>number</code> |
 | **`timeout`** | <code>number</code> |
+
+
+#### GetBluetoothDevicesResult
+
+| Prop          | Type                           |
+| ------------- | ------------------------------ |
+| **`devices`** | <code>BluetoothDevice[]</code> |
+
+
+#### BluetoothDevice
+
+| Prop          | Type                | Description                                              |
+| ------------- | ------------------- | -------------------------------------------------------- |
+| **`address`** | <code>string</code> | Bluetooth MAC address on Android, peripheral UUID on iOS |
+| **`name`**    | <code>string</code> | Human-readable device name from the OS                   |
 
 </docgen-api>

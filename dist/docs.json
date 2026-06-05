@@ -51,6 +51,28 @@
           "PingOptions"
         ],
         "slug": "ping"
+      },
+      {
+        "name": "requestBluetoothAccess",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "Request Bluetooth access. On Android this requests runtime permission; on iOS it\ntriggers the Bluetooth permission prompt.",
+        "complexTypes": [],
+        "slug": "requestbluetoothaccess"
+      },
+      {
+        "name": "getBluetoothDevices",
+        "signature": "() => Promise<GetBluetoothDevicesResult>",
+        "parameters": [],
+        "returns": "Promise<GetBluetoothDevicesResult>",
+        "tags": [],
+        "docs": "List Bluetooth printers available for printing on the native app.",
+        "complexTypes": [
+          "GetBluetoothDevicesResult"
+        ],
+        "slug": "getbluetoothdevices"
       }
     ],
     "properties": []
@@ -136,6 +158,47 @@
           "docs": "",
           "complexTypes": [],
           "type": "number | undefined"
+        }
+      ]
+    },
+    {
+      "name": "GetBluetoothDevicesResult",
+      "slug": "getbluetoothdevicesresult",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "devices",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "BluetoothDevice"
+          ],
+          "type": "BluetoothDevice[]"
+        }
+      ]
+    },
+    {
+      "name": "BluetoothDevice",
+      "slug": "bluetoothdevice",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "address",
+          "tags": [],
+          "docs": "Bluetooth MAC address on Android, peripheral UUID on iOS",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "tags": [],
+          "docs": "Human-readable device name from the OS",
+          "complexTypes": [],
+          "type": "string"
         }
       ]
     }

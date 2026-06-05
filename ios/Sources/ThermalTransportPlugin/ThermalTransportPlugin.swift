@@ -8,7 +8,9 @@ public class ThermalTransportPlugin: CAPPlugin, CAPBridgedPlugin {
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "requestLocalNetworkAccess", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "sendRaw", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "ping", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "ping", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "requestBluetoothAccess", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getBluetoothDevices", returnType: CAPPluginReturnPromise)
     ]
 
     private let implementation = ThermalTransport()
@@ -65,6 +67,30 @@ public class ThermalTransportPlugin: CAPPlugin, CAPBridgedPlugin {
         implementation.ping(host: host, port: port, timeoutMs: timeout) { connected in
             call.resolve([
                 "connected": connected
+            ])
+        }
+    }
+
+    @objc func requestBluetoothAccess(_ call: CAPPluginCall) {
+        implementation.requestBluetoothAccess { error in
+            if let error = error {
+                call.reject(error.localizedDescription, nil, error)
+                return
+            }
+
+            call.resolve()
+        }
+    }
+
+    @objc func getBluetoothDevices(_ call: CAPPluginCall) {
+        implementation.getBluetoothDevices { devices, error in
+            if let error = error {
+                call.reject(error.localizedDescription, nil, error)
+                return
+            }
+
+            call.resolve([
+                "devices": devices
             ])
         }
     }

@@ -1,6 +1,12 @@
 import { WebPlugin } from '@capacitor/core';
 
-import type { PingOptions, PingResult, SendRawOptions, ThermalTransportPlugin } from './definitions';
+import type {
+  GetBluetoothDevicesResult,
+  PingOptions,
+  PingResult,
+  SendRawOptions,
+  ThermalTransportPlugin,
+} from './definitions';
 
 export class ThermalTransportWeb extends WebPlugin implements ThermalTransportPlugin {
   async requestLocalNetworkAccess(): Promise<void> {
@@ -13,5 +19,13 @@ export class ThermalTransportWeb extends WebPlugin implements ThermalTransportPl
 
   async ping(_options: PingOptions): Promise<PingResult> {
     throw this.unavailable('Thermal printing requires the native iOS or Android app');
+  }
+
+  async requestBluetoothAccess(): Promise<void> {
+    return;
+  }
+
+  async getBluetoothDevices(): Promise<GetBluetoothDevicesResult> {
+    return { devices: [] };
   }
 }

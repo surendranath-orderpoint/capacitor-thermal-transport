@@ -3,6 +3,15 @@ import Network
 
 @objc public class ThermalTransport: NSObject {
     private let queue = DispatchQueue(label: "com.orderpoint.thermaltransport")
+    private let bluetoothScanner = BluetoothScanner()
+
+    @objc public func requestBluetoothAccess(completion: @escaping (Error?) -> Void) {
+        bluetoothScanner.requestAccess(completion: completion)
+    }
+
+    @objc public func getBluetoothDevices(completion: @escaping ([[String: String]], Error?) -> Void) {
+        bluetoothScanner.getDevices(scanDurationMs: 4000, completion: completion)
+    }
 
     /// Triggers the iOS local network permission dialog via Bonjour browse.
     @objc public func requestLocalNetworkAccess(completion: @escaping (Error?) -> Void) {
@@ -134,6 +143,8 @@ enum ThermalTransportError: LocalizedError {
     case invalidPort
     case connectionFailed
     case timeout
+    case bluetoothUnavailable
+    case bluetoothUnauthorized
 
     var errorDescription: String? {
         switch self {
@@ -143,6 +154,10 @@ enum ThermalTransportError: LocalizedError {
             return "Could not connect to printer"
         case .timeout:
             return "Connection timed out. Check printer IP and Wi‑Fi."
+        case .bluetoothUnavailable:
+            return "Bluetooth is unavailable. Turn on Bluetooth and try again."
+        case .bluetoothUnauthorized:
+            return "Bluetooth permission denied. Enable Bluetooth access in Settings."
         }
     }
 }

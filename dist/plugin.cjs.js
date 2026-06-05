@@ -91,6 +91,12 @@ class ThermalTransportWeb extends core.WebPlugin {
     async ping(_options) {
         throw this.unavailable('Thermal printing requires the native iOS or Android app');
     }
+    async requestBluetoothAccess() {
+        return;
+    }
+    async getBluetoothDevices() {
+        return { devices: [] };
+    }
 }
 
 var web = /*#__PURE__*/Object.freeze({
